@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MATHBOT · Trayectoria paramétrica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   TOKENS
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --paper:#E9ECEF;
+  --paper-2:#F5F7F8;
+  --grid:#CBD5DD;
+  --grid-fine:#DDE4E9;
+  --ink:#16202E;
+  --ink-60:#5A6675;
+  --ink-35:#93A0AD;
+  --rule:#BAC5CE;
+
+  /* colores del PDF original — codifican los tercios del parámetro t */
+  --seg-a:#C6199B;
+  --seg-b:#1636C4;
+  --seg-c:#0F9B3C;
+
+  --flag:#B4341A;
+  --flag-bg:#FBEDE9;
+
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --cond:'IBM Plex Sans Condensed','IBM Plex Sans',system-ui,sans-serif;
+  --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:15px;line-height:1.6;
+  background-image:
+    linear-gradient(var(--grid-fine) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid-fine) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 22px 80px}
+
+/* ═══════════════════════════════════════════════════════════
+   ENCABEZADO
+   ═══════════════════════════════════════════════════════════ */
+.masthead{border-top:3px solid var(--ink);padding-top:14px;margin-bottom:34px}
+.tagrow{display:flex;flex-wrap:wrap;gap:18px;align-items:baseline;
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-60)}
+h1{font-family:var(--cond);font-weight:700;font-size:clamp(30px,5.4vw,52px);
+  line-height:1.02;letter-spacing:-.015em;margin:12px 0 8px}
+.deck{font-size:17px;color:var(--ink-60);max-width:62ch;margin:0}
+
+/* ═══════════════════════════════════════════════════════════
+   HALLAZGO
+   ═══════════════════════════════════════════════════════════ */
+.finding{
+  border:1px solid var(--rule);border-left:4px solid var(--flag);
+  background:var(--paper-2);padding:22px 24px;margin:30px 0 38px;
+}
+.finding h2{font-family:var(--cond);font-size:21px;font-weight:700;margin:0 0 10px}
+.finding p{margin:0 0 12px;max-width:75ch}
+.finding p:last-child{margin-bottom:0}
+.evidence{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:18px}
+.ev{background:var(--paper-2);padding:13px 15px}
+.ev dt{font-family:var(--mono);font-size:10px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-60);margin-bottom:5px}
+.ev dd{margin:0;font-family:var(--mono);font-size:19px;font-weight:600}
+.ev dd small{font-size:11px;font-weight:400;color:var(--ink-60);display:block;margin-top:2px;letter-spacing:0}
+
+/* ═══════════════════════════════════════════════════════════
+   SECCIONES
+   ═══════════════════════════════════════════════════════════ */
+section{margin:52px 0}
+.shead{display:flex;align-items:baseline;gap:14px;
+  border-bottom:1.5px solid var(--ink);padding-bottom:7px;margin-bottom:24px}
+.shead .mark{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink-60)}
+.shead h2{font-family:var(--cond);font-size:24px;font-weight:700;margin:0;letter-spacing:-.01em}
+
+/* ═══════════════════════════════════════════════════════════
+   ECUACIÓN
+   ═══════════════════════════════════════════════════════════ */
+.eqbox{background:var(--paper-2);border:1px solid var(--rule);padding:26px 28px}
+.eq{font-family:var(--mono);font-size:clamp(15px,2.3vw,19px);line-height:2.15;white-space:nowrap;
+  overflow-x:auto;padding-bottom:4px}
+.eq .op{color:var(--ink-35)}
+.eqnote{margin:16px 0 0;font-size:14px;color:var(--ink-60);max-width:70ch}
+
+/* ═══════════════════════════════════════════════════════════
+   INSTRUMENTO (plot + controles)
+   ═══════════════════════════════════════════════════════════ */
+.panel{display:grid;grid-template-columns:1fr 292px;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.stage{background:var(--paper-2);padding:14px;display:flex;justify-content:center;align-items:center}
+canvas{width:100%;height:auto;display:block;max-width:640px}
+.side{background:var(--paper-2);padding:20px;display:flex;flex-direction:column;gap:22px}
+.ctl label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-60);margin-bottom:9px}
+.ctl input[type=range]{width:100%;accent-color:var(--ink)}
+.valrow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.valrow b{font-family:var(--mono);font-size:24px;font-weight:600}
+.valrow span{font-family:var(--mono);font-size:11px;color:var(--ink-60)}
+.toggles{display:flex;flex-direction:column;gap:9px}
+.tg{display:flex;align-items:center;gap:9px;font-size:14px;cursor:pointer}
+.tg input{accent-color:var(--ink);width:15px;height:15px;cursor:pointer}
+.readout{border-top:1px solid var(--rule);padding-top:16px;display:flex;flex-direction:column;gap:11px}
+.ro{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ro span{font-size:12.5px;color:var(--ink-60)}
+.ro b{font-family:var(--mono);font-size:15px;font-weight:600;white-space:nowrap}
+.verdict{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  padding:7px 10px;text-align:center;border:1px solid}
+.ok{color:#116338;border-color:#116338;background:#EAF5EE}
+.warn{color:var(--flag);border-color:var(--flag);background:var(--flag-bg)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-family:var(--mono);font-size:11px;color:var(--ink-60)}
+.legend i{display:inline-block;width:15px;height:3px;margin-right:6px;vertical-align:middle}
+
+/* ═══════════════════════════════════════════════════════════
+   TABLA DE ERROR
+   ═══════════════════════════════════════════════════════════ */
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13.5px;
+  background:var(--paper-2);border:1px solid var(--rule)}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  text-align:right;padding:11px 14px;border-bottom:1.5px solid var(--ink);color:var(--ink-60);font-weight:500}
+th:first-child{text-align:left}
+td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--grid-fine)}
+td:first-child{text-align:left;font-weight:600}
+tr:last-child td{border-bottom:none}
+tr.pick{background:#E4EBF1}
+tr.pick td{font-weight:600}
+.tnote{font-size:13px;color:var(--ink-60);margin-top:12px;max-width:74ch}
+
+/* ═══════════════════════════════════════════════════════════
+   ADVERTENCIAS
+   ═══════════════════════════════════════════════════════════ */
+.flags{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.flag{background:var(--paper-2);padding:20px 24px;display:grid;grid-template-columns:38px 1fr;gap:18px}
+.flag .n{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--flag);
+  border-top:2px solid var(--flag);padding-top:6px}
+.flag h3{font-family:var(--cond);font-size:18px;font-weight:700;margin:0 0 7px}
+.flag p{margin:0;font-size:14.5px;color:var(--ink-60);max-width:76ch}
+.flag p + p{margin-top:9px}
+.flag strong{color:var(--ink);font-weight:600}
+
+/* ═══════════════════════════════════════════════════════════
+   SALIDA DE DATOS
+   ═══════════════════════════════════════════════════════════ */
+.outhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.tabs{display:flex;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.tab{background:var(--paper-2);border:none;padding:8px 16px;cursor:pointer;
+  font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-60)}
+.tab[aria-selected=true]{background:var(--ink);color:var(--paper-2)}
+.copy{background:var(--ink);color:var(--paper-2);border:none;padding:9px 18px;cursor:pointer;
+  font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase}
+.copy:hover{background:#000}
+pre{background:var(--paper-2);border:1px solid var(--rule);padding:18px 20px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.5px;line-height:1.7;margin:0;max-height:420px}
+
+footer{margin-top:64px;padding-top:16px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:11px;color:var(--ink-35);letter-spacing:.06em}
+
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media (max-width:860px){.panel{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══ ENCABEZADO ═══════════════════════════════════════ -->
+<header class="masthead">
+  <div class="tagrow">
+    <span>MATHBOT · PBL</span><span>Cálculo III — Avance 1</span><span>Trayectoria de referencia</span>
+  </div>
+  <h1>Rosa de tres pétalos<br>con estiramiento anisótropo</h1>
+  <p class="deck">Modelo paramétrico derivado de la medición directa del PDF de referencia, con el conjunto de waypoints para ejecución en el brazo.</p>
+</header>
+
+<!-- ═══ HALLAZGO PRINCIPAL ═══════════════════════════════ -->
+<div class="finding">
+  <h2>Los pétalos no tienen amplitudes distintas. La figura está estirada.</h2>
+  <p>Medida sobre los píxeles crudos de la imagen incrustada, la curva es una rosa perfectamente simétrica: los tres pétalos miden lo mismo. La asimetría aparece porque el PDF coloca la imagen con una matriz de escala <em>no uniforme</em>, que alarga el eje Y sin tocar el eje X.</p>
+  <p>Eso reproduce exactamente lo que mediste con regla: el pétalo horizontal conserva su longitud, y los dos que apuntan hacia arriba y abajo se alargan un 28%. No hace falta una función definida por tramos — basta una sola ecuación con un factor de escala en Y.</p>
+  <dl class="evidence">
+    <div class="ev"><dt>Radio en píxeles</dt><dd>682 / 680 / 680<small>los tres pétalos, iguales</small></dd></div>
+    <div class="ev"><dt>Anisotropía · matriz PDF</dt><dd>1.3639<small>sy ÷ sx de la colocación</small></dd></div>
+    <div class="ev"><dt>Anisotropía · ajuste</dt><dd>1.3552<small>mínimos cuadrados sobre la curva</small></dd></div>
+    <div class="ev"><dt>Amplitud base A</dt><dd>10.29 cm<small>página carta, tamaño real</small></dd></div>
+  </dl>
+</div>
+
+<!-- ═══ MODELO ═══════════════════════════════════════════ -->
+<section>
+  <div class="shead"><span class="mark">01</span><h2>Ecuación paramétrica</h2></div>
+  <div class="eqbox">
+    <div class="eq">
+      x(t) <span class="op">=</span> &minus;A · cos(3t) · cos(t)<br>
+      y(t) <span class="op">=</span> &minus;A · k · cos(3t) · sin(t)<br>
+      <span class="op">con</span> A = 10.29 cm &nbsp;<span class="op">·</span>&nbsp; k = 1.355 &nbsp;<span class="op">·</span>&nbsp; t &isin; [0, &pi;]
+    </div>
+    <p class="eqnote">Una sola expresión continua, sin tramos. El dominio [0,&pi;] basta porque el número de pétalos es impar: al recorrerlo, r cambia de signo y genera los tres pétalos completos. El factor k solo reescala el eje Y — es lo que rompe la simetría aparente.</p>
+  </div>
+</section>
+
+<!-- ═══ INSTRUMENTO ══════════════════════════════════════ -->
+<section>
+  <div class="shead"><span class="mark">02</span><h2>Trazo y waypoints</h2></div>
+  <div class="panel">
+    <div class="stage"><canvas id="cv" width="1280" height="1280"></canvas></div>
+    <aside class="side">
+
+      <div class="ctl">
+        <label for="np">Puntos por pétalo</label>
+        <div class="valrow"><b id="npv">15</b><span id="tot">42 en la ruta</span></div>
+        <input type="range" id="np" min="6" max="28" value="15" step="1">
+      </div>
+
+      <div class="ctl">
+        <label for="tt">Recorrer el parámetro t</label>
+        <div class="valrow"><b id="ttv">180°</b><span>de 0° a 180°</span></div>
+        <input type="range" id="tt" min="0" max="180" value="180" step="0.5">
+      </div>
+
+      <div class="toggles">
+        <label class="tg"><input type="checkbox" id="cW" checked> Waypoints</label>
+        <label class="tg"><input type="checkbox" id="cP" checked> Poligonal del robot</label>
+        <label class="tg"><input type="checkbox" id="cS"> Rosa simétrica (k = 1)</label>
+        <label class="tg"><input type="checkbox" id="cG" checked> Retícula en cm</label>
+      </div>
+
+      <div class="readout">
+        <div class="ro"><span>Desviación máxima</span><b id="rE">—</b></div>
+        <div class="ro"><span>Aporte al presupuesto</span><b id="rB">—</b></div>
+        <div class="ro"><span>Longitud de la ruta</span><b id="rL">—</b></div>
+        <div id="rV" class="verdict ok">—</div>
+      </div>
+
+      <div class="legend">
+        <div><i style="background:var(--seg-b)"></i>t ∈ [0°, 60°]</div>
+        <div><i style="background:var(--seg-c)"></i>t ∈ [60°, 120°]</div>
+        <div><i style="background:var(--seg-a)"></i>t ∈ [120°, 180°]</div>
+      </div>
+    </aside>
+  </div>
+  <p class="tnote">Los tres colores son los tercios del parámetro y reproducen los del PDF original. Cada color cruza dos pétalos: esa es la prueba visual de que una sola ecuación genera toda la figura.</p>
+</section>
+
+<!-- ═══ ERROR ════════════════════════════════════════════ -->
+<section>
+  <div class="shead"><span class="mark">03</span><h2>Error de discretización</h2></div>
+  <table>
+    <thead><tr><th>Puntos/pétalo</th><th>Uniforme en t</th><th>Adaptativo</th><th>Ruta total</th><th>% de 13 cm</th></tr></thead>
+    <tbody id="etb"></tbody>
+  </table>
+  <p class="tnote">Desviación perpendicular máxima entre la curva real y la poligonal que recorre el robot, sobre el pétalo grande. El espaciado adaptativo concentra puntos donde la curvatura es alta — la punta del pétalo — y rinde un 35% mejor que el uniforme para el mismo número de puntos.</p>
+</section>
+
+<!-- ═══ ADVERTENCIAS ═════════════════════════════════════ -->
+<section>
+  <div class="shead"><span class="mark">04</span><h2>Antes de dar esto por cerrado</h2></div>
+  <div class="flags">
+
+    <article class="flag"><div class="n">01</div><div>
+      <h3>Mide el cartón antes de confiar en el PDF</h3>
+      <p>Todo lo anterior asume que la trayectoria física del SPARK se imprimió desde este PDF a tamaño real. Coincide con tu medición con regla, lo cual es buena señal, pero <strong>no es prueba</strong>: pudo imprimirse escalada, o cortarse desde el archivo original sin distorsionar.</p>
+      <p>Mide el pétalo horizontal y uno vertical directamente sobre el cartón. Si la razón entre ellos ronda 1.28, el modelo estirado es correcto. Si es 1.00, la referencia física es la rosa simétrica y el que está distorsionado es el PDF.</p>
+    </div></article>
+
+    <article class="flag"><div class="n">02</div><div>
+      <h3>El 90% es del sistema, no del modelo</h3>
+      <p>La discretización es una de varias fuentes de error, y la única que controlas por completo. En un brazo de bajo costo con alcance de ~25 cm, la zona muerta del servo aporta 4–9 mm, el backlash 2–5 mm, la flexión de eslabones 1–4 mm y la calibración del origen 2–5 mm.</p>
+      <p>Si el presupuesto total es ~13 mm y lo mecánico ya consume 8–10 mm, la discretización debe ser <strong>el término despreciable de la suma</strong>. Objetivo práctico: por debajo de 1 mm, que es lo que te da 12–15 puntos por pétalo.</p>
+    </div></article>
+
+    <article class="flag"><div class="n">03</div><div>
+      <h3>Si interpolas en espacio articular, duplica los puntos</h3>
+      <p>Toda la tabla de error asume interpolación lineal en X–Y. Si el Arduino simplemente mueve cada servo de un ángulo al siguiente, el camino cartesiano entre waypoints <strong>no es una recta</strong>: se arquea hacia afuera, y el error real supera al calculado.</p>
+      <p>O implementas cinemática inversa punto a punto, o subes a 24–30 puntos por pétalo. La segunda opción cuesta memoria de programa, nada más.</p>
+    </div></article>
+
+    <article class="flag"><div class="n">04</div><div>
+      <h3>Declara contra qué mides el 90%</h3>
+      <p>El documento del PBL no lo especifica, y Cálculo III evalúa explícitamente la cuantificación del error. ¿Es porcentaje del radio máximo? ¿Del radio local? ¿De la longitud de arco? Son criterios distintos y dan números distintos.</p>
+      <p>Elige uno, decláralo en el informe y justifícalo. Eso es nota, no un detalle de forma.</p>
+    </div></article>
+
+    <article class="flag"><div class="n">05</div><div>
+      <h3>La lista de puntos no es el modelo</h3>
+      <p>El entregable de Cálculo III es la ecuación paramétrica continua, validada en MATLAB. La discretización es un paso de implementación que ocurre al final, justo antes de enviar al Arduino.</p>
+      <p>Mantenlos separados en el informe: modelo continuo → simulación → discretización → ejecución → error medido.</p>
+    </div></article>
+
+    <article class="flag"><div class="n">06</div><div>
+      <h3>Tu incertidumbre de medición compite con el error de trazo</h3>
+      <p>Con 15 puntos por pétalo la discretización aporta ~0.6 mm. Medir el cartón con regla tiene una incertidumbre de ±2–3 mm — cuatro veces mayor.</p>
+      <p>Mide el trazo físico varias veces y reporta la dispersión. Refuerza la sección de validación y evita afirmar una precisión que tu instrumento no puede respaldar.</p>
+    </div></article>
+
+  </div>
+</section>
+
+<!-- ═══ SALIDA ═══════════════════════════════════════════ -->
+<section>
+  <div class="shead"><span class="mark">05</span><h2>Exportar</h2></div>
+  <div class="outhead">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true"  data-f="csv">CSV</button>
+      <button class="tab" role="tab" aria-selected="false" data-f="mat">MATLAB</button>
+      <button class="tab" role="tab" aria-selected="false" data-f="ino">Arduino</button>
+    </div>
+    <button class="copy" id="cpy">Copiar</button>
+  </div>
+  <pre id="out"></pre>
+</section>
+
+<footer>Medición: página carta 21.59 × 27.94 cm · imagen 1307 × 1252 px · colocada en 561.25 × 733.27 pt</footer>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   MODELO
+   ═══════════════════════════════════════════════════════════ */
+const A = 10.29, K = 1.3552;
+const D = Math.PI/180;
+let kActive = K;
+
+function P(t){
+  const r = -A*Math.cos(3*t);
+  return [r*Math.cos(t), kActive*r*Math.sin(t)];
+}
+function curvature(t){
+  const h=1e-4, a=P(t-h), b=P(t), c=P(t+h);
+  const d1=[(c[0]-a[0])/(2*h),(c[1]-a[1])/(2*h)];
+  const d2=[(c[0]-2*b[0]+a[0])/(h*h),(c[1]-2*b[1]+a[1])/(h*h)];
+  const num=Math.abs(d1[0]*d2[1]-d1[1]*d2[0]);
+  const den=Math.pow(d1[0]*d1[0]+d1[1]*d1[1],1.5);
+  return den<1e-12?0:num/den;
+}
+
+/* Espaciado adaptativo: densidad ∝ √(curvatura) · ds  →  equidistribuye el error de cuerda */
+function adaptive(N,t0,t1,nf=3000){
+  const ts=[],w=[];
+  for(let i=0;i<nf;i++){
+    const t=t0+(t1-t0)*i/(nf-1); ts.push(t);
+    const h=1e-4,a=P(t-h),c=P(t+h);
+    const ds=Math.hypot((c[0]-a[0])/(2*h),(c[1]-a[1])/(2*h));
+    w.push(Math.sqrt(curvature(t))*ds);
+  }
+  const M=[0];
+  for(let i=1;i<nf;i++) M.push(M[i-1]+(w[i]+w[i-1])/2*(ts[i]-ts[i-1]));
+  const tot=M[nf-1]||1;
+  const out=[];
+  for(let j=0;j<N;j++){
+    const target=tot*j/(N-1);
+    let lo=0,hi=nf-1;
+    while(hi-lo>1){const m=(lo+hi)>>1; if(M[m]<target) lo=m; else hi=m;}
+    const f=(target-M[lo])/((M[hi]-M[lo])||1);
+    out.push(ts[lo]+f*(ts[hi]-ts[lo]));
+  }
+  return out;
+}
+
+/* Desviación perpendicular máxima curva ↔ poligonal */
+function maxDev(tp,t0,t1,fine=1400){
+  const pts=tp.map(P); let worst=0;
+  for(let i=0;i<fine;i++){
+    const t=t0+(t1-t0)*i/(fine-1), p=P(t);
+    let best=1e9;
+    for(let j=0;j<pts.length-1;j++){
+      const a=pts[j],b=pts[j+1];
+      const abx=b[0]-a[0],aby=b[1]-a[1], d2=abx*abx+aby*aby;
+      let d;
+      if(d2<1e-14){ d=Math.hypot(p[0]-a[0],p[1]-a[1]); }
+      else{
+        let u=((p[0]-a[0])*abx+(p[1]-a[1])*aby)/d2; u=Math.max(0,Math.min(1,u));
+        d=Math.hypot(p[0]-a[0]-u*abx, p[1]-a[1]-u*aby);
+      }
+      if(d<best) best=d;
+    }
+    if(best>worst) worst=best;
+  }
+  return worst;
+}
+
+const SEGS=[[30*D,90*D],[90*D,150*D],[150*D,210*D]];
+function buildRoute(N){
+  const legs=SEGS.map(([a,b])=>adaptive(N,a,b));
+  const route=[]; legs.forEach((l,i)=>{ (i?l.slice(1):l).forEach(t=>route.push(t)); });
+  return {legs,route};
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DIBUJO
+   ═══════════════════════════════════════════════════════════ */
+const cv=document.getElementById('cv'), cx=cv.getContext('2d');
+const SZ=1280, C=SZ/2, MAXCM=15.5, S=(C-58)/MAXCM;
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const toPx=([x,y])=>[C+x*S, C-y*S];
+
+function draw(state){
+  const {legs,route,N,tMax}=state;
+  cx.clearRect(0,0,SZ,SZ);
+
+  if(document.getElementById('cG').checked){
+    cx.strokeStyle=css('--grid'); cx.lineWidth=1.4;
+    for(let r=2;r<=14;r+=2){cx.beginPath();cx.arc(C,C,r*S,0,7);cx.stroke();}
+    cx.fillStyle=css('--ink-35'); cx.font='500 20px '+css('--mono');
+    for(let r=4;r<=12;r+=4) cx.fillText(r+' cm', C+r*S+7, C-7);
+  }
+  cx.strokeStyle=css('--ink'); cx.lineWidth=2.6;
+  cx.beginPath(); cx.moveTo(30,C); cx.lineTo(SZ-30,C); cx.moveTo(C,30); cx.lineTo(C,SZ-30); cx.stroke();
+  cx.fillStyle=css('--ink');
+  cx.beginPath();cx.moveTo(SZ-30,C);cx.lineTo(SZ-52,C-11);cx.lineTo(SZ-52,C+11);cx.fill();
+  cx.beginPath();cx.moveTo(C,30);cx.lineTo(C-11,52);cx.lineTo(C+11,52);cx.fill();
+  cx.font='700 30px '+css('--cond');
+  cx.fillText('X',SZ-56,C+42); cx.fillText('Y',C+20,58);
+
+  /* curva por tercios del parámetro — replica el código de color del PDF */
+  const cols=[css('--seg-b'),css('--seg-c'),css('--seg-a')];
+  cx.lineWidth=5; cx.lineCap='round';
+  for(let s=0;s<3;s++){
+    const a=s*60*D, b=(s+1)*60*D;
+    if(tMax<=a) continue;
+    cx.strokeStyle=cols[s]; cx.beginPath();
+    const hi=Math.min(b,tMax); let first=true;
+    for(let t=a;t<=hi+1e-9;t+=0.0016){
+      const [px,py]=toPx(P(t));
+      first?(cx.moveTo(px,py),first=false):cx.lineTo(px,py);
+    }
+    cx.stroke();
+  }
+
+  if(document.getElementById('cP').checked){
+    cx.strokeStyle=css('--ink'); cx.lineWidth=1.6; cx.setLineDash([9,7]);
+    legs.forEach(l=>{cx.beginPath();l.forEach((t,i)=>{const [px,py]=toPx(P(t));i?cx.lineTo(px,py):cx.moveTo(px,py);});cx.stroke();});
+    cx.setLineDash([]);
+  }
+
+  if(document.getElementById('cW').checked){
+    route.forEach(t=>{
+      const [px,py]=toPx(P(t));
+      cx.beginPath();cx.arc(px,py,8,0,7);
+      cx.fillStyle=css('--paper-2');cx.fill();
+      cx.strokeStyle=css('--ink');cx.lineWidth=3;cx.stroke();
+    });
+  }
+  cx.beginPath();cx.arc(C,C,7,0,7);cx.fillStyle=css('--ink');cx.fill();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ESTADO
+   ═══════════════════════════════════════════════════════════ */
+let cur=null;
+function refresh(){
+  kActive = document.getElementById('cS').checked ? 1 : K;
+  const N=+document.getElementById('np').value;
+  const tMax=+document.getElementById('tt').value*D;
+  const {legs,route}=buildRoute(N);
+  cur={legs,route,N,tMax};
+  draw(cur);
+
+  const e=maxDev(legs[0],SEGS[0][0],SEGS[0][1])*10;
+  let L=0;
+  for(let i=0;i<route.length-1;i++){const a=P(route[i]),b=P(route[i+1]);L+=Math.hypot(b[0]-a[0],b[1]-a[1]);}
+
+  document.getElementById('npv').textContent=N;
+  document.getElementById('tot').textContent=(N*3-3)+' en la ruta';
+  document.getElementById('ttv').textContent=Math.round(tMax/D)+'°';
+  document.getElementById('rE').textContent=e.toFixed(2)+' mm';
+  document.getElementById('rB').textContent=(e/13).toFixed(0)+'% de 13 mm';
+  document.getElementById('rL').textContent=L.toFixed(1)+' cm';
+
+  const v=document.getElementById('rV');
+  if(e<=1){v.className='verdict ok';v.textContent='Despreciable';}
+  else if(e<=2.6){v.className='verdict ok';v.textContent='Aceptable';}
+  else {v.className='verdict warn';v.textContent='Domina el presupuesto';}
+
+  renderTable(N); renderOut();
+}
+
+function renderTable(sel){
+  const kSave=kActive; kActive=K;
+  const rows=[8,10,12,13,14,15,18,20,24].map(N=>{
+    const [a,b]=SEGS[0];
+    const u=maxDev(Array.from({length:N},(_,i)=>a+(b-a)*i/(N-1)),a,b)*10;
+    const d=maxDev(adaptive(N,a,b),a,b)*10;
+    return `<tr class="${N===sel?'pick':''}"><td>${N}</td><td>${u.toFixed(2)} mm</td><td>${d.toFixed(2)} mm</td><td>${N*3-3}</td><td>${(d/130*100).toFixed(2)}%</td></tr>`;
+  });
+  document.getElementById('etb').innerHTML=rows.join('');
+  kActive=kSave;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EXPORTACIÓN
+   ═══════════════════════════════════════════════════════════ */
+let fmt='csv';
+function renderOut(){
+  const pts=cur.route.map(t=>{const [x,y]=P(t);return [x,y];});
+  let s='';
+  if(fmt==='csv'){
+    s='indice,x_cm,y_cm,t_grados\n'+pts.map((p,i)=>
+      `${i},${p[0].toFixed(3)},${p[1].toFixed(3)},${(cur.route[i]/D).toFixed(2)}`).join('\n');
+  }
+  else if(fmt==='mat'){
+    s=`% MATHBOT - trayectoria de referencia\n`+
+      `A = ${A}; k = ${kActive.toFixed(4)};\n\n`+
+      `% --- Modelo continuo (para graficar y validar) ---\n`+
+      `t  = linspace(0, pi, 2000);\n`+
+      `r  = -A*cos(3*t);\n`+
+      `x  = r.*cos(t);\n`+
+      `y  = k*r.*sin(t);\n`+
+      `plot(x, y, 'LineWidth', 1.5); axis equal; grid on\n`+
+      `xlabel('x (cm)'); ylabel('y (cm)')\n\n`+
+      `% --- Waypoints discretos (${pts.length} puntos) ---\n`+
+      `WP = [\n`+pts.map(p=>`  ${p[0].toFixed(3)}  ${p[1].toFixed(3)}`).join('\n')+`\n];\n`+
+      `hold on; plot(WP(:,1), WP(:,2), 'ko', 'MarkerFaceColor', 'w')\n`;
+  }
+  else{
+    s=`// MATHBOT - ${pts.length} waypoints (cm x100 = centesimas de cm)\n`+
+      `const int N_WP = ${pts.length};\n`+
+      `const int WP[N_WP][2] PROGMEM = {\n`+
+      pts.map(p=>`  {${Math.round(p[0]*100)}, ${Math.round(p[1]*100)}}`).join(',\n')+`\n};\n`;
+  }
+  document.getElementById('out').textContent=s;
+}
+
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected','false'));
+  b.setAttribute('aria-selected','true'); fmt=b.dataset.f; renderOut();
+}));
+document.getElementById('cpy').addEventListener('click',async e=>{
+  try{ await navigator.clipboard.writeText(document.getElementById('out').textContent);
+       e.target.textContent='Copiado'; setTimeout(()=>e.target.textContent='Copiar',1400);
+  }catch{ e.target.textContent='No se pudo copiar'; setTimeout(()=>e.target.textContent='Copiar',1800); }
+});
+['np','tt','cW','cP','cS','cG'].forEach(id=>
+  document.getElementById(id).addEventListener('input',refresh));
+
+refresh();
+</script>
+</body>
+</html>
