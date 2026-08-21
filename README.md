@@ -60,9 +60,35 @@ MathBot/
 │   └── MATHBOT_-_Semestre_2_2026.pdf     # enunciado oficial del PBL
 ├── modelo/
 │   └── mathbot_trayectoria.html           # herramienta interactiva: modelo, error, export CSV/MATLAB/Arduino
+├── mathbot_investigacion_construccion.html # investigación: arquitecturas, presupuesto de error, BOM y costos
 ├── matlab/                                # simulación y validación (Avance 1 y 2)
 └── firmware/                              # control Arduino del brazo (por definir)
 ```
+
+---
+
+## Cómo se construye el brazo
+
+`mathbot_investigacion_construccion.html` compara seis arquitecturas candidatas (antropomórfico,
+SCARA, cartesiana/CNC, polar, delta y kit comercial) contra los requisitos del PBL, con presupuesto
+de error, lista de materiales y costos.
+
+**Conclusión:** SCARA de sobremesa de 3 GDL con cabezal de doble efector, eslabones `L₁ = L₂ = 20 cm`
+y base a `D = 22 cm` del centro de la rosa. Con esa geometría, `θ₂` recorre solo el rango
+`[72°, 126°]` en toda la trayectoria — lejos de ambas singularidades — y el número de condición
+del jacobiano se mantiene por debajo de 3.5.
+
+El hallazgo que decide el diseño no es geométrico sino de actuación: sobre esta configuración,
+**1° de error articular se amplifica hasta 8.70 mm de error de trazo**. La zona muerta de un MG996R
+es de 1–2°, así que en accionamiento directo el error de servo por sí solo consume todo el
+presupuesto. La corrección es servo de bus serie con encóder (Feetech STS3215, 0.088° por cuenta →
+0.77 mm) o reducción mecánica sobre servos analógicos.
+
+| Ruta | Error de trazo | Costo total | Semanas |
+|---|---|---|---|
+| Económica — MG996R + reducción 3:1 | 4–6 mm | USD 175 | 5–6 |
+| **Recomendada — SCARA + STS3215** | **≈ 2 mm** | **USD 305** | **7–9** |
+| Alta precisión — NEMA 17 + AS5600 | 0.3 mm | USD 430 | 10–12 |
 
 ---
 
@@ -105,8 +131,9 @@ MathBot/
 ## Pendientes abiertos
 
 - [ ] Medir el trazo físico en cartón (SPARK) y confirmar `k ≈ 1.355` contra la referencia real.
-- [ ] Definir explícitamente el criterio de error (% del radio máximo, del radio local, o de la longitud de arco) para el reporte del 90% de precisión.
-- [ ] Decidir interpolación cartesiana vs. articular en el firmware, y ajustar el número de waypoints en consecuencia.
+- [ ] Definir explícitamente el criterio de error (% del radio máximo, del radio local, o de la longitud de arco) para el reporte del 90% de precisión. *Propuesta en la investigación: `e_RMS ≤ 10% · R_max = 13.2 mm` como criterio oficial y `e_max < 3 mm` como meta interna. El criterio de radio local es inviable: la rosa pasa por el origen y la tolerancia se anula.*
+- [ ] Decidir interpolación cartesiana vs. articular en el firmware, y ajustar el número de waypoints en consecuencia. *Propuesta: cartesiana — los servos de bus serie aceptan >50 Hz, suficiente para resolver la IK en línea.*
+- [ ] Confirmar con el docente si el objeto metálico de 70 g es ferromagnético. Si es aluminio o cobre, el electroimán no lo levanta aunque el sensor inductivo sí lo detecte.
 - [ ] Construir la simulación 3D en Simulink con la geometría real del prototipo (Avance 2).
 - [ ] Documentar el diseño mecánico: grados de libertad, actuadores, arquitectura de control.
 
