@@ -61,6 +61,7 @@ MathBot/
 ├── modelo/
 │   └── mathbot_trayectoria.html           # herramienta interactiva: modelo, error, export CSV/MATLAB/Arduino
 ├── mathbot_investigacion_construccion.html # investigación: arquitecturas, presupuesto de error, BOM y costos
+├── mathbot_compras_el_salvador.html        # abastecimiento 100% local: tiendas, sustituciones, BOM en El Salvador
 ├── matlab/                                # simulación y validación (Avance 1 y 2)
 └── firmware/                              # control Arduino del brazo (por definir)
 ```
@@ -89,6 +90,30 @@ presupuesto. La corrección es servo de bus serie con encóder (Feetech STS3215,
 | Económica — MG996R + reducción 3:1 | 4–6 mm | USD 175 | 5–6 |
 | **Recomendada — SCARA + STS3215** | **≈ 2 mm** | **USD 305** | **7–9** |
 | Alta precisión — NEMA 17 + AS5600 | 0.3 mm | USD 430 | 10–12 |
+
+### Abastecimiento en El Salvador
+
+`mathbot_compras_el_salvador.html` levanta el mapa de compras local: tiendas con dirección y
+teléfono, qué comprar en cada una, y qué no existe en el país.
+
+Los servos de bus serie STS3215 **no se consiguen en El Salvador** y no hay venta minorista
+confirmada de NEMA 17. El SCARA sigue siendo viable con tres sustituciones, y las tres suman
+puntos en Física III en vez de restarlos:
+
+1. **STS3215 → servo hobby con reducción por cabrestante de cable.** Sin backlash, cable de
+   ferretería, tambores impresos. Reducciones distintas por junta: `N₁ = 2:1` (θ₁ barre 72.2°) y
+   `N₂ = 3:1` (θ₂ barre 53.4°), limitadas por el recorrido de 170° del servo.
+2. **Sensores industriales → sensores construidos.** Un inductivo Schmersal/Rockwell local cuesta
+   25–60 USD; bobinarlo cuesta ~5 USD y permite presentar curvas medidas en vez de una hoja de datos.
+3. **Electroimán comercial → electroimán bobinado.** No hay vendedor local; un tornillo de acero y
+   alambre esmaltado #26 de Vidrí sí.
+
+Resultado: **≈ 6.0 mm de error → 95.4% de precisión** por **USD 225** con impresión 3D gratis
+(≈ USD 56 por integrante entre 4). Sigue aprobando el 90% con 2.2× de margen.
+
+La CNC (opción C) queda descartada por segunda vez: depende justo de las piezas sin venta local
+confirmada. El brazo antropomórfico (opción A) sí es 100% local y usa la misma canasta de compras,
+pero con servos directos el error va de 10 a 20 mm — rozando el umbral.
 
 ---
 
