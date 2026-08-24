@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MATHBOT · Abastecimiento en El Salvador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E9ECEF; --paper-2:#F5F7F8; --paper-3:#FDFEFE;
+  --grid:#CBD5DD; --grid-fine:#DDE4E9;
+  --ink:#16202E; --ink-60:#5A6675; --ink-35:#93A0AD; --rule:#BAC5CE;
+  --seg-a:#C6199B; --seg-b:#1636C4; --seg-c:#0F9B3C;
+  --flag:#B4341A; --flag-bg:#FBEDE9;
+  --ok:#0F7A34; --ok-bg:#EAF4EC;
+  --warn:#8A6A0B; --warn-bg:#FAF4E2;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --cond:'IBM Plex Sans Condensed','IBM Plex Sans',system-ui,sans-serif;
+  --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:15px;line-height:1.62;
+  background-image:linear-gradient(var(--grid-fine) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--grid-fine) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 22px 90px}
+.masthead{border-top:3px solid var(--ink);padding-top:14px;margin-bottom:30px}
+.tagrow{display:flex;flex-wrap:wrap;gap:18px;align-items:baseline;
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-60)}
+h1{font-family:var(--cond);font-weight:700;font-size:clamp(30px,5.4vw,52px);
+  line-height:1.02;letter-spacing:-.015em;margin:12px 0 8px}
+.deck{font-size:17px;color:var(--ink-60);max-width:64ch;margin:0}
+
+section{margin:52px 0 0;scroll-margin-top:20px}
+h2{font-family:var(--cond);font-weight:700;font-size:clamp(22px,3.2vw,31px);
+  line-height:1.1;letter-spacing:-.01em;margin:0 0 14px;
+  padding-bottom:10px;border-bottom:2px solid var(--ink)}
+h3{font-family:var(--cond);font-weight:700;font-size:20px;margin:30px 0 8px}
+h4{font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-60);margin:24px 0 8px;font-weight:600}
+.secnum{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--ink-35);text-transform:uppercase;display:block;margin-bottom:4px}
+p{max-width:78ch;margin:0 0 14px}
+a{color:var(--seg-b)}
+ul,ol{max-width:78ch;padding-left:20px;margin:0 0 14px}
+li{margin-bottom:6px}
+code{font-family:var(--mono);font-size:.9em;background:var(--paper-2);
+  border:1px solid var(--grid-fine);padding:1px 5px;border-radius:2px}
+strong{font-weight:600}
+.small{font-size:13.5px;color:var(--ink-60)}
+
+.toc{border:1px solid var(--rule);background:var(--paper-2);padding:20px 24px;margin:30px 0 0}
+.toc ol{columns:2;column-gap:34px;font-family:var(--mono);font-size:12.5px;
+  list-style:none;padding:0;margin:0;max-width:none}
+.toc li{margin-bottom:7px;break-inside:avoid}
+.toc a{text-decoration:none;color:var(--ink)}
+.toc a:hover{color:var(--seg-b);text-decoration:underline}
+.toc .n{color:var(--ink-35);margin-right:8px}
+@media(max-width:640px){.toc ol{columns:1}}
+
+.finding{border:1px solid var(--rule);border-left:4px solid var(--ok);
+  background:var(--paper-2);padding:22px 24px;margin:30px 0 10px}
+.finding h2{font-family:var(--cond);font-size:21px;font-weight:700;margin:0 0 10px;
+  border:0;padding:0}
+.finding p{margin:0 0 12px;max-width:78ch}
+.finding p:last-child{margin-bottom:0}
+.evidence{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);margin:18px 0 4px}
+.evidence div{background:var(--paper-3);padding:12px 14px}
+.evidence .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-60);display:block;margin-bottom:4px}
+.evidence .v{font-family:var(--cond);font-size:21px;font-weight:700;line-height:1.1}
+.evidence .u{font-family:var(--mono);font-size:11px;color:var(--ink-35);display:block;margin-top:2px}
+
+.tw{overflow-x:auto;border:1px solid var(--rule);background:var(--paper-3);margin:16px 0 8px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:580px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--grid-fine);vertical-align:top}
+thead th{background:var(--paper-2);font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-60);font-weight:600;
+  border-bottom:1.5px solid var(--rule);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tbody tr.total td{background:var(--paper-2);font-weight:600;border-top:1.5px solid var(--rule)}
+td.num,th.num{text-align:right;font-family:var(--mono);white-space:nowrap}
+caption{caption-side:bottom;text-align:left;padding:10px 12px;font-size:12.5px;
+  color:var(--ink-60);border-top:1px solid var(--grid-fine)}
+.pick{background:#EAF4EC}
+.bad{background:#FBEDE9}
+
+.tag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;padding:2px 7px;border:1px solid currentColor;
+  border-radius:2px;font-weight:600;vertical-align:1px}
+.tag.ok{color:var(--ok);background:var(--ok-bg)}
+.tag.no{color:var(--flag);background:var(--flag-bg)}
+.tag.mid{color:var(--warn);background:var(--warn-bg)}
+
+.note{border:1px solid var(--rule);border-left:3px solid var(--seg-b);
+  background:var(--paper-2);padding:14px 18px;margin:18px 0;font-size:14px}
+.note.warn{border-left-color:var(--flag);background:var(--flag-bg)}
+.note.good{border-left-color:var(--ok);background:var(--ok-bg)}
+.note p{margin:0 0 8px}.note p:last-child{margin:0}
+.note .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;font-weight:600;display:block;margin-bottom:5px;color:var(--ink-60)}
+
+.eq{font-family:var(--mono);font-size:14px;background:var(--paper-3);
+  border:1px solid var(--rule);border-left:3px solid var(--ink);
+  padding:14px 18px;margin:14px 0;overflow-x:auto;line-height:1.95}
+.eq .c{color:var(--ink-60);font-size:12.5px}
+
+/* fichas de tienda */
+.shops{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);margin:18px 0}
+.shop{background:var(--paper-3);padding:16px 18px}
+.shop.star{background:#EAF4EC}
+.shop h3{margin:0 0 2px;font-size:18px}
+.shop .role{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-60);font-weight:600;margin-bottom:9px;display:block}
+.shop dl{margin:0;font-size:13px;display:grid;grid-template-columns:74px 1fr;gap:3px 10px}
+.shop dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-35);padding-top:2px}
+.shop dd{margin:0}
+.shop .buy{margin-top:11px;padding-top:10px;border-top:1px solid var(--grid-fine);font-size:13px}
+.shop .buy b{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-60);display:block;margin-bottom:3px}
+
+/* semaforo */
+.sem{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule);
+  border:1px solid var(--rule);margin:16px 0}
+.sem>div{background:var(--paper-3);padding:12px 16px;display:grid;
+  grid-template-columns:14px 1fr;gap:12px;align-items:start}
+.sem .dot{width:12px;height:12px;border-radius:50%;margin-top:6px}
+.sem .g{background:var(--ok)} .sem .y{background:#C99A0B} .sem .r{background:var(--flag)}
+.sem b{font-family:var(--cond);font-size:16px}
+.sem p{margin:2px 0 0;font-size:13.5px;color:var(--ink-60);max-width:none}
+
+.srcs{font-size:13.5px}
+.srcs li{margin-bottom:10px}
+.srcs .u{font-family:var(--mono);font-size:11.5px;color:var(--ink-35);
+  display:block;word-break:break-all}
+
+footer{margin-top:60px;padding-top:16px;border-top:2px solid var(--ink);
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-60);
+  display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="tagrow">
+    <span>MATHBOT · PBL 2026-2</span>
+    <span>Abastecimiento 100 % local</span>
+    <span>El Salvador</span>
+    <span>v1 · 23 ago 2026</span>
+  </div>
+  <h1>Dónde comprar el MATHBOT en El Salvador</h1>
+  <p class="deck">Tiendas reales con dirección y teléfono, qué comprar en cada una, qué
+  <em>no</em> se consigue en el país, y las tres sustituciones que hacen viable el SCARA sin
+  importar una sola pieza.</p>
+</header>
+
+<nav class="toc" aria-label="Índice">
+  <ol>
+    <li><span class="n">01</span><a href="#semaforo">Qué se consigue y qué no</a></li>
+    <li><span class="n">02</span><a href="#tiendas">Mapa de compras</a></li>
+    <li><span class="n">03</span><a href="#sustituciones">Las tres sustituciones clave</a></li>
+    <li><span class="n">04</span><a href="#recalculo">Recálculo del error con partes locales</a></li>
+    <li><span class="n">05</span><a href="#abc">SCARA vs. brazo vs. CNC bajo restricción local</a></li>
+    <li><span class="n">06</span><a href="#bom">Lista de materiales local y presupuesto</a></li>
+    <li><span class="n">07</span><a href="#guion">Guion de cotización</a></li>
+    <li><span class="n">08</span><a href="#fuentes">Fuentes y nivel de verificación</a></li>
+  </ol>
+</nav>
+
+<div class="finding">
+  <h2>Veredicto</h2>
+  <p><strong>Sí se puede construir el SCARA completo con compras 100 % locales</strong>, pero no
+  con la lista de materiales original. Los servos de bus serie STS3215 no existen en el mercado
+  salvadoreño y no hay evidencia de venta local de NEMA 17. La solución no es cambiar de
+  arquitectura: es cambiar de actuador y <strong>fabricar los dos sensores y el electroimán en vez
+  de comprarlos</strong> — lo que además convierte un problema de abastecimiento en puntos de
+  Física III.</p>
+  <p>Sobre la pregunta de si conviene irse a la opción A o a la C: <strong>la CNC (opción C) es la
+  peor de las tres para El Salvador</strong>. Depende justo de la categoría que no tiene venta
+  local confirmada —NEMA 17, drivers, guías lineales, correas GT2, perfil V-Slot— y encima
+  reprueba el requisito de servomotores y vacía el entregable de Cálculo III. El brazo
+  antropomórfico (opción A) sí es 100 % local, y usa <em>exactamente</em> las mismas piezas que el
+  SCARA local. Como el costo y el abastecimiento se empatan, la decisión vuelve a ser técnica —
+  y ahí el SCARA sigue ganando.</p>
+  <div class="evidence">
+    <div><span class="k">Costo local</span><span class="v">USD 195</span><span class="u">con impresión 3D gratis</span></div>
+    <div><span class="k">Por integrante</span><span class="v">USD 49</span><span class="u">entre 4 · sin contingencia</span></div>
+    <div><span class="k">Error esperado</span><span class="v">≈ 6,0 mm</span><span class="u">vs. 2,0 mm de la ruta importada</span></div>
+    <div><span class="k">Precisión</span><span class="v">95,4 %</span><span class="u">sigue aprobando el 90 %</span></div>
+  </div>
+</div>
+
+<div class="note warn">
+  <span class="lbl">Advertencia sobre los precios de este documento</span>
+  <p>El comercio electrónico salvadoreño de componentes está poco digitalizado: <strong>Casa Rivas,
+  Proserquisa, La Innovación y ArduStore SV no publican precios en línea</strong>, y Steren sí los
+  publica pero muestra buena parte de su línea de motores como «Agotado». Solo pude verificar
+  precios de catálogo en un puñado de artículos. <strong>Todo lo demás son estimaciones de rango</strong>
+  basadas en el margen típico centroamericano (1,5–2,5× el precio de importación). Cada renglón de
+  la lista lleva su nivel de verificación; los marcados «Llamar» hay que cotizarlos antes de cerrar
+  el presupuesto. El §07 trae el guion para hacerlo en una tarde.</p>
+</div>
+
+<!-- ═══════════════════ 01 ═══════════════════ -->
+<section id="semaforo">
+  <span class="secnum">01</span>
+  <h2>Qué se consigue y qué no</h2>
+
+  <div class="sem">
+    <div><span class="dot g"></span><div><b>Verde · confirmado en el país</b>
+      <p>Arduino UNO/Mega y clones · servos hobby (SG90, MG90S, clase MG996R) · protoboard, cables,
+      resistencias, transistores, MOSFET, diodos · fuentes conmutadas · rodamientos 608ZZ y axiales
+      (CEROSA, RODASA, REPSA) · alambre esmaltado para bobinar · perfil y ángulo de aluminio, MDF,
+      tornillería (Vidrí, Freund, EPA) · filamento PLA (Avalon Tech, Creativo 3D, Office Depot) ·
+      sensores inductivos y capacitivos industriales (Prestelectro, Intek).</p></div></div>
+    <div><span class="dot y"></span><div><b>Amarillo · probable, hay que llamar</b>
+      <p>NEMA 17 y drivers A4988/DRV8825 — no aparecen en ningún catálogo web salvadoreño, pero
+      <strong>Creativo 3D hace mantenimiento y reparación de impresoras 3D</strong>, así que casi
+      seguro tiene motores, correas GT2, varilla lisa y rodamientos lineales como repuesto.
+      Primera llamada a hacer. · Correas y poleas GT2 · varilla roscada T8 · perfil 2020 V-Slot ·
+      electroimán comercial de retención.</p></div></div>
+    <div><span class="dot r"></span><div><b>Rojo · no existe localmente</b>
+      <p>Servos de bus serie Feetech STS3215 y su placa controladora · encóders magnéticos AS5600 ·
+      servos digitales de 270° · kits SO-101. Estos hay que darlos por perdidos y rediseñar
+      alrededor, que es lo que hace el §03.</p></div></div>
+  </div>
+
+  <div class="note">
+    <span class="lbl">Detalle que ahorra dinero</span>
+    <p><strong>Casa Rivas Electrónica da 25 % de descuento a estudiantes presentando carné.</strong>
+    Es la cadena con el inventario de componentes más completo del país y tiene cuatro sucursales en
+    San Salvador. Sobre un consumo de unos 90 USD en componentes sueltos, son ~22 USD de ahorro
+    directo. Vayan con carné los cuatro.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════ 02 ═══════════════════ -->
+<section id="tiendas">
+  <span class="secnum">02</span>
+  <h2>Mapa de compras</h2>
+
+  <h3>Electrónica y componentes</h3>
+  <div class="shops">
+    <div class="shop star">
+      <h3>Casa Rivas Electrónica</h3>
+      <span class="role">Parada 1 · componentes sueltos</span>
+      <dl>
+        <dt>Matriz</dt><dd>2ª Av. Norte #312, La Praviana, frente a Lotería Nacional · 2222-1718</dd>
+        <dt>Sucursal</dt><dd>Terrazas, 29 Calle Oriente · 2235-1870</dd>
+        <dt>Sucursal</dt><dd>Metrosur, Blvd. de los Héroes · 2260-4840</dd>
+        <dt>Sucursal</dt><dd>Blvd. Venezuela, zona industrial</dd>
+        <dt>WhatsApp</dt><dd>+503 6836-5980</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>MOSFET IRLZ44N, diodos 1N4007, resistencias,
+      capacitores, protoboard, cable, borneras, LEDs, servos hobby, placas Arduino y shields.
+      <strong>25 % de descuento con carné estudiantil.</strong></div>
+    </div>
+
+    <div class="shop">
+      <h3>Proserquisa</h3>
+      <span class="role">Proveedor educativo · cotización institucional</span>
+      <dl>
+        <dt>Dirección</dt><dd>Reparto y Calle Los Héroes #26-A, San Salvador</dd>
+        <dt>Teléfono</dt><dd>2273-2018 · 2273-4770</dd>
+        <dt>Web</dt><dd>proserquisa.com</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Arduino UNO / Mega 2560 / Nano (genéricos y originales),
+      motor shield, kits de robótica, breadboard. Llevan 30 años vendiendo a universidades: pidan
+      cotización a nombre de la universidad, suele salir mejor que el precio de mostrador.</div>
+    </div>
+
+    <div class="shop">
+      <h3>Electrónica 2001</h3>
+      <span class="role">Cadena · varias sucursales</span>
+      <dl>
+        <dt>Calle Arce</dt><dd>Calle Arce #635, San Salvador</dd>
+        <dt>Teléfono</dt><dd>2133-2001 · 2523-2001</dd>
+        <dt>Horario</dt><dd>L–V 8:00–17:30 · S 8:00–16:00</dd>
+        <dt>Web</dt><dd>electronica2001es.com</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Kits de Arduino, línea de robótica, repuestos
+      electrónicos. Envían a toda Centroamérica, útil si alguien del equipo no está en San
+      Salvador.</div>
+    </div>
+
+    <div class="shop">
+      <h3>Steren El Salvador</h3>
+      <span class="role">Único con precios públicos en línea</span>
+      <dl>
+        <dt>Web</dt><dd>steren.com.sv · tienda en línea con precios</dd>
+        <dt>WhatsApp</dt><dd>+503 7876-4626</dd>
+        <dt>Horario</dt><dd>L–V 8:00–18:30 · S 9:00–17:00</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Alambre magneto 28 AWG (para el electroimán),
+      L298N (ARD-341, USD 7,49), tarjeta ULN2003 (ARD-300, USD 1,99), L293D (USD 1,25), micro
+      servos, protoboard. <strong>Verificar existencias:</strong> gran parte de la línea de
+      motores aparece agotada.</div>
+    </div>
+
+    <div class="shop">
+      <h3>La Innovación · El Surtidor Electrónico</h3>
+      <span class="role">Centro de San Salvador · respaldo</span>
+      <dl>
+        <dt>Zona</dt><dd>Centro de San Salvador (sin catálogo web)</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Circuitos integrados, sensores, herramienta de
+      soldadura, conectores. Precios competitivos. Útiles cuando Casa Rivas no tenga algo.</div>
+    </div>
+
+    <div class="shop">
+      <h3>ArduStore SV</h3>
+      <span class="role">Tienda en línea · redes sociales</span>
+      <dl>
+        <dt>Facebook</dt><dd>@ardustore.sv</dd>
+        <dt>Instagram</dt><dd>@arduinostore.sv</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Módulos para Arduino y robótica. Pedidos por mensaje
+      directo. Buena opción para módulos específicos que las tiendas físicas no tengan.</div>
+    </div>
+  </div>
+
+  <h3>Rodamientos</h3>
+  <div class="shops">
+    <div class="shop star">
+      <h3>CEROSA · Central de Rodamientos</h3>
+      <span class="role">Parada 2 · juntas del brazo</span>
+      <dl>
+        <dt>Dirección</dt><dd>Blvd. Venezuela #3077, San Salvador</dd>
+        <dt>Marcas</dt><dd>NTN, Timken, INA, FAG, Stieber, DODGE</dd>
+        <dt>Web</dt><dd>cerosa.com</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>608ZZ (×6–8) para hombro y codo, rodamiento axial
+      51105 o similar para el hombro. Tienen sala de ventas con asesoría: lleven el dibujo de la
+      junta y pidan recomendación de precarga.</div>
+    </div>
+    <div class="shop">
+      <h3>RODASA · REPSA · Proveedora de Rodamientos</h3>
+      <span class="role">Alternativas</span>
+      <dl>
+        <dt>RODASA</dt><dd>San Salvador · rodamientos, retenedores, chumaceras</dd>
+        <dt>REPSA</dt><dd>Distribuidor exclusivo KOYO en el país</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Lo mismo que CEROSA. Cotizar en dos para comparar:
+      en rodamientos el diferencial de precio entre distribuidores es grande.</div>
+    </div>
+  </div>
+
+  <h3>Estructura, ferretería y MDF</h3>
+  <div class="shops">
+    <div class="shop">
+      <h3>Almacenes Vidrí</h3>
+      <span class="role">Catálogo en línea con precios · entrega en 2 h</span>
+      <dl>
+        <dt>Web</dt><dd>vidri.com.sv · compra en línea</dd>
+        <dt>Entrega</dt><dd>Retiro en 2 horas o domicilio nacional</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Tabla MDF para la base, ángulo y perfil de aluminio
+      para los eslabones, tornillería M3/M4, <strong>alambre esmaltado #26 (0,40 mm)</strong> para
+      bobinar el electroimán y la bobina del sensor inductivo.</div>
+    </div>
+    <div class="shop">
+      <h3>Ferretería Freund · EPA</h3>
+      <span class="role">Alternativas de ferretería</span>
+      <dl>
+        <dt>Freund</dt><dd>freundferreteria.com · sección Perfiles</dd>
+        <dt>EPA</dt><dd>sv.epaenlinea.com</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Perfiles de aluminio, láminas, tornillería, cable de
+      acero delgado para la transmisión por cabrestante, herramienta.</div>
+    </div>
+  </div>
+
+  <h3>Impresión 3D y filamento</h3>
+  <div class="shops">
+    <div class="shop star">
+      <h3>Creativo 3D</h3>
+      <span class="role">Llamada prioritaria · posible fuente de NEMA 17</span>
+      <dl>
+        <dt>Pedidos</dt><dd>+503 7718-6482</dd>
+        <dt>Consultas</dt><dd>+503 7235-4757</dd>
+        <dt>Soporte</dt><dd>+503 7068-9972</dd>
+        <dt>Redes</dt><dd>FB Creativo3d.sv · IG @creativo3d_sv</dd>
+      </dl>
+      <div class="buy"><b>Preguntar aquí</b>Venden impresoras 3D, cortadoras láser y routers CNC,
+      y <strong>hacen mantenimiento y reparación de impresoras</strong>. Si alguien en el país
+      tiene NEMA 17, correas GT2, varilla lisa de 8 mm, LM8UU y husillos T8 en stock como repuesto,
+      son ellos. Es la llamada que decide si la ruta de steppers es viable.</div>
+    </div>
+    <div class="shop">
+      <h3>Avalon Tech</h3>
+      <span class="role">Filamento y servicio de impresión</span>
+      <dl>
+        <dt>Web</dt><dd>avalontechsv.com · avalon.com.sv</dd>
+        <dt>Entrega</dt><dd>Envíos a domicilio a nivel nacional</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Filamento PLA. Respaldo de impresión FDM si se pasan
+      de la cuota de la universidad o si una pieza grande no cabe en el horario del laboratorio.</div>
+    </div>
+    <div class="shop">
+      <h3>Office Depot El Salvador</h3>
+      <span class="role">Respaldo de filamento</span>
+      <dl>
+        <dt>Web</dt><dd>officedepot.com.sv · sección impresoras 3D</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Filamento PLA de emergencia. Más caro, pero abren fin
+      de semana y tienen sucursales en centros comerciales.</div>
+    </div>
+  </div>
+
+  <h3>Sensores industriales</h3>
+  <div class="shops">
+    <div class="shop">
+      <h3>Prestelectro (Prestegard Electro)</h3>
+      <span class="role">Sensores inductivos y capacitivos</span>
+      <dl>
+        <dt>Teléfono</dt><dd>+503 2222-1212 · +503 2297-9800</dd>
+        <dt>Marcas</dt><dd>Schmersal, Eaton, Wenglor</dd>
+        <dt>Web</dt><dd>prestelectro.com/catalogo/sensores</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Sensor inductivo (IFL 2-12-10, E57P-12SPN4-C2) y
+      capacitivo. <strong>Precio industrial:</strong> esperen 25–60 USD por sensor, no los 5 USD
+      del LJ12A3 chino. Por eso el §03 recomienda fabricarlos.</div>
+    </div>
+    <div class="shop">
+      <h3>Intek El Salvador</h3>
+      <span class="role">Control industrial · Rockwell</span>
+      <dl>
+        <dt>Dirección</dt><dd>Calle Gabriela Mistral #373, entre Blvd. Los Héroes y 33 Av. Norte</dd>
+        <dt>Teléfono</dt><dd>+503 2260-8888</dd>
+        <dt>WhatsApp</dt><dd>+503 7737-6426</dd>
+      </dl>
+      <div class="buy"><b>Comprar aquí</b>Sensores de proximidad inductivos Rockwell. Misma
+      advertencia de precio industrial. Está a pocas cuadras de Casa Rivas Metrosur: se pueden
+      visitar el mismo día.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 03 ═══════════════════ -->
+<section id="sustituciones">
+  <span class="secnum">03</span>
+  <h2>Las tres sustituciones clave</h2>
+
+  <p>Cada una reemplaza una pieza que no se consigue en el país. Las tres tienen algo en común:
+  <strong>suben la nota de Física III en vez de bajarla</strong>, porque cambian una caja negra
+  comprada por un dispositivo que el equipo diseñó, midió y puede explicar.</p>
+
+  <h3>1 · STS3215 → servo hobby con reducción por cabrestante</h3>
+  <p>Sin servos de bus serie, la resolución tiene que salir de la mecánica. La reducción divide la
+  zona muerta del servo <em>y</em> multiplica el torque. La pregunta es cómo hacer la reducción, y
+  aquí la respuesta cambia respecto de la ruta importada:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Tipo de reducción</th><th>Backlash</th><th>Piezas</th><th>Veredicto local</th></tr></thead>
+    <tbody>
+      <tr><td>Engranes impresos en 3D</td><td class="num">0,3–0,8°</td><td>Solo filamento</td>
+        <td><span class="tag mid">Regular</span> Gratis, pero el juego entre dientes aparece <em>a la salida</em> y no se divide entre N. Añade ~3 mm de error.</td></tr>
+      <tr><td>Correa GT2</td><td class="num">≈ 0°</td><td>Correa y poleas</td>
+        <td><span class="tag mid">Depende</span> Excelente, pero la correa GT2 es justo lo que no está confirmado localmente.</td></tr>
+      <tr class="pick"><td><strong>Cabrestante de cable</strong><br><span class="small">cable de acero fino sobre tambor impreso</span></td><td class="num">0° real</td><td>Cable de ferretería + piezas impresas</td>
+        <td><span class="tag ok">Recomendado</span> Sin juego por construcción, cable de acero delgado en Vidrí o Freund, tambor y sector impresos gratis. Es lo que usan los brazos de investigación de bajo costo.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>El cabrestante se pretensa con un tornillo tensor y transmite por fricción de enrollado, así
+  que no hay dientes que se separen. Costo real: unos 6 USD de cable para todo el brazo.</p>
+
+  <h3>2 · Sensores industriales → sensores construidos</h3>
+  <p>Un sensor inductivo Schmersal o Rockwell cuesta 25–60 USD en El Salvador. Los dos sensores
+  serían 50–120 USD, entre un cuarto y la mitad del presupuesto total. Construirlos cuesta unos
+  8 USD y es explícitamente lo que evalúa el enunciado.</p>
+
+  <div class="eq">
+<strong>Capacitivo</strong> — dos placas de cobre + librería <code>CapacitiveSensor</code><br>
+<span class="c">Mide el tiempo de carga de un RC. C = ε₀·ε_r·A/d → el objeto desplaza el tiempo de carga.</span><br>
+<span class="c">Permite levantar la curva C vs. distancia por material y contrastarla con la teoría.</span><br><br>
+<strong>Inductivo</strong> — bobina de alambre esmaltado + oscilador LC<br>
+<span class="c">f = 1/(2π√(LC)). El metal cercano induce corrientes de Foucault, cambia L y corre f.</span><br>
+<span class="c">El Arduino cuenta la frecuencia; el corrimiento discrimina metal de no metal.</span><br>
+<span class="c">Materiales: alambre esmaltado #26 (Vidrí) y capacitores (Casa Rivas). ≈ 5 USD.</span>
+  </div>
+
+  <div class="note good">
+    <span class="lbl">Por qué esto es una ventaja y no un parche</span>
+    <p>El entregable I de Física III pide relacionar «los principios de Electricidad y Magnetismo
+    con el diseño y operación del sensor capacitivo». Con un sensor comprado, lo único que se puede
+    presentar es la hoja de datos del fabricante. Con uno construido, se presentan curvas medidas,
+    el ajuste contra <code>C = ε₀ε_rA/d</code> y el análisis de por qué las corrientes de Foucault
+    hacen selectivo al inductivo. Es el mismo trabajo que ya había que explicar, pero con evidencia
+    propia.</p>
+  </div>
+
+  <h3>3 · Electroimán comercial → electroimán bobinado</h3>
+  <p>No encontré ningún vendedor salvadoreño de electroimanes de retención. Pero un electroimán es
+  un tornillo de acero y alambre esmaltado, y ambos están en Vidrí. Se necesitan unos 0,687 N para
+  los 70 g; con factor de seguridad 3 y el derateo de 5× por contacto imperfecto, hace falta una
+  retención nominal de ~10,5 N.</p>
+  <div class="eq">
+F = B²·A / (2·μ₀)      con B = μ₀·N·I / ℓ<sub>circuito</sub><br>
+<span class="c">Núcleo: tornillo de acero de 3/8" · ~400 vueltas de alambre #26 · 12 V, ~0,5 A</span><br>
+<span class="c">Costo: tornillo 0,50 USD + carrete de alambre 8 USD (sobra para el sensor inductivo)</span><br>
+<span class="c">El número de amperevueltas N·I se vuelve variable de diseño medible, no un dato de catálogo.</span>
+  </div>
+  <p>Mismo circuito de accionamiento que en la ruta importada: MOSFET IRLZ44N, resistencia de
+  puerta, pull-down y <strong>diodo flyback 1N4007</strong>. Todo en Casa Rivas por unos 4 USD.</p>
+
+  <div class="note warn">
+    <span class="lbl">Sigue pendiente</span>
+    <p>El electroimán bobinado tiene la misma limitación física que el comprado: <strong>solo
+    levanta materiales ferromagnéticos</strong>. Si el objeto de 70 g resulta ser de aluminio, no
+    sirve ninguno de los dos. Confirmarlo con el docente sigue siendo la tarea más urgente y más
+    barata del proyecto.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════ 04 ═══════════════════ -->
+<section id="recalculo">
+  <span class="secnum">04</span>
+  <h2>Recálculo del error con partes locales</h2>
+
+  <p>Con servos hobby, la reducción no puede ser arbitraria: <strong>divide la zona muerta pero
+  también divide el recorrido</strong>. Un servo de 180° con reducción 4:1 solo entrega 45° en la
+  junta. Así que el límite superior de la reducción lo fija el barrido articular que exige la
+  trayectoria.</p>
+
+  <div class="eq">
+<span class="c">Barrido articular sobre la rosa, con L₁ = L₂ = 20 cm y D = 22 cm:</span><br>
+θ₁ recorre <strong>72,2°</strong>   ·   θ₂ recorre <strong>53,4°</strong><br><br>
+<span class="c">Con 170° de recorrido útil de servo:</span><br>
+N₁ ≤ 170 / 72,2 = <strong>2,35:1</strong>      N₂ ≤ 170 / 53,4 = <strong>3,18:1</strong><br><br>
+<span class="c">Elegidas, con margen:  N₁ = 2:1  (usa 144° del servo, 85 %)</span><br>
+<span class="c">                       N₂ = 3:1  (usa 160° del servo, 94 %)</span>
+  </div>
+
+  <p>Las dos juntas llevan <strong>reducciones distintas</strong> porque barren ángulos distintos.
+  Es un detalle que se pierde si se copia un diseño de internet, y regala un 35 % de precisión
+  extra en el codo.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Zona muerta del servo</th><th class="num">Error de servo</th><th>Comentario</th></tr></thead>
+    <tbody>
+      <tr><td>0,9° (dato de hoja MG996R)</td><td class="num">3,44 mm</td><td>Mejor caso, servo bueno y bien alimentado</td></tr>
+      <tr class="pick"><td><strong>1,5° (realista)</strong></td><td class="num"><strong>5,73 mm</strong></td><td>Valor de diseño recomendado</td></tr>
+      <tr><td>2,0° (servo genérico gastado)</td><td class="num">7,64 mm</td><td>Todavía por debajo del criterio de 13,2 mm</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Fuente de error</th><th class="num">Ruta importada</th><th class="num">Ruta local</th></tr></thead>
+    <tbody>
+      <tr><td>Discretización (15 pt/pétalo)</td><td class="num">0,56 mm</td><td class="num">0,56 mm</td></tr>
+      <tr><td>Actuador</td><td class="num">0,77 mm</td><td class="num">5,73 mm</td></tr>
+      <tr><td>Backlash de transmisión</td><td class="num">0,80 mm</td><td class="num">1,20 mm</td></tr>
+      <tr><td>Flexión de eslabones</td><td class="num">0,80 mm</td><td class="num">0,80 mm</td></tr>
+      <tr><td>Calibración del origen</td><td class="num">1,20 mm</td><td class="num">1,20 mm</td></tr>
+      <tr class="total"><td>Total RSS</td><td class="num">1,99 mm</td><td class="num">6,05 mm</td></tr>
+      <tr class="total"><td>Precisión resultante</td><td class="num">98,5 %</td><td class="num">95,4 %</td></tr>
+      <tr class="total"><td>Margen sobre el criterio (13,2 mm)</td><td class="num">6,6×</td><td class="num">2,2×</td></tr>
+    </tbody>
+    <caption>La ruta local es tres veces peor y aun así aprueba con más del doble de margen. Si en
+    vez de cabrestante se usan engranes impresos, el total sube a 6,65 mm y la precisión baja a
+    94,9 %: sigue aprobando, pero se pierde casi todo el margen de maniobra.</caption>
+  </table>
+  </div>
+
+  <div class="note">
+    <span class="lbl">Hallazgo que evita perder tiempo</span>
+    <p>Barrí la geometría completa —L de 14 a 30 cm, D de 14 a 38 cm— buscando la combinación que
+    minimiza el error bajo esta restricción. El óptimo (L = 30, D = 38) da 4,74 mm frente a los
+    5,54 mm de la configuración compacta: <strong>una mejora de apenas 15 %, a cambio de una mesa
+    de 80 × 60 cm en vez de 60 × 50</strong>. La razón es que alejar la base reduce el barrido
+    articular —y permite más reducción— pero alarga el brazo y amplifica más cada grado de error.
+    Los dos efectos casi se cancelan. <strong>No vale la pena optimizar la geometría: quédense con
+    L = 20 cm y D = 22 cm.</strong> El error lo domina el servo, no las dimensiones.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════ 05 ═══════════════════ -->
+<section id="abc">
+  <span class="secnum">05</span>
+  <h2>SCARA vs. brazo vs. CNC bajo restricción local</h2>
+
+  <p>Esta es la comparación que pediste: cuál de las tres mejores propuestas se consigue completa
+  en El Salvador.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr>
+      <th></th><th>B · SCARA local</th><th>A · Brazo antropomórfico</th><th>C · CNC cartesiana</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>Actuadores</td>
+        <td>4 servos hobby <span class="tag ok">Local</span></td>
+        <td>6 servos hobby <span class="tag ok">Local</span></td>
+        <td>3 NEMA 17 + drivers <span class="tag no">Sin confirmar</span></td></tr>
+      <tr><td>Estructura</td>
+        <td>Impresión 3D + ángulo de aluminio <span class="tag ok">Local</span></td>
+        <td>Impresión 3D <span class="tag ok">Local</span></td>
+        <td>Perfil V-Slot 2020 <span class="tag no">Sin confirmar</span></td></tr>
+      <tr><td>Movimiento</td>
+        <td>Rodamientos 608ZZ + cabrestante <span class="tag ok">Local</span></td>
+        <td>Directo sobre servos <span class="tag ok">Local</span></td>
+        <td>Ruedas Delrin, GT2, guías <span class="tag no">Sin confirmar</span></td></tr>
+      <tr><td>Piezas que hay que importar</td>
+        <td class="num">0</td><td class="num">0</td><td class="num">La mayoría</td></tr>
+      <tr><td>Costo local estimado</td>
+        <td class="num">USD 195</td><td class="num">USD 180</td><td class="num">USD 400+</td></tr>
+      <tr><td>Error de trazo</td>
+        <td class="num">6,0 mm</td><td class="num">10–20 mm</td><td class="num">0,1–0,5 mm</td></tr>
+      <tr><td>Precisión</td>
+        <td class="num">95,4 %</td><td class="num">85–92 %</td><td class="num">99,8 %</td></tr>
+      <tr><td>R1 · servomotores verificables</td>
+        <td><span class="tag ok">Sí</span></td><td><span class="tag ok">Sí</span></td><td><span class="tag no">No</span></td></tr>
+      <tr><td>R6 · cinemática no trivial</td>
+        <td><span class="tag ok">Sí</span></td><td><span class="tag ok">Sí</span></td><td><span class="tag no">Trivial</span></td></tr>
+      <tr class="pick"><td><strong>Veredicto</strong></td>
+        <td><strong>Elegir esta</strong></td>
+        <td>Viable, menos preciso</td>
+        <td class="bad">Descartar</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Por qué la CNC queda descartada dos veces</h3>
+  <p>Ya estaba descartada por el rubro: cinemática inversa trivial, steppers en lazo abierto, no es
+  un brazo. La restricción local la elimina otra vez y por una razón independiente:
+  <strong>depende justo de la categoría de piezas que no tiene venta minorista confirmada en el
+  país</strong>. Además, es la opción más cara y la única que requeriría importar. Es la peor de
+  las tres para este contexto por márgenes amplios.</p>
+
+  <h3>Por qué el brazo antropomórfico no gana aunque empate en abastecimiento</h3>
+  <p>La opción A usa exactamente la misma canasta de compras que el SCARA local: servos hobby,
+  Arduino, impresión 3D, tornillería. En abastecimiento están empatados y en costo el brazo sale
+  ~15 USD más barato. Pero con servos hobby en accionamiento directo el error va de 10 a 20 mm —
+  <strong>rozando o cruzando el umbral de 13,2 mm</strong>— porque la gravedad carga hombro y codo
+  durante todo el trazo y el error cambia con la postura.</p>
+  <p>Y no se arregla fácil: aplicarle la misma reducción por cabrestante a un brazo antropomórfico
+  significa reducir juntas <em>que además soportan el peso</em>, lo que exige tambores más grandes
+  y sube la masa en voladizo. En el SCARA la reducción solo pelea contra inercia y fricción. Esa es
+  la misma ventaja física del documento anterior, y bajo restricción local <strong>pesa más, no
+  menos</strong>: cuando el actuador es malo, la arquitectura que no lo castiga vale más.</p>
+
+  <div class="note good">
+    <span class="lbl">Respuesta directa</span>
+    <p><strong>Sigan con el SCARA.</strong> No hace falta bajarse a la opción A ni a la C. La única
+    pieza verdaderamente irremplazable de la lista original era el servo de bus serie, y la
+    reducción por cabrestante recupera la mayor parte de su ventaja con cable de ferretería y
+    piezas impresas gratis. Si al llamar a Creativo 3D resulta que sí tienen NEMA 17 y correas GT2
+    en stock, se puede subir a la ruta de alta precisión sin cambiar nada de la geometría — pero no
+    es necesario para aprobar.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════ 06 ═══════════════════ -->
+<section id="bom">
+  <span class="secnum">06</span>
+  <h2>Lista de materiales local y presupuesto</h2>
+
+  <p>Supone impresión 3D gratuita en la universidad y compra de un rollo de PLA como respaldo.
+  El Salvador usa el dólar, así que no hay conversión: los precios son directos.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Componente</th><th class="num">Cant.</th><th class="num">USD</th><th>Dónde</th><th>Verificación</th></tr></thead>
+    <tbody>
+      <tr><td>Servo metálico clase MG996R (θ₁, θ₂)</td><td class="num">2</td><td class="num">20</td><td>Casa Rivas · Proserquisa</td><td><span class="tag mid">Llamar</span></td></tr>
+      <tr><td>Servo MG90S (eje Z, torreta, pinza)</td><td class="num">3</td><td class="num">18</td><td>Casa Rivas</td><td><span class="tag mid">Llamar</span></td></tr>
+      <tr><td>Arduino Mega 2560 genérico</td><td class="num">1</td><td class="num">22</td><td>Proserquisa · Casa Rivas</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr><td>Fuente conmutada 12 V 5 A</td><td class="num">1</td><td class="num">18</td><td>Casa Rivas · Steren</td><td><span class="tag mid">Llamar</span></td></tr>
+      <tr><td>Rodamiento 608ZZ</td><td class="num">8</td><td class="num">16</td><td>CEROSA · RODASA</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr><td>Rodamiento axial 51105</td><td class="num">1</td><td class="num">10</td><td>CEROSA</td><td><span class="tag mid">Llamar</span></td></tr>
+      <tr><td>Ángulo de aluminio 1" × 1/8" × 6'</td><td class="num">2</td><td class="num">22</td><td>Vidrí · Freund</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr><td>Tabla MDF 15 mm 60 × 50 cm</td><td class="num">1</td><td class="num">16</td><td>Vidrí</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr><td>Cable de acero fino + tensores (cabrestante)</td><td class="num">1</td><td class="num">7</td><td>Vidrí · Freund</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr><td>Tornillería M3/M4, tuercas, arandelas</td><td class="num">1</td><td class="num">15</td><td>Vidrí · Freund</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr><td>Alambre esmaltado #26 (electroimán + bobina)</td><td class="num">1</td><td class="num">9</td><td>Vidrí · Steren</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr><td>Tornillo de acero 3/8" (núcleo)</td><td class="num">1</td><td class="num">1</td><td>Vidrí</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr><td>Lámina de cobre / placa fenólica (sensor capacitivo)</td><td class="num">1</td><td class="num">6</td><td>Casa Rivas</td><td><span class="tag mid">Llamar</span></td></tr>
+      <tr><td>MOSFET IRLZ44N, 1N4007, resistencias, capacitores</td><td class="num">1</td><td class="num">8</td><td>Casa Rivas</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr><td>Protoboard, cable, borneras, conectores</td><td class="num">1</td><td class="num">16</td><td>Casa Rivas · Steren</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr><td>Paro de emergencia, portafusible, cable de red</td><td class="num">1</td><td class="num">12</td><td>Vidrí · Casa Rivas</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr><td>Filamento PLA 1 kg (respaldo de cuota)</td><td class="num">1</td><td class="num">25</td><td>Avalon Tech · Creativo 3D</td><td><span class="tag ok">Confirmado</span></td></tr>
+      <tr class="total"><td colspan="2">Subtotal a precio de lista</td><td class="num">241</td><td colspan="2"></td></tr>
+      <tr class="total"><td colspan="2">Con 25 % de descuento estudiantil en Casa Rivas (~90 USD)</td><td class="num">219</td><td colspan="2">Llevar carné</td></tr>
+      <tr class="total"><td colspan="2">Estimado realista de cierre</td><td class="num">195</td><td colspan="2">Cotizando en dos proveedores por rubro</td></tr>
+      <tr class="total"><td colspan="2">Con 15 % de contingencia</td><td class="num">225</td><td colspan="2">≈ <strong>USD 56 por integrante</strong></td></tr>
+    </tbody>
+    <caption>Impresión 3D valorada en 0 USD (universidad). Sin herramienta: se asume acceso al
+    laboratorio. Los sensores comerciales quedaron fuera a propósito — construirlos ahorra entre
+    50 y 120 USD.</caption>
+  </table>
+  </div>
+
+  <div class="note">
+    <span class="lbl">Comparación con la ruta importada</span>
+    <p>USD 305 importando frente a <strong>USD 225 comprando local</strong>, con impresión gratis.
+    Sale más barato y llega en días en vez de semanas, a cambio de pasar de 98,5 % a 95,4 % de
+    precisión. Para un umbral de aprobación del 90 %, el intercambio es claramente favorable.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════ 07 ═══════════════════ -->
+<section id="guion">
+  <span class="secnum">07</span>
+  <h2>Guion de cotización</h2>
+
+  <p>Como los precios locales no están en línea, hay que levantarlos por teléfono. Esto se hace en
+  una tarde repartiéndose las llamadas entre los cuatro.</p>
+
+  <h4>Orden de llamadas, por impacto</h4>
+  <ol>
+    <li><strong>Creativo 3D · 7718-6482.</strong> «¿Manejan repuestos de impresora 3D para venta:
+    motores NEMA 17, correa GT2 con poleas, varilla lisa de 8 mm, rodamientos LM8UU, husillo T8?»
+    Esta respuesta decide si la ruta de alta precisión existe en el país. Preguntar aunque no se
+    vaya a usar: cambia el plan B.</li>
+    <li><strong>Casa Rivas · WhatsApp 6836-5980.</strong> Pedir precio con descuento estudiantil de:
+    servo metálico 15 kg·cm, MG90S, IRLZ44N, 1N4007, protoboard, cable dupont, borneras. Confirmar
+    que el descuento aplica sobre el total.</li>
+    <li><strong>Proserquisa · 2273-2018.</strong> Pedir cotización formal a nombre de la
+    universidad para Arduino Mega 2560 y servos. Mencionar que es para un proyecto académico.</li>
+    <li><strong>CEROSA · Blvd. Venezuela #3077.</strong> 608ZZ por unidad y axial 51105. Ir en
+    persona con el dibujo de la junta.</li>
+    <li><strong>Vidrí · vidri.com.sv.</strong> Se cotiza en línea sin llamar: MDF, ángulo de
+    aluminio, alambre esmaltado #26, tornillería, cable de acero.</li>
+  </ol>
+
+  <h4>Preguntas que hay que hacer siempre</h4>
+  <ul>
+    <li>¿Tienen <em>existencia física hoy</em>, o es sobre pedido? Steren muestra artículos en
+    catálogo que están agotados.</li>
+    <li>Si es sobre pedido, ¿cuántos días? Cualquier cosa arriba de tres semanas mata el
+    cronograma.</li>
+    <li>¿Hay precio por volumen si se llevan 4 o 6 unidades?</li>
+    <li>Del servo: ¿qué torque exacto y a qué voltaje? «MG996R» genérico varía mucho entre lotes.</li>
+  </ul>
+
+  <div class="note warn">
+    <span class="lbl">Compren los servos primero</span>
+    <p>Es la única pieza cuyo desempeño real no se puede predecir del catálogo y de la que depende
+    todo el presupuesto de error. <strong>Compren dos de sobra</strong> y midan la zona muerta real
+    antes de diseñar los tambores del cabrestante: si resulta ser de 2° en vez de 1,5°, conviene
+    saberlo en la semana 2 y no en la 12. Medirla es un experimento de veinte minutos —barrido de
+    microsegundos contra posición medida— y es evidencia directa para el entregable de Física III.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════ 08 ═══════════════════ -->
+<section id="fuentes">
+  <span class="secnum">08</span>
+  <h2>Fuentes y nivel de verificación</h2>
+
+  <h4>Confirmado en catálogo o sitio oficial</h4>
+  <ul class="srcs">
+    <li><strong>Casa Rivas Electrónica</strong> — inventario de componentes, 25 % de descuento
+    estudiantil con carné, cuatro sucursales en San Salvador.
+    <span class="u">casarivas.com</span></li>
+    <li><strong>Steren El Salvador</strong> — único con precios públicos verificables: L298N
+    (ARD-341) USD 7,49 · ULN2003 (ARD-300) USD 1,99 · L293D USD 1,25 · motorreductor (MOT-120)
+    USD 2,49 · alambre magneto 28 AWG. Varios artículos marcados «Agotado».
+    <span class="u">steren.com.sv</span></li>
+    <li><strong>Proserquisa</strong> — Reparto y Calle Los Héroes #26-A, 2273-2018 / 2273-4770.
+    Proveedor de laboratorios universitarios desde 1993. Catálogo de Arduino y robótica sin precios
+    públicos.
+    <span class="u">proserquisa.com</span></li>
+    <li><strong>Electrónica 2001</strong> — Calle Arce #635, 2133-2001. L–V 8:00–17:30.
+    <span class="u">electronica2001es.com</span></li>
+    <li><strong>CEROSA / Central de Rodamientos</strong> — Blvd. Venezuela #3077. NTN, Timken, INA,
+    FAG. <span class="u">cerosa.com</span></li>
+    <li><strong>Prestelectro (Prestegard Electro S.A. de C.V.)</strong> — 2222-1212 / 2297-9800.
+    Sensores inductivos y capacitivos Schmersal, Eaton, Wenglor. Sin precios públicos.
+    <span class="u">prestelectro.com/catalogo/sensores</span></li>
+    <li><strong>Intek El Salvador</strong> — Calle Gabriela Mistral #373, 2260-8888, WhatsApp
+    7737-6426. Sensores Rockwell.
+    <span class="u">intek-ca.com.sv</span></li>
+    <li><strong>Creativo 3D</strong> — 7718-6482 / 7235-4757 / 7068-9972. Impresoras 3D, láser,
+    router CNC, filamento, mantenimiento y reparación.
+    <span class="u">creativo3d.com.sv</span></li>
+    <li><strong>Avalon Tech</strong> — filamento PLA y servicio de impresión FDM con envío nacional.
+    <span class="u">avalontechsv.com</span></li>
+    <li><strong>Vidrí</strong> — MDF, perfiles, tornillería, alambre esmaltado #26 (0,40 mm).
+    Retiro en 2 horas o entrega a domicilio.
+    <span class="u">vidri.com.sv</span></li>
+    <li><strong>Freund · EPA</strong> — perfiles de aluminio, láminas, ferretería general.
+    <span class="u">freundferreteria.com · sv.epaenlinea.com</span></li>
+  </ul>
+
+  <h4>Mencionado por directorios, sin sitio propio verificable</h4>
+  <ul class="srcs">
+    <li><strong>La Innovación</strong> — componentes para aficionados y profesionales, centro de
+    San Salvador. Sin dirección exacta publicada.</li>
+    <li><strong>HobbyElectro · El Surtidor Electrónico</strong> — componentes y kits de robótica.</li>
+    <li><strong>Electrónica Universal</strong> — Santa Ana. Componentes y robótica.
+    <span class="u">electronicauniversalsv.com</span></li>
+    <li><strong>ArduStore SV</strong> — tienda en línea vía Facebook @ardustore.sv e Instagram
+    @arduinostore.sv. Módulos para Arduino.</li>
+  </ul>
+
+  <h4>Buscado y no encontrado en El Salvador</h4>
+  <ul class="srcs">
+    <li><strong>Feetech STS3215</strong> y placas de bus serie · <strong>encóders AS5600</strong> ·
+    <strong>kits SO-101</strong> — ningún distribuidor local. Descartados.</li>
+    <li><strong>NEMA 17 y drivers A4988 / DRV8825</strong> — sin catálogo web salvadoreño que los
+    liste. Probable vía repuestos de impresora 3D; verificar con Creativo 3D.</li>
+    <li><strong>Electroimanes de retención</strong> — ningún vendedor local encontrado. De ahí la
+    recomendación de bobinarlo.</li>
+  </ul>
+
+  <div class="note">
+    <span class="lbl">Cálculos propios</span>
+    <p>El barrido articular (θ₁ 72,2°, θ₂ 53,4°), los límites de reducción 2,35:1 y 3,18:1, el
+    error de 5,73 mm con zona muerta de 1,5° y el barrido de optimización sobre L de 14–30 cm y D
+    de 14–38 cm se calcularon para este documento sobre la parametrización del repositorio,
+    evaluada en 1 201 puntos de <code>t ∈ [0, π]</code>.</p>
+  </div>
+</section>
+
+<footer>
+  <span>MATHBOT · Abastecimiento El Salvador · v1</span>
+  <span>Precios estimados — cotizar antes de cerrar presupuesto</span>
+</footer>
+
+</div>
+</body>
+</html>
