@@ -203,8 +203,8 @@ footer{margin-top:60px;padding-top:16px;border-top:2px solid var(--ink);
   </div>
   <h1>Cómo construir el MATHBOT</h1>
   <p class="deck">Arquitecturas candidatas, presupuesto de error, lista de materiales y costo.
-  Seis rutas de construcción comparadas contra los requisitos reales del PBL —
-  no contra lo que se ve bien en un video.</p>
+  Seis rutas de construcción comparadas contra los requisitos reales del PBL.
+  No contra lo que se ve bien en un video.</p>
 </header>
 
 <nav class="toc" aria-label="Índice">
@@ -231,7 +231,7 @@ footer{margin-top:60px;padding-top:16px;border-top:2px solid var(--ink);
   (θ₁ y θ₂ horizontales, eje Z vertical), con eslabones de 20 cm y la base a 22 cm del centro
   de la rosa. Es la única arquitectura que gana en los tres frentes a la vez: la tarea es
   <em>plana</em> y el SCARA es la máquina plana por definición; la gravedad no carga las
-  articulaciones que dibujan; y la cinemática inversa tiene forma cerrada con dos ramas —
+  articulaciones que dibujan; y la cinemática inversa tiene forma cerrada con dos ramas:
   material matemático real para Cálculo III, no un ejercicio decorativo.</p>
   <p>La decisión crítica <strong>no es la geometría sino el actuador</strong>. Con servos hobby
   MG996R en accionamiento directo, el error de trazo llega a <strong>8,7 mm por cada grado</strong>
@@ -388,7 +388,7 @@ x(t) = −A·cos(3t)·cos(t)        y(t) = −A·k·cos(3t)·sin(t)        t ∈
     <span class="lbl">Conclusión no obvia</span>
     <p>Nadie reprueba este proyecto por elegir mal la geometría del brazo. Se reprueba por elegir
     servos de 4 dólares en accionamiento directo y descubrirlo en la semana 15. La reducción
-    mecánica en θ₁ y θ₂ —o un servo con encóder— <strong>no es una mejora opcional: es el
+    mecánica en θ₁ y θ₂, o un servo con encóder, <strong>no es una mejora opcional: es el
     requisito habilitante</strong> de todo el presupuesto de error.</p>
   </div>
 </section>
@@ -443,7 +443,7 @@ x(t) = −A·cos(3t)·cos(t)        y(t) = −A·k·cos(3t)·sin(t)        t ∈
   <article class="opt win">
     <header>
       <h3>B · SCARA de sobremesa, 3 GDL + cabezal <span class="tag ok">Recomendado</span></h3>
-      <span class="ref">Ref: SCARA Robot — HowToMechatronics (4 GDL, NEMA 17, CNC Shield, GT2)</span>
+      <span class="ref">Ref: SCARA Robot · HowToMechatronics (4 GDL, NEMA 17, CNC Shield, GT2)</span>
       <div class="meters">
         <span>Dificultad mecánica <span class="dots">●●●<i>●●</i></span></span>
         <span>Dificultad matemática <span class="dots">●●●<i>●●</i></span></span>
@@ -509,7 +509,7 @@ x(t) = −A·cos(3t)·cos(t)        y(t) = −A·k·cos(3t)·sin(t)        t ∈
       </div>
       <p><strong>Veredicto:</strong> <span class="tag no">Descartada</span> Paradoja útil para el
       informe: la arquitectura con mejor precisión es la que peor califica. Vale la pena
-      documentar por qué se descartó — esa justificación es exactamente la «bitácora de
+      documentar por qué se descartó. Esa justificación es exactamente la «bitácora de
       alternativas» que pide el entregable I de Física III.</p>
     </div>
   </article>
@@ -750,7 +750,7 @@ det J = L₁·L₂·sin θ₂   <span class="c">→ singular cuando θ₂ = 0 o 
     <li><strong>Eslabones:</strong> perfil de aluminio en U de 20 × 20 mm o tubo rectangular, no
     PLA macizo. Un eslabón impreso de 200 mm flexiona bajo carga lateral y ese error no se calibra.
     Alternativa: sándwich de dos placas de acrílico de 4 mm separadas por espaciadores, cortadas
-    en láser en el SPARK — rígido y económico.</li>
+    en láser en el SPARK: rígido y económico.</li>
     <li><strong>Juntas:</strong> rodamiento axial de bolas en el hombro (soporta el momento
     flector) más rodamiento radial 608ZZ para el eje. El codo puede llevar solo 608ZZ dobles con
     separación de 20 mm entre ellos, lo que resiste el cabeceo.</li>
@@ -778,8 +778,8 @@ det J = L₁·L₂·sin θ₂   <span class="c">→ singular cuando θ₂ = 0 o 
   (0,088° por cuenta), 30 kg·cm a 12 V, comunicación semidúplex TTL encadenable: seis servos
   comparten <strong>un solo cable de datos</strong>. Precio unitario de 14 a 18 USD.</p>
   <p>La ventaja decisiva no es el torque sino la <strong>realimentación</strong>: el servo reporta
-  su posición real. Eso convierte el requisito R1 —«control individual y <em>verificable</em> de
-  cada servomotor»— en una lectura directa, no en un argumento. Y permite construir la gráfica de
+  su posición real. Eso convierte el requisito R1, «control individual y <em>verificable</em> de
+  cada servomotor», en una lectura directa, no en un argumento. Permite construir la gráfica de
   posición comandada frente a posición medida, que es evidencia de primera clase para los ciclos
   de «prueba, medición, análisis y ajuste» del entregable II de Física III.</p>
 
@@ -792,7 +792,7 @@ det J = L₁·L₂·sin θ₂   <span class="c">→ singular cuando θ₂ = 0 o 
     <p>La reducción también divide el rango angular. Un MG996R de 180° con reducción 6:1 solo da
     <strong>30° en la junta</strong>. Para la rosa de tres pétalos se necesita bastante más. Hay
     dos salidas: reducción 3:1 con MG996R de 270° (rango de 90°, error 0,5° → 4,4 mm), o modificar
-    el servo a rotación continua con potenciómetro externo en la junta — lo que ya es construir un
+    el servo a rotación continua con potenciómetro externo en la junta, lo que ya es construir un
     servo propio. <strong>Verificar el rango articular requerido antes de comprometerse con esta
     ruta</strong>: es la trampa que hace fracasar la mitad de estos proyectos.</p>
   </div>
@@ -800,8 +800,8 @@ det J = L₁·L₂·sin θ₂   <span class="c">→ singular cuando θ₂ = 0 o 
   <h3>3 · NEMA 17 con correa y realimentación por encóder</h3>
   <p>Precisión sobrada (0,05 mm) y es lo que usa el SCARA de HowToMechatronics. El problema es R1:
   un stepper en lazo abierto no es un servomotor. Se puede salvar añadiendo un encóder magnético
-  AS5600 en cada junta, con lo que se convierte en un servo de lazo cerrado real — solución
-  técnicamente excelente pero que añade una capa de firmware considerable.</p>
+  AS5600 en cada junta, con lo que se convierte en un servo de lazo cerrado real: solución
+  técnicamente excelente, pero añade una capa de firmware considerable.</p>
 
   <div class="tw">
   <table>
@@ -871,11 +871,11 @@ El torque solo vence inercia y fricción:<br>
 
   <h3>La física que hay que explicar (R8)</h3>
   <div class="eq">
-<strong>Inductivo — corrientes de Foucault</strong><br>
+<strong>Inductivo · corrientes de Foucault</strong><br>
 ε = −dΦ<sub>B</sub>/dt      <span class="c">(Faraday)</span>   ·   sentido opuesto  <span class="c">(Lenz)</span><br>
 La disipación P = I²R en el conductor amortigua el tanque LC del sensor → cae la amplitud → dispara.<br>
 <span class="c">Selectivo a conductores. Alcance nominal 4 mm; menor en acero inoxidable y aluminio.</span><br><br>
-<strong>Capacitivo — permitividad del medio</strong><br>
+<strong>Capacitivo · permitividad del medio</strong><br>
 C = ε₀·ε<sub>r</sub>·A / d<br>
 <span class="c">Aire ε_r ≈ 1 · PLA ≈ 3 · vidrio ≈ 5 · agua ≈ 80.</span><br>
 Un objeto en el campo aumenta C y desplaza la frecuencia del oscilador RC → dispara.<br>
@@ -885,8 +885,8 @@ Un objeto en el campo aumenta C y desplaza la frecuencia del oscilador RC → di
   <div class="note">
     <span class="lbl">Oportunidad de nota</span>
     <p>El enunciado menciona explícitamente «el sensor capacitivo». <strong>Construir el sensor
-    capacitivo en vez de comprarlo</strong> —dos placas de cobre y la librería
-    <code>CapacitiveSensor</code> de Arduino, que mide el tiempo de carga de un RC— convierte el
+    capacitivo en vez de comprarlo</strong> (dos placas de cobre y la librería
+    <code>CapacitiveSensor</code> de Arduino, que mide el tiempo de carga de un RC) convierte el
     entregable en física medible: se puede levantar la curva de capacitancia frente a distancia
     para cada material y compararla con <code>C = ε₀ε_rA/d</code>. Es la diferencia entre usar un
     sensor y entenderlo, y es exactamente lo que califica el 5 % del entregable I.</p>
@@ -943,14 +943,14 @@ F = B²·A / (2·μ₀)      <span class="c">μ₀ = 4π × 10⁻⁷ T·m/A</spa
   <p>Restricción física a documentar: solo funciona con materiales ferromagnéticos. Si el objeto
   «metálico» del ejercicio resultara ser de aluminio o cobre, el electroimán no lo levanta aunque
   el sensor inductivo sí lo detecte. <strong>Confirmar el material real del objeto antes de la
-  semana 8</strong> — es un riesgo de proyecto, no un detalle.</p>
+  semana 8</strong>. Es un riesgo de proyecto, no un detalle.</p>
 
   <h4>Circuito de accionamiento</h4>
   <p>El electroimán consume del orden de 300 mA a 12 V: no puede ir a un pin de Arduino. Se usa un
   MOSFET de nivel lógico (IRLZ44N o IRL540N) con la puerta al pin, resistencia de puerta de 220 Ω,
   pull-down de 10 kΩ, y <strong>diodo flyback 1N4007 en antiparalelo con la bobina</strong>. Sin ese
-  diodo, la fem inducida al cortar la corriente —<code>V = −L·di/dt</code>, la misma ley de Faraday
-  del sensor— genera un pico de decenas de voltios que destruye el MOSFET. Es la aplicación más
+  diodo, la fem inducida al cortar la corriente (<code>V = −L·di/dt</code>, la misma ley de Faraday
+  del sensor) genera un pico de decenas de voltios que destruye el MOSFET. Es la aplicación más
   directa del temario de Física III en todo el proyecto y merece medirse con osciloscopio.</p>
 
   <h3>Pinza</h3>
@@ -1027,7 +1027,7 @@ F = B²·A / (2·μ₀)      <span class="c">μ₀ = 4π × 10⁻⁷ T·m/A</spa
     semana 1</strong>: son el artículo de plazo de entrega más largo y bloquean todo lo demás.</p>
   </div>
 
-  <h3>Ruta recomendada — SCARA con servos de bus serie</h3>
+  <h3>Ruta recomendada · SCARA con servos de bus serie</h3>
   <div class="tw">
   <table>
     <thead><tr><th>Subsistema</th><th>Componente</th><th class="num">Cant.</th><th class="num">USD/u</th><th class="num">USD</th><th class="num">COP aprox.</th></tr></thead>
@@ -1079,8 +1079,8 @@ F = B²·A / (2·μ₀)      <span class="c">μ₀ = 4π × 10⁻⁷ T·m/A</spa
   <div class="note good">
     <span class="lbl">Dónde sí vale la pena gastar de más</span>
     <p>Los servos de θ₁ y θ₂ y los rodamientos del hombro. Son el 70 % del presupuesto de error y
-    lo único que no se puede corregir después por software. Todo lo demás —Arduino, cables,
-    filamento, sensores— admite la versión barata sin consecuencias sobre la nota.</p>
+    lo único que no se puede corregir después por software. Todo lo demás sí admite la versión
+    barata sin consecuencias sobre la nota: Arduino, cables, filamento, sensores.</p>
   </div>
 </section>
 
@@ -1094,12 +1094,12 @@ F = B²·A / (2·μ₀)      <span class="c">μ₀ = 4π × 10⁻⁷ T·m/A</spa
       <p>Pedir los servos el primer día (plazo de entrega largo). Medir el trazo físico en el SPARK
       y cerrar el pendiente abierto del README: confirmar <code>k ≈ 1,355</code> contra la
       referencia real. Fijar por escrito el criterio de precisión.</p></div></div>
-    <div class="row hit"><div class="wk">S3–4</div><div class="ct"><b>Avance 1 · Cálculo III — 7 %</b>
+    <div class="row hit"><div class="wk">S3–4</div><div class="ct"><b>Avance 1 · Cálculo III · 7 %</b>
       <p>Ecuación paramétrica justificada, dominio, orientación y escala, visualización en MATLAB y
       validación contra el cartón. En paralelo, montar el plotter polar (opción D) como banco de
       pruebas: dibujar la rosa con un lápiz demuestra el modelo con evidencia física, no solo con
       una gráfica.</p></div></div>
-    <div class="row"><div class="wk">S4–6</div><div class="ct"><b>Entregable I · Física III — 5 %</b>
+    <div class="row"><div class="wk">S4–6</div><div class="ct"><b>Entregable I · Física III · 5 %</b>
       <p>Bitácora de alternativas: este documento es la base. CAD completo del SCARA en SolidWorks
       u Onshape. Control individual verificado de cada servo, con gráfica de posición comandada
       frente a medida. Caracterizar los dos sensores y levantar la tabla de verdad.</p></div></div>
@@ -1111,14 +1111,14 @@ F = B²·A / (2·μ₀)      <span class="c">μ₀ = 4π × 10⁻⁷ T·m/A</spa
       <p>Exportar el CAD a Simscape Multibody, implementar la cinemática inversa en Simulink,
       validar la simulación contra el movimiento real. Análisis de sensibilidad y optimización de
       la trayectoria con restricciones de ingeniería.</p></div></div>
-    <div class="row hit"><div class="wk">S12</div><div class="ct"><b>Avance 2 · Cálculo III — 3 %</b>
+    <div class="row hit"><div class="wk">S12</div><div class="ct"><b>Avance 2 · Cálculo III · 3 %</b>
       <p>Modelo actualizado con restricciones, simulación 3D funcionando, informe técnico breve y
       la pieza de comunicación del proyecto.</p></div></div>
-    <div class="row"><div class="wk">S12–16</div><div class="ct"><b>Entregable II · Física III — 15 %</b>
+    <div class="row"><div class="wk">S12–16</div><div class="ct"><b>Entregable II · Física III · 15 %</b>
       <p>Ciclos documentados de prueba, medición, análisis y ajuste. Cada iteración con su gráfica
       de error antes y después. Aquí es donde la realimentación de los servos de bus serie paga su
       sobreprecio: cada ajuste queda cuantificado.</p></div></div>
-    <div class="row hit"><div class="wk">S17</div><div class="ct"><b>Entrega final · Cálculo III — 5 %</b>
+    <div class="row hit"><div class="wk">S17</div><div class="ct"><b>Entrega final · Cálculo III · 5 %</b>
       <p>Informe definitivo, demostración y defensa. Coherencia modelo ↔ simulación ↔ movimiento
       real, cuantificación del error, conclusiones y limitaciones.</p></div></div>
   </div>
@@ -1169,18 +1169,18 @@ F = B²·A / (2·μ₀)      <span class="c">μ₀ = 4π × 10⁻⁷ T·m/A</spa
 
   <h4>Referencias de construcción</h4>
   <ul class="srcs">
-    <li><strong>SCARA Robot — How To Mechatronics.</strong> 4 GDL, cuatro NEMA 17 con A4988 sobre
+    <li><strong>SCARA Robot · How To Mechatronics.</strong> 4 GDL, cuatro NEMA 17 con A4988 sobre
     CNC Shield v3, correas GT2 de 200–400 mm, husillo T8 de 400 mm, rodamientos axiales 40×60×13 y
     35×52×12, servo MG996R en la pinza, fuente de 12 V 6 A. El autor documenta juego residual
     atribuido a la construcción en plástico y al backlash de las correas.
     <span class="u">howtomechatronics.com/projects/scara-robot-how-to-build-your-own-arduino-based-robot/</span></li>
 
-    <li><strong>DIY Arduino Robot Arm with Smartphone Control — How To Mechatronics.</strong>
+    <li><strong>DIY Arduino Robot Arm with Smartphone Control · How To Mechatronics.</strong>
     5 GDL con tres MG996R y tres SG90, estructura en PLA, control por HC-05 y aplicación de MIT App
     Inventor. Referencia principal de la opción A.
     <span class="u">howtomechatronics.com/tutorials/arduino/diy-arduino-robot-arm-with-smartphone-control/</span></li>
 
-    <li><strong>EEZYbotARM Mk2 — Instructables.</strong> Brazo de cuatro ejes impreso en 3D, con
+    <li><strong>EEZYbotARM Mk2 · Instructables.</strong> Brazo de cuatro ejes impreso en 3D, con
     cinemática de varillaje derivada del ABB IRB460 a escala 1:7. Aporta la pinza con acople rápido
     y el enrutado interno de cables.
     <span class="u">instructables.com/EEZYbotARM-Mk2-3D-Printed-Robot/</span></li>
@@ -1237,7 +1237,7 @@ F = B²·A / (2·μ₀)      <span class="c">μ₀ = 4π × 10⁻⁷ T·m/A</spa
 
   <h4>Documentos del proyecto</h4>
   <ul class="srcs">
-    <li><strong>MATHBOT — Semestre 2 2026.</strong> Enunciado oficial del PBL, 5 páginas. Fuente de
+    <li><strong>MATHBOT, Semestre 2 2026.</strong> Enunciado oficial del PBL, 5 páginas. Fuente de
     todos los requisitos de §01.
     <span class="u">MATHBOT_-_Semestre_2_2026.pdf</span></li>
     <li><strong>README del repositorio y herramienta de trayectoria.</strong> Origen de los
@@ -1257,7 +1257,7 @@ F = B²·A / (2·μ₀)      <span class="c">μ₀ = 4π × 10⁻⁷ T·m/A</spa
 
 <footer>
   <span>MATHBOT · Investigación de construcción · v1</span>
-  <span>Documento de trabajo — revisar antes del Entregable I</span>
+  <span>Documento de trabajo · revisar antes del Entregable I</span>
 </footer>
 
 </div>
