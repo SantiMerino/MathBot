@@ -1,0 +1,124 @@
+% =========================================================================
+% PBL MATHBOT - Cálculo III & Física Aplicada III
+% ENTREGABLE 1: Diagnóstico y análisis de calidad de la medición (Versión v2)
+% Archivo complementario: diagnostico_medicion_v2.m
+% Key Institute - Semestre 2 2026
+% =========================================================================
+
+clear; clc; close all;
+
+% 1. Detección automática del archivo CSV de trayectoria y sus parámetros
+csv_v2 = 'trayectoria_rosa_polar-v2.csv';
+csv_v1 = 'trayectoria_brazo.csv';
+outdir = 'output_figures';
+
+if exist(csv_v2, 'file')
+    csv_filename = csv_v2;
+    A = 12.69;      % Nueva amplitud base (cm) para la forma de Canvas
+    k = 1.098;      % Nuevo factor de anisotropía para la forma de Canvas
+    fprintf('>> Detectado archivo corregido: %s\n', csv_v2);
+    fprintf('>> Aplicando parámetros de forma: A = %g, k = %g\n\n', A, k);
+elseif exist(csv_v1, 'file')
+    csv_filename = csv_v1;
+    A = 10.29;      % Amplitud base (cm) del prototipo físico
+    k = 1.3552;     % Factor de anisotropía del prototipo físico
+    fprintf('>> Detectado archivo del prototipo: %s\n', csv_v1);
+    fprintf('>> Aplicando parámetros del prototipo: A = %g, k = %g\n\n', A, k);
+else
+    error('No se encontró %s ni %s. Por favor, ejecuta primero mathbot_avance1_v2.m.', csv_v2, csv_v1);
+end
+
+% Leer los 600 puntos digitalizados del trazo
+exp_table = readtable(csv_filename);
+X_exp = exp_table.X_cm;
+Y_exp = exp_table.Y_cm;
+
+n = 3;          % Frecuencia
+phi = 0;        % Fase
+t0 = 5*pi/6;    
+t1 = 11/6*pi;
+
+% 2. Proyección y cálculo de distancias perpendiculares
+N_dense = 10000;
+t_dense = linspace(t0, t1, N_dense);
+x_teor = -A * cos(n * (t_dense - phi)) .* cos(t_dense);
+y_teor = -A * k * cos(n * (t_dense - phi)) .* sin(t_dense);
+
+residuals = zeros(length(X_exp), 1);
+t_assigned = zeros(length(X_exp), 1);
+
+for j = 1:length(X_exp)
+    dx = X_exp(j) - x_teor;
+    dy = Y_exp(j) - y_teor;
+    dist_sq = dx.^2 + dy.^2;
+    [min_dist, min_idx] = min(dist_sq);
+    residuals(j) = sqrt(min_dist);
+    t_assigned(j) = t_dense(min_idx); % Parámetro t más cercano
+end
+
+% 3. Descomposición del error (Sistemático vs Aleatorio)
+span = 15; 
+err_systematic = movmean(residuals, span);
+err_random = residuals - err_systematic;
+
+% 4. Visualización del análisis de ruido y componentes de error
+% IMPORTANTE: Para MATLAB Online, se crean las ventanas visibles de las figuras 
+% para que aparezcan en la pestaña "Figures", además de guardarse en el folder.
+fig1 = figure('Name', 'Descomposición del Error', 'NumberTitle', 'off', 'Position', [100, 100, 850, 500]);
+
+subplot(2, 1, 1);
+plot(1:length(residuals), residuals * 10, 'Color', [0.7, 0.7, 0.7], 'LineWidth', 1, 'DisplayName', 'Error Total (Perpendicular)');
+hold on;
+plot(1:length(residuals), err_systematic * 10, 'r-', 'LineWidth', 2, 'DisplayName', 'Componente Sistemática (Tendencia)');
+grid on;
+title('Descomposición del Error: Componente Sistemática', 'FontSize', 11);
+xlabel('Índice de Punto');
+ylabel('Error (mm)');
+legend('Location', 'best');
+xlim([1, length(residuals)]);
+
+subplot(2, 1, 2);
+plot(1:length(residuals), err_random * 10, 'b-', 'LineWidth', 1, 'DisplayName', 'Componente Aleatoria (Ruido/Digitalización)');
+hold on;
+yline(mean(err_random)*10, 'k--', 'Media');
+grid on;
+title('Componente Aleatoria (Ruido Experimental de Alta Frecuencia)', 'FontSize', 11);
+xlabel('Índice de Punto');
+ylabel('Error (mm)');
+legend('Location', 'best');
+xlim([1, length(residuals)]);
+
+if ~exist(outdir, 'dir')
+    mkdir(outdir);
+end
+saveas(fig1, fullfile(outdir, 'diagnostico_errores_descomposicion.png'));
+
+% 5. Análisis de Autocorrelación para comprobar systematicidad
+fig2 = figure('Name', 'Autocorrelación', 'NumberTitle', 'off', 'Position', [150, 150, 600, 350]);
+[acf, lags] = xcorr(residuals - mean(residuals), 50, 'coeff');
+stem(lags(lags>=0), acf(lags>=0), 'Filled', 'LineWidth', 1.5);
+grid on;
+title('Función de Autocorrelación de los Residuales (ACF)', 'FontSize', 12);
+xlabel('Lag (Paso de Muestreo)');
+ylabel('Coeficiente de Autocorrelación');
+saveas(fig2, fullfile(outdir, 'diagnostico_acf_residuals.png'));
+
+% 6. Impresión de Reporte Estadístico en Consola
+fprintf('=========================================================================\n');
+fprintf('         REPORTE DE DIAGNÓSTICO METROLÓGICO - DETECTANDO IMPERFECCIONES   \n');
+fprintf('=========================================================================\n');
+fprintf(' Error Medio Absoluto (MAE):             %6.4f mm\n', mean(residuals)*10);
+fprintf(' Desviación Estándar del Ruido (RMSE_ran): %6.4f mm\n', std(err_random)*10);
+fprintf(' Amplitud de la Tendencia Sistemática:   %6.4f mm\n', max(err_systematic)*10);
+fprintf(' Proporción de Varianza Sistemática:     %6.2f %%\n', (var(err_systematic)/var(residuals))*100);
+fprintf(' Proporción de Varianza Aleatoria:       %6.2f %%\n', (var(err_random)/var(residuals))*100);
+fprintf('-------------------------------------------------------------------------\n');
+fprintf(' CONCLUSIÓN DE CALIDAD:\n');
+if (var(err_systematic)/var(residuals)) > 0.70
+    fprintf(' >> El error es predominantemente SISTEMÁTICO (%5.1f%%).\n', (var(err_systematic)/var(residuals))*100);
+    fprintf('    Esto confirma que la asimetría física del cartón recortado a mano\n');
+    fprintf('    es la causa principal del desajuste, y no el ruido del scanner/cámara.\n');
+else
+    fprintf(' >> El error es predominantemente ALEATORIO (Ruido de medición).\n');
+end
+fprintf('=========================================================================\n\n');
