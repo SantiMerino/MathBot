@@ -1,0 +1,1328 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCARA MathBot · Simulador</title>
+<style>
+:root{
+  --bg:#f3f5f8; --panel:#ffffff; --ink:#18212b; --muted:#5b6876; --line:#d9dfe6; --accent:#1f6fd1;
+  --accent-soft:#e3eefb; --warn:#b4540a; --ok:#1d7f5f; --pen:#d1495b; --mag:#6c757d; --sen:#2a9d8f;
+  --scene:#e9edf2; --table:#cdb38f; --chip:#eef2f6; --hl:#ff9f1c;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f141a; --panel:#161d25; --ink:#e6ebf1; --muted:#93a1b0; --line:#2a3542; --accent:#5aa2f5;
+    --accent-soft:#1b2b3f; --warn:#f0a35e; --ok:#4cc79a; --scene:#1a222c; --table:#6f5a3e; --chip:#1f2833;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f141a; --panel:#161d25; --ink:#e6ebf1; --muted:#93a1b0; --line:#2a3542; --accent:#5aa2f5;
+  --accent-soft:#1b2b3f; --warn:#f0a35e; --ok:#4cc79a; --scene:#1a222c; --table:#6f5a3e; --chip:#1f2833;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+  font:13px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 420px;height:100vh}
+.stage{position:relative;min-width:0;display:flex;flex-direction:column}
+#view{flex:1;min-height:0;position:relative;background:var(--scene);overflow:hidden}
+#view canvas{display:block}
+.hud{position:absolute;left:12px;top:12px;pointer-events:none;max-width:min(560px,60%)}
+.hud .phase{display:inline-block;background:var(--panel);border:1px solid var(--line);border-radius:6px;
+  padding:6px 10px;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.hud .sub{margin-top:6px;color:var(--muted);font-size:12px;background:color-mix(in srgb,var(--panel) 85%,transparent);
+  padding:4px 8px;border-radius:5px;display:inline-block}
+.hud .warn{margin-top:6px;color:var(--warn);font-weight:600;background:var(--panel);padding:4px 8px;border-radius:5px;
+  border:1px solid var(--warn)}
+.cams{position:absolute;right:12px;top:12px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:40%}
+.tip{position:absolute;pointer-events:none;background:var(--panel);color:var(--ink);border:1px solid var(--line);
+  border-radius:6px;padding:6px 9px;max-width:280px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.18);display:none;z-index:5}
+.tip b{display:block;font-size:12.5px}
+.tip .src{font-size:10.5px;color:var(--muted)}
+.bar{display:flex;gap:10px;align-items:center;padding:8px 12px;background:var(--panel);border-top:1px solid var(--line);flex-wrap:wrap}
+.bar input[type=range]{flex:1;min-width:140px}
+button,select{font:inherit;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:6px;
+  padding:5px 10px;cursor:pointer}
+button:hover,select:hover{border-color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent);min-width:38px}
+button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.time{font-variant-numeric:tabular-nums;color:var(--muted);min-width:110px}
+aside{background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;padding:12px 14px 30px}
+h1{font-size:15px;margin:0 0 2px}
+.lead{color:var(--muted);margin:0 0 10px;font-size:12px}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 0 6px}
+canvas.panel{width:100%;border:1px solid var(--line);border-radius:6px;background:var(--bg);display:block}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.kv{background:var(--chip);border-radius:6px;padding:5px 7px;min-width:0}
+.kv b{display:block;font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kv span{font-size:10.5px;color:var(--muted)}
+.row{display:flex;align-items:center;gap:8px;margin:6px 0}
+.row label{flex:0 0 132px;color:var(--muted)}
+.row input[type=range]{flex:1;min-width:0}
+.row output{flex:0 0 64px;text-align:right;font-variant-numeric:tabular-nums}
+.toggles,.tools,.heads{display:flex;flex-wrap:wrap;gap:6px}
+.heads button{flex:1;text-align:left;padding:8px 10px}
+.heads button small{display:block;color:var(--muted);font-size:11px}
+.heads button.on small{color:inherit;opacity:.8}
+.log{list-style:none;margin:0;padding:0;font-size:12px}
+.log li{padding:4px 0;border-bottom:1px dashed var(--line);display:flex;gap:8px}
+.log li .t{color:var(--muted);font-variant-numeric:tabular-nums;flex:0 0 44px}
+.tag{display:inline-block;padding:0 6px;border-radius:9px;font-size:11px;font-weight:600}
+.tag.metal{background:color-mix(in srgb,var(--pen) 18%,transparent);color:var(--pen)}
+.tag.no{background:var(--chip);color:var(--muted)}
+.tag.htm{background:var(--accent-soft);color:var(--accent)}
+.tag.mb{background:color-mix(in srgb,var(--hl) 22%,transparent);color:color-mix(in srgb,var(--hl) 70%,var(--ink))}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:4px}
+.legend i{display:inline-block;width:10px;height:3px;margin-right:4px;vertical-align:middle}
+.note{font-size:11.5px;color:var(--muted);margin:6px 0 0}
+#manual{display:none}
+details{border:1px solid var(--line);border-radius:6px;margin:6px 0;background:var(--panel)}
+summary{cursor:pointer;padding:6px 9px;font-weight:600;font-size:12.5px}
+summary span{color:var(--muted);font-weight:400}
+.plist{list-style:none;margin:0;padding:0 6px 6px}
+.plist li{padding:4px 6px;border-radius:5px;cursor:pointer;display:flex;justify-content:space-between;gap:8px;font-size:12px}
+.plist li:hover{background:var(--chip)}
+.plist li.sel{background:var(--accent-soft);color:var(--accent)}
+.plist li em{font-style:normal;color:var(--muted);font-size:11px;white-space:nowrap}
+.card{border:1px solid var(--accent);background:var(--accent-soft);border-radius:6px;padding:8px 10px;margin:6px 0;display:none}
+.card b{display:block}
+.card p{margin:4px 0 0;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:11.5px;margin:4px 0 8px}
+th,td{text-align:left;padding:4px 5px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tot{font-weight:600}
+.lbl3d{font:600 11px system-ui,sans-serif;color:#fff;background:rgba(20,30,40,.78);padding:1px 6px;border-radius:4px;
+  pointer-events:none;white-space:nowrap}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px}
+@media (max-width:900px){
+  .app{grid-template-columns:1fr;height:auto}
+  #view{height:62vh;flex:none}
+  aside{border-left:0;border-top:1px solid var(--line)}
+  .row label{flex-basis:110px}
+  .cams{top:auto;bottom:10px;right:10px;max-width:none}
+  .hud{max-width:calc(100% - 24px)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="stage">
+    <div id="view">
+      <div class="loading" id="loading">Cargando piezas STL…</div>
+      <div class="hud">
+        <div class="phase" id="phase">—</div><br>
+        <div class="sub" id="sub"></div>
+        <div class="warn" id="warn" hidden></div>
+      </div>
+      <div class="cams">
+        <button data-cam="iso">3D</button>
+        <button data-cam="top">Superior XY</button>
+        <button data-cam="side">Lateral</button>
+        <button data-cam="head">Cabezal</button>
+        <button data-cam="elec">Electrónica</button>
+        <button id="follow">Seguir</button>
+      </div>
+      <div class="tip" id="tip"></div>
+    </div>
+    <div class="bar" id="transport">
+      <button class="primary" id="play" title="Reproducir / pausa (espacio)">❚❚</button>
+      <button id="restart" title="Reiniciar">⟲</button>
+      <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="línea de tiempo">
+      <span class="time" id="time">0.0 / 0.0 s</span>
+      <select id="speed" aria-label="velocidad">
+        <option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1">1×</option>
+        <option value="2" selected>2×</option><option value="4">4×</option><option value="8">8×</option>
+      </select>
+      <select id="mode" aria-label="modo">
+        <option value="mision" selected>Misión completa</option>
+        <option value="rosa">Solo trazar rosa</option>
+        <option value="manual">Manual (articulaciones)</option>
+      </select>
+    </div>
+  </div>
+
+  <aside>
+    <h1>SCARA MathBot</h1>
+    <p class="lead">Modelo HowToMechatronics (STL reales) · columna Z recortada · dos cabezales intercambiables para
+      plumón, electroimán y sensor inductivo.</p>
+
+    <h2>Cabezal</h2>
+    <div class="heads" id="heads">
+      <button data-head="disc" class="on">A · Disco<small>J3 gira para elegir herramienta</small></button>
+      <button data-head="rev">B · Revólver triangular<small>servo gira el prisma 120°</small></button>
+    </div>
+    <p class="note" id="headNote"></p>
+
+    <h2>Vista superior (plano XY de la mesa)</h2>
+    <canvas class="panel" id="top" width="740" height="700"></canvas>
+    <div class="legend">
+      <span><i style="background:#2f6db5"></i>Brazo 1</span><span><i style="background:#4f9be0"></i>Brazo 2</span>
+      <span><i style="background:var(--pen)"></i>Plumón</span><span><i style="background:var(--mag)"></i>Electroimán</span>
+      <span><i style="background:var(--sen)"></i>Sensor</span><span><i style="background:#9cc3ea"></i>Alcance</span>
+    </div>
+
+    <h2>Estado articular</h2>
+    <div class="grid" id="readouts"></div>
+
+    <div id="manual">
+      <h2>Control manual</h2>
+      <div class="tools" id="toolPick">
+        <button data-tool="pen" class="on">Plumón</button>
+        <button data-tool="mag">Electroimán</button>
+        <button data-tool="sen">Sensor</button>
+      </div>
+      <div class="row"><label>θ1 base (J1)</label><input type="range" id="m_th1" min="-150" max="150" step="0.1"><output id="o_th1"></output></div>
+      <div class="row"><label>θ2 codo (J2)</label><input type="range" id="m_th2" min="-150" max="150" step="0.1"><output id="o_th2"></output></div>
+      <div class="row"><label>φ cabezal (J3)</label><input type="range" id="m_phi" min="-180" max="180" step="0.5"><output id="o_phi"></output></div>
+      <div class="row"><label>z plataforma</label><input type="range" id="m_zp" min="100" max="300" step="0.5"><output id="o_zp"></output></div>
+      <div class="row" id="rowLift"><label>Levantar plumón</label><input type="range" id="m_lift" min="0" max="18" step="1"><output id="o_lift"></output></div>
+      <div class="row" id="rowRev"><label>Giro revólver ρ</label><input type="range" id="m_rev" min="-120" max="120" step="1"><output id="o_rev"></output></div>
+      <p class="note">Clic o arrastre sobre la vista superior para llevar la herramienta activa a ese punto (cinemática inversa).</p>
+    </div>
+
+    <h2>Ángulos y altura en el tiempo</h2>
+    <canvas class="panel" id="plot" width="740" height="330"></canvas>
+    <div class="legend">
+      <span><i style="background:#2f6db5"></i>θ1</span><span><i style="background:#4f9be0"></i>θ2</span>
+      <span><i style="background:#f4a261"></i>φ (J3)</span><span><i style="background:#9b5de5"></i>ρ revólver</span>
+      <span><i style="background:#888"></i>z plataforma (eje der.)</span>
+    </div>
+
+    <h2>Bitácora del sensor / electroimán</h2>
+    <ul class="log" id="log"><li><span class="t">—</span><span>Sin eventos todavía.</span></li></ul>
+
+    <h2>Piezas e identificación</h2>
+    <p class="note">Pase el cursor sobre el modelo 3D para ver el nombre de cada pieza; clic para seleccionarla.
+      <span class="tag htm">HTM</span> = nombre usado en HowToMechatronics · <span class="tag mb">MathBot</span> = agregado para los requisitos del curso.
+      Active <b>Rayos X</b> para ver motores, poleas, correas, rodamientos y electrónica dentro de las piezas impresas.</p>
+    <div class="card" id="pcard"></div>
+    <div id="plists"></div>
+
+    <h2>Qué imprimir y qué comprar</h2>
+    <div id="bom"></div>
+
+    <h2>Parámetros de diseño</h2>
+    <div class="row"><label>Largo varillas Z</label><input type="range" id="p_rod" min="160" max="400" step="10" value="220"><output id="v_rod"></output></div>
+    <div class="row"><label>Centro rosa (x)</label><input type="range" id="p_D" min="150" max="260" step="5" value="185"><output id="v_D"></output></div>
+    <div class="row"><label>Giro de la rosa α</label><input type="range" id="p_alpha" min="0" max="345" step="15" value="180"><output id="v_alpha"></output></div>
+    <div class="row"><label>Velocidad de trazo</label><input type="range" id="p_v" min="10" max="60" step="5" value="25"><output id="v_v"></output></div>
+    <div class="row"><label>Configuración codo</label>
+      <select id="p_codo"><option value="-1" selected>θ2 negativo</option><option value="1">θ2 positivo</option></select></div>
+    <p class="note" id="zinfo"></p>
+
+    <h2>Visualización</h2>
+    <div class="toggles">
+      <button id="t_xray">Rayos X</button>
+      <button id="t_ws" class="on">Alcance</button>
+      <button id="t_ghost" class="on">Estela eslabones</button>
+      <button id="t_labels" class="on">Etiquetas</button>
+      <button id="t_guide" class="on">Guía rosa</button>
+      <button id="t_theme">Tema</button>
+    </div>
+
+    <h2>Notas del modelo</h2>
+    <p class="note">L1 = 228 mm y L2 = 144 mm medidos entre agujeros de rodamiento en las STL (el código Arduino original
+      usa L2 = 136.5 mm). Reducciones GT2: J1 (80/20)·(110/22) = 20:1, J2 (80/20)·(92/23) = 16:1, J3 90/20 = 4.5:1;
+      Z tornillo de 8 mm/rev; NEMA 17 a ¼ de paso.
+      Las posiciones de motores y poleas salen de los agujeros de las STL y coinciden con los largos de correa del
+      artículo (200/300 mm en J1, 400/300 en J2, 400 en J3). Alturas internas aproximadas.</p>
+  </aside>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+"three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script id="stl-data" type="application/json">__STL_DATA__</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+const STL = JSON.parse(document.getElementById('stl-data').textContent);
+
+// ===================================================================================
+// Geometría (mm). Igual que python/scara_modelo.py
+// ===================================================================================
+const G = { L1:228, L2:144, H_BASE:45, H_J1C:27, H_PINF:10, H_PSUP:26, H_BCOV:21.5, H_TCOV:23, H_PLAT:45,
+  H_ARM1:42, H_J2C:24, H_ARM2:31, H_J3C:22, H_CON:4.5, PLATE:6, ZROD0:72 };
+G.DROP = -((G.H_PLAT - G.H_ARM1) - G.H_J2C - G.H_ARM2 - G.H_J3C - G.H_CON);   // 78.5: plataforma → brida
+const ZH = -G.H_J3C - G.H_CON;                                                    // brida, en el marco de J3
+const STEPS = { j1: 800*20/360, j2: 800*16/360, j3: 800*4.5/360, z: 800/8 };
+const LIM = { th1:150, th2:150 };
+const LIFT = 18;
+const HEADS = {
+  disc: { key:'disc', name:'A · Disco tri-herramienta', tools: {
+    pen: { key:'pen', name:'Plumón', phi:0,   r:55, below:50, color:'#d1495b' },
+    mag: { key:'mag', name:'Electroimán', phi:120, r:45, below:40, color:'#6c757d' },
+    sen: { key:'sen', name:'Sensor inductivo', phi:240, r:45, below:38, color:'#2a9d8f' } } },
+  // Revólver en voladizo: eje a lo largo del brazo 2, 60 mm por delante de J3, 38 mm bajo la brida.
+  // ρ = 0 plumón abajo, ρ = −120 electroimán abajo, ρ = +120 sensor abajo (servo de 270°).
+  // El plumón queda en el centro del recorrido del servo: nunca apunta hacia arriba.
+  rev: { key:'rev', name:'B · Revólver triangular', OFF:60, DAX:38, RIN:18, LEN:40, tools: {
+    pen: { key:'pen', name:'Plumón', a:0,    reach:85, color:'#d1495b' },
+    mag: { key:'mag', name:'Electroimán', a:120,  reach:38, color:'#6c757d' },
+    sen: { key:'sen', name:'Sensor inductivo', a:-120, reach:63, color:'#2a9d8f' } } },
+};
+const ROSE = { A:102.9, K:1.3552, T0:5*Math.PI/6, T1:11*Math.PI/6 };
+const OBJ = [
+  { name:'Arandela de acero', metal:true,  kind:'washer', x:60,  y:-215, h:3,  r:15, color:'#a9b2bb' },
+  { name:'Ficha de PLA',      metal:false, kind:'disc',   x:150, y:-238, h:8,  r:15, color:'#f2c14e' },
+  { name:'Tuerca de acero',   metal:true,  kind:'nut',    x:240, y:-215, h:7,  r:13, color:'#8d969e' },
+  { name:'Bloque de madera',  metal:false, kind:'block',  x:325, y:-172, h:12, r:15, color:'#b07d4f' },
+];
+const BIN = { x:95, y:235, w:80, d:80, h:25 };
+
+const rad = d => d*Math.PI/180, deg = r => r*180/Math.PI;
+const wrap = a => ((a+180)%360+360)%360-180;
+const smooth = u => u*u*(3-2*u);
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+// ===================================================================================
+// Cinemática (los dos cabezales)
+// ===================================================================================
+function toolEq(tool, phi){
+  const a = rad(tool.phi + phi);
+  const ex = G.L2 + tool.r*Math.cos(a), ey = tool.r*Math.sin(a);
+  return { le: Math.hypot(ex,ey), beta: deg(Math.atan2(ey,ex)) };
+}
+function ik(x, y, tool, phi, codo){
+  const { le, beta } = toolEq(tool, phi);
+  const c2 = (x*x + y*y - G.L1*G.L1 - le*le) / (2*G.L1*le);
+  if (Math.abs(c2) > 1) return null;
+  const t2 = codo*Math.acos(c2);
+  const t1 = Math.atan2(y,x) - Math.atan2(le*Math.sin(t2), G.L1 + le*Math.cos(t2));
+  return { th1: wrap(deg(t1)), th2: wrap(deg(t2) - beta), phi };
+}
+const inLim = q => q && Math.abs(q.th1) <= LIM.th1 && Math.abs(q.th2) <= LIM.th2;
+function fk(th1, th2, phi){
+  const a1 = rad(th1), a12 = rad(th1+th2), psi = rad(th1+th2+phi);
+  const j2 = [G.L1*Math.cos(a1), G.L1*Math.sin(a1)];
+  const j3 = [j2[0] + G.L2*Math.cos(a12), j2[1] + G.L2*Math.sin(a12)];
+  return { j2, j3, psi };
+}
+// Herramienta equivalente para la IK: disco → (φ_t, r); revólver → punto a OFF mm delante de J3 con φ = 0
+const ikTool = (H, tk) => H.key === 'disc' ? H.tools[tk] : { phi:0, r:H.OFF };
+const ikPhi  = (H, tk) => H.key === 'disc' ? wrap(-H.tools[tk].phi) : 0;
+const revFor = (H, tk) => H.key === 'rev' ? -H.tools[tk].a : 0;
+// Punta 3D de una herramienta para un estado s = {th1, th2, phi, zp, lift, rev}
+function tipOf(s, H, tk){
+  const k = fk(s.th1, s.th2, s.phi), c = Math.cos(k.psi), sn = Math.sin(k.psi);
+  if (H.key === 'disc'){
+    const t = H.tools[tk], a = k.psi + rad(t.phi);
+    return [k.j3[0] + t.r*Math.cos(a), k.j3[1] + t.r*Math.sin(a), s.zp - G.DROP - G.PLATE - t.below + (tk === 'pen' ? s.lift : 0)];
+  }
+  const t = H.tools[tk], al = rad(t.a + s.rev), ly = Math.sin(al)*t.reach, lz = -Math.cos(al)*t.reach;
+  return [k.j3[0] + c*H.OFF - sn*ly, k.j3[1] + sn*H.OFF + c*ly, s.zp - G.DROP - H.DAX + lz];
+}
+function zpFor(H, ztip, tk, lift=0){
+  if (H.key === 'disc'){ const t = H.tools[tk]; return ztip + G.DROP + G.PLATE + t.below - (tk === 'pen' ? lift : 0); }
+  return ztip + G.DROP + H.DAX + H.tools[tk].reach;
+}
+// Altura de tránsito: 60 mm libres bajo la herramienta más baja (el revólver barre su herramienta más larga al girar)
+const zTravelOf = H => H.key === 'disc' ? zpFor(H, 60, 'mag') : 60 + G.DROP + H.DAX + Math.max(...Object.values(H.tools).map(t => t.reach));
+const zRange = rod => [G.ZROD0 + G.H_PINF + G.H_BCOV, G.ZROD0 + rod - G.H_PSUP - G.H_TCOV - G.H_PLAT];
+const rodMinOf = H => Math.ceil((zTravelOf(H) - G.ZROD0 + G.H_PSUP + G.H_TCOV + G.H_PLAT)/10)*10;
+function jacInfo(s, H, tk){
+  const { le, beta } = toolEq(ikTool(H, tk), H.key === 'disc' ? s.phi : 0);
+  const a1 = rad(s.th1), a12 = rad(s.th1 + s.th2 + beta);
+  const J = [[-G.L1*Math.sin(a1) - le*Math.sin(a12), -le*Math.sin(a12)],
+             [ G.L1*Math.cos(a1) + le*Math.cos(a12),  le*Math.cos(a12)]];
+  const a=J[0][0], b=J[0][1], c=J[1][0], d=J[1][1];
+  const T = a*a+b*b+c*c+d*d, D = Math.abs(a*d-b*c);
+  const s1 = Math.sqrt((T + Math.sqrt(Math.max(0,T*T-4*D*D)))/2), s2 = D/s1;
+  const e1 = rad(1/STEPS.j1), e2 = rad(1/STEPS.j2);
+  return { kappa: s1/Math.max(s2,1e-9), step: Math.hypot(Math.abs(a)*e1 + Math.abs(b)*e2, Math.abs(c)*e1 + Math.abs(d)*e2) };
+}
+function roseLocal(t){ const c3 = Math.cos(3*t); return [-ROSE.A*c3*Math.cos(t), -ROSE.A*ROSE.K*c3*Math.sin(t)]; }
+function roseWorld(t, P){
+  const [x,y] = roseLocal(t), a = rad(P.alpha);
+  return [Math.cos(a)*x - Math.sin(a)*y + P.D, Math.sin(a)*x + Math.cos(a)*y];
+}
+function roseArc(P, dt){
+  const n = 5000, pts = [], s = [0];
+  for (let i=0;i<=n;i++) pts.push(roseWorld(ROSE.T0 + (ROSE.T1-ROSE.T0)*i/n, P));
+  for (let i=1;i<=n;i++) s.push(s[i-1] + Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]));
+  const total = s[n], out = []; let j = 0;
+  for (let d=0; d<=total+1e-9; d+=P.v*dt){
+    while (j<n-1 && s[j+1] < d) j++;
+    const u = (d - s[j]) / Math.max(s[j+1]-s[j], 1e-9);
+    out.push([pts[j][0] + (pts[j+1][0]-pts[j][0])*u, pts[j][1] + (pts[j+1][1]-pts[j][1])*u]);
+  }
+  return { pts: out, total, guide: pts.filter((_,i)=>i%5===0) };
+}
+
+// ===================================================================================
+// Línea de tiempo (planificador de movimientos)
+// ===================================================================================
+const DT = 1/60;
+function buildTimeline(P, mode, H){
+  const F = [], phases = [], log = [], picks = [], warns = new Set();
+  const [zmin, zmax] = zRange(P.rod);
+  const clampZ = z => {
+    if (z > zmax + 1e-6){ warns.add(`Varillas de ${P.rod} mm: el eje Z no sube lo suficiente para este cabezal (faltan ${Math.ceil(z - zmax)} mm; mínimo ${rodMinOf(H)} mm).`); return zmax; }
+    if (z < zmin - 1e-6){ warns.add('La herramienta no alcanza la mesa: la plataforma ya está en su tope inferior.'); return zmin; }
+    return z; };
+  const zTravel = clampZ(zTravelOf(H));
+  const disc = H.key === 'disc';
+  const home = { th1:0, th2:0, phi:0 };
+  const s = { ...home, zp: clampZ(Math.min(zmax, zTravel + 15)), lift: disc ? LIFT : 0, rev:0, mag:0, carry:-1, sense:-1, tool:'pen', ph:0 };
+  const push = () => F.push({ ...s });
+  const phase = (name, sub) => { phases.push({ name, sub, f0: F.length }); s.ph = phases.length-1; };
+  const hold = sec => { for (let i=0;i<Math.max(1,Math.round(sec/DT));i++) push(); };
+  const interp = (target, dur) => {
+    const a = { ...s }, n = Math.max(1, Math.round(dur/DT));
+    for (let i=1;i<=n;i++){ const u = smooth(i/n); for (const k in target) s[k] = a[k] + (target[k]-a[k])*u; push(); }
+  };
+  const joints = q => interp({ th1:q.th1, th2:q.th2, phi:q.phi },
+    Math.max(0.5, Math.max(Math.abs(q.th1-s.th1), Math.abs(q.th2-s.th2), Math.abs(q.phi-s.phi)) / 55));
+  const zTo = (z, v=35) => { z = clampZ(z); interp({ zp:z }, Math.max(0.25, Math.abs(z - s.zp)/v)); };
+  const servo = l => interp({ lift:l }, 0.35);
+  const solve = (x, y, tk) => {
+    const t = ikTool(H, tk), phi = ikPhi(H, tk);
+    let q = ik(x, y, t, phi, P.codo);
+    if (!inLim(q)){ const q2 = ik(x, y, t, phi, -P.codo); if (inLim(q2)) q = q2; else { warns.add(`${H.tools[tk].name}: punto (${x.toFixed(0)}, ${y.toFixed(0)}) fuera de alcance.`); return null; } }
+    return q;
+  };
+  const select = tk => {                       // revólver: el servo gira el prisma (a altura de tránsito)
+    if (disc || Math.abs(s.rev - revFor(H, tk)) < 0.1){ s.tool = tk; return; }
+    const r = revFor(H, tk);
+    log.push({ f: F.length, html: `Revólver gira a ρ = ${r > 0 ? '+' : ''}${r}° → <b>${H.tools[tk].name}</b> hacia la mesa` });
+    interp({ rev: r }, 0.25 + Math.abs(r - s.rev)/300); s.tool = tk; hold(0.2);
+  };
+  const goAbove = (x, y, tk) => { select(tk); const q = solve(x, y, tk); if (!q) return false; s.tool = tk; joints(q); return true; };
+
+  phase('Inicio · posición home', disc ? 'Brazo extendido sobre +x, plumón levantado' : 'Brazo extendido sobre +x, revólver con el plumón abajo');
+  hold(0.8);
+  zTo(zTravel);
+
+  if (mode === 'mision'){
+    phase('Fase 1 · Escaneo con sensor inductivo', disc ? 'J3 gira +120° para poner el sensor al frente; se acerca a 3 mm de cada pieza'
+      : 'El servo gira el revólver +120°: el sensor apunta a la mesa; se acerca a 3 mm de cada pieza');
+    OBJ.forEach((o, i) => {
+      if (!goAbove(o.x, o.y, 'sen')) return;
+      zTo(zpFor(H, o.h + 3, 'sen'), 30);
+      s.sense = i; log.push({ f: F.length, html: `${o.name}: <span class="tag ${o.metal?'metal':'no'}">${o.metal?'METÁLICA':'no metálica'}</span>` });
+      hold(0.9); s.sense = -1;
+      zTo(zTravel);
+    });
+    phase('Fase 2 · Recolección con electroimán', disc ? 'Solo las piezas metálicas; J3 gira para poner el electroimán al frente'
+      : 'Solo las piezas metálicas; el revólver gira a −120° (electroimán abajo)');
+    let slot = 0;
+    OBJ.forEach((o, i) => {
+      if (!o.metal) return;
+      if (!goAbove(o.x, o.y, 'mag')) return;
+      zTo(zpFor(H, o.h + 0.5, 'mag'), 30);
+      s.mag = 1; s.carry = i; log.push({ f: F.length, html: `Electroimán ON → levanta ${o.name.toLowerCase()}` });
+      hold(0.5);
+      const pick = { i, f0: F.length };
+      zTo(zTravel);
+      const bx = BIN.x + (slot%2 ? 14 : -14), by = BIN.y + (slot<2 ? -10 : 10); slot++;
+      if (!goAbove(bx, by, 'mag')) return;
+      zTo(zpFor(H, BIN.h + o.h + 6, 'mag'), 30);
+      s.mag = 0; s.carry = -1; pick.f1 = F.length; pick.bin = [bx, by]; picks.push(pick);
+      log.push({ f: F.length, html: `Electroimán OFF → ${o.name.toLowerCase()} en la bandeja` });
+      hold(0.4);
+      zTo(zTravel);
+    });
+  }
+
+  const rose = roseArc(P, DT);
+  phase('Fase 3 · Trazo de la rosa con plumón', (disc ? 'J3 en 0°: el plumón queda al frente' : 'Revólver en 0°: plumón abajo, sin servo de levante') + `; ${rose.total.toFixed(0)} mm a ${P.v} mm/s`);
+  const p0 = rose.pts[0];
+  if (goAbove(p0[0], p0[1], 'pen')){
+    if (disc) servo(0);
+    zTo(zpFor(H, 8, 'pen')); zTo(zpFor(H, 0, 'pen'), 10);
+    const f0 = F.length;
+    for (const p of rose.pts){
+      const q = solve(p[0], p[1], 'pen');
+      if (q){ s.th1 = q.th1; s.th2 = q.th2; s.phi = q.phi; }
+      push();
+    }
+    log.push({ f: f0, html: `Plumón abajo: inicia la rosa (${rose.total.toFixed(0)} mm)` });
+    zTo(zpFor(H, 10, 'pen'), 20); if (disc) servo(LIFT);
+    log.push({ f: F.length, html: 'Rosa terminada, plumón arriba' });
+  }
+  phase('Regreso a home', 'Sube a altura de tránsito y vuelve a la posición inicial');
+  zTo(zTravel); joints(home); hold(0.8);
+  log.sort((a, b) => a.f - b.f);
+
+  for (const f of F){ f.tipPen = tipOf(f, H, 'pen'); f.ink = f.tipPen[2] <= 0.3; }
+  for (const p of picks){ const t = tipOf(F[p.f1 - 1], H, 'mag'); p.rel = [t[0], t[1], t[2] - OBJ[p.i].h]; }
+  return { F, phases, log, picks, warns: [...warns], rose, zTravel, H };
+}
+
+// ===================================================================================
+// Escena 3D
+// ===================================================================================
+const view = document.getElementById('view');
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+view.appendChild(renderer.domElement);
+const labelR = new CSS2DRenderer();
+labelR.domElement.style.cssText = 'position:absolute;inset:0;pointer-events:none';
+view.appendChild(labelR.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 5, 8000);
+camera.up.set(0,0,1);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7a66, 1.1));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+sun.position.set(-300, -500, 900); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left:-600, right:600, top:600, bottom:-600, near:100, far:2500 });
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, 0.45); fill.position.set(600, 400, 300); scene.add(fill);
+
+const tableMat = new THREE.MeshStandardMaterial({ color: css('--table'), roughness:0.9 });
+const table = new THREE.Mesh(new THREE.PlaneGeometry(1500, 1200), tableMat);
+table.position.set(100, 0, 0); table.receiveShadow = true; scene.add(table);
+
+// ---- materiales (los "impresos" se vuelven transparentes en rayos X)
+const std = (color, o={}) => new THREE.MeshStandardMaterial({ color, roughness:0.55, side:THREE.DoubleSide, ...o });
+const M = {
+  blue: std(0x2f7bd6), blue2: std(0x4f9be0), dark: std(0x1f4f8f), head: std(0xf4a261), prism: std(0xe9c46a),
+  yoke: std(0x3a3f45), caseM: std(0x2b6cb8),
+  pulley: std(0xeeeeee, { roughness:0.6 }), belt: std(0x1d1d1d, { roughness:0.9 }),
+  steel: std(0xc9ced4, { roughness:0.3, metalness:0.85 }), brass: std(0xb08d57, { roughness:0.4, metalness:0.6 }),
+  bearing: std(0x9aa4ad, { roughness:0.25, metalness:0.9 }),
+  motor: std(0x2b2f33, { roughness:0.5, metalness:0.4 }), motorCap: std(0xb9bec4, { roughness:0.35, metalness:0.7 }),
+  pen: std(0x1c1c1c, { roughness:0.4 }), penTip: std(0x111111, { roughness:0.8 }), penCap: std(0x9aa3ab, { roughness:0.4 }),
+  red: std(0xd1495b), mag: std(0x8a9097, { roughness:0.35, metalness:0.7 }),
+  magOn: std(0x4a4f55, { emissive:0xd1495b, emissiveIntensity:0 }),
+  sen: std(0xb8bec4, { roughness:0.3, metalness:0.8 }), senFace: std(0xe76f2c, { roughness:0.6 }),
+  led: std(0x552222, { emissive:0xff2a2a, emissiveIntensity:0 }),
+  servo: std(0x2e5aa8, { roughness:0.6 }), servoBlk: std(0x222831, { roughness:0.6 }),
+  pcbUno: std(0x0f7a8a, { roughness:0.6 }), pcbCnc: std(0x1d3c78, { roughness:0.6 }), pcbDrv: std(0x7a2a8c, { roughness:0.6 }),
+  pcbMod: std(0x1f6f3f, { roughness:0.6 }), sink: std(0xd0d5da, { roughness:0.3, metalness:0.8 }),
+  blk: std(0x161616, { roughness:0.6 }), term: std(0x2f9e4f, { roughness:0.6 }), psu: std(0xb5bcc4, { roughness:0.35, metalness:0.6 }),
+  sw: std(0x222222), swLever: std(0xd9dde2, { metalness:0.7, roughness:0.3 }),
+  hl: new THREE.MeshStandardMaterial({ color:0xff9f1c, emissive:0xff7a00, emissiveIntensity:0.55, roughness:0.4, side:THREE.DoubleSide }),
+};
+const printedMats = [M.blue, M.blue2, M.dark, M.head, M.prism, M.yoke, M.caseM];
+
+// ---- registro de piezas (nombre, origen, descripción)
+const PARTS = new Map();
+const CATS = {
+  imp: 'Estructura impresa (STL de HowToMechatronics)',
+  tra: 'Transmisión: poleas GT2 impresas y correas',
+  mec: 'Ejes y rodamientos',
+  ele: 'Motores y electrónica (HowToMechatronics)',
+  mb:  'Electrónica agregada para MathBot',
+  cab: 'Cabezal activo',
+};
+function part(id, name, cat, desc, src='htm', head=null){
+  if (!PARTS.has(id)) PARTS.set(id, { id, name, cat, desc, src, head, meshes:[] });
+  return id;
+}
+function reg(obj, id){ const p = PARTS.get(id); obj.traverse(o => { if (o.isMesh){ o.userData.part = id; p.meshes.push(o); } }); return obj; }
+
+function stlGeom(name){
+  const p = STL[name], bin = atob(p.q), n = bin.length/2, f = new Float32Array(n);
+  for (let i=0;i<n;i++){ const u = bin.charCodeAt(2*i) | (bin.charCodeAt(2*i+1)<<8), a = i%3; f[i] = p.lo[a] + u/65535*p.span[a]; }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(f,3)); g.computeVertexNormals();
+  g.computeBoundingSphere(); return g;
+}
+const geomCache = {};
+function stlMesh(name, mat){
+  const g = geomCache[name] ||= stlGeom(name);
+  const m = new THREE.Mesh(g, mat); m.castShadow = true; m.receiveShadow = true; return m;
+}
+function cylZ(r, h, mat, seg=32, r2){
+  const g = new THREE.CylinderGeometry(r2 ?? r, r, h, seg); g.rotateX(Math.PI/2); g.translate(0,0,h/2);
+  const m = new THREE.Mesh(g, mat); m.castShadow = true; return m;
+}
+function ringZ(ri, ro, h, mat, seg=40){
+  const g = new THREE.LatheGeometry([new THREE.Vector2(ri,0), new THREE.Vector2(ro,0), new THREE.Vector2(ro,h), new THREE.Vector2(ri,h), new THREE.Vector2(ri,0)], seg);
+  g.rotateX(Math.PI/2); const m = new THREE.Mesh(g, mat); m.castShadow = true; return m;
+}
+function box(w, d, h, mat){ const g = new THREE.BoxGeometry(w,d,h); g.translate(0,0,h/2); const m = new THREE.Mesh(g, mat); m.castShadow = true; return m; }
+function at(obj, x, y, z, rz=0){ obj.position.set(x, y, z); obj.rotation.z = rz; return obj; }
+function nema(len=40){
+  const g = new THREE.Group();
+  g.add(at(box(42.3, 42.3, 8, M.motorCap), 0, 0, 0)); g.add(at(box(42, 42, len-16, M.motor), 0, 0, 8)); g.add(at(box(42.3, 42.3, 8, M.motorCap), 0, 0, len-8));
+  g.add(at(cylZ(11, 2, M.motorCap), 0, 0, -2)); g.add(at(cylZ(2.5, 22, M.steel, 16), 0, 0, -22));
+  return g;                                       // cuerpo en z 0..len, eje hacia −z
+}
+function microSwitch(){ const g = new THREE.Group(); g.add(box(20, 6.4, 10.2, M.sw));
+  const lv = box(22, 0.6, 4, M.swLever); lv.position.set(2, 0, 10.2); lv.rotation.y = -0.12; g.add(lv); return g; }
+function hull(pts){
+  pts.sort((a,b) => a[0]-b[0] || a[1]-b[1]);
+  const cr = (o,a,b) => (a[0]-o[0])*(b[1]-o[1]) - (a[1]-o[1])*(b[0]-o[0]); const lo = [], up = [];
+  for (const p of pts){ while (lo.length >= 2 && cr(lo[lo.length-2], lo[lo.length-1], p) <= 0) lo.pop(); lo.push(p); }
+  for (let i = pts.length-1; i >= 0; i--){ const p = pts[i]; while (up.length >= 2 && cr(up[up.length-2], up[up.length-1], p) <= 0) up.pop(); up.push(p); }
+  up.pop(); lo.pop(); return lo.concat(up);
+}
+function beltMesh(c1, r1, c2, r2, z, w=6){
+  const pts = [];
+  for (let i=0;i<90;i++){ const a = i/90*Math.PI*2; pts.push([c1[0]+(r1+0.8)*Math.cos(a), c1[1]+(r1+0.8)*Math.sin(a)], [c2[0]+(r2+0.8)*Math.cos(a), c2[1]+(r2+0.8)*Math.sin(a)]); }
+  const h = hull(pts), pos = [];
+  for (let i=0;i<h.length;i++){ const p = h[i], q = h[(i+1)%h.length], a = z-w/2, b = z+w/2;
+    pos.push(p[0],p[1],a, q[0],q[1],a, q[0],q[1],b,  p[0],p[1],a, q[0],q[1],b, p[0],p[1],b); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.computeVertexNormals();
+  const m = new THREE.Mesh(g, M.belt); m.castShadow = true; return m;
+}
+const labels = [];
+function label(text, parent, pos, head=null){ const d = document.createElement('div'); d.className='lbl3d'; d.textContent=text;
+  const o = new CSS2DObject(d); o.position.set(...pos); o.userData.head = head; parent.add(o); labels.push(o); return o; }
+const RP = { 20:20/Math.PI, 22:22/Math.PI, 23:23/Math.PI, 80:80/Math.PI, 90:90/Math.PI, 92:92/Math.PI, 110:110/Math.PI };   // radio primitivo GT2
+
+// ---- definición de piezas
+part('base','Base','imp','Base impresa (≈32 h de impresión en el artículo). Aloja el motor de J1, la polea intermedia y la polea de 110 dientes.');
+part('j1c','J1 coupler','imp','Acople de la junta 1: gira con θ1 y carga toda la columna Z. Se une a la polea de J1 con 4 pernos M4×55.');
+part('pinf','Z-axis Bottom Plate','imp','Placa inferior de la columna Z; lleva las abrazaderas de las varillas y el rodamiento del husillo.');
+part('psup','Z-axis Top Plate','imp','Placa superior: sujeta los extremos de las varillas, el final de carrera Z y el motor Z.');
+part('plat','Z-axis Mount Platform','imp','Primera parte del brazo 1 (se atornilla a Arm 1 con 4 M5×25). Lleva los 4 rodamientos lineales, la tuerca del husillo y el motor de J2.');
+part('arm1','Arm 1','imp','Segunda parte del brazo 1: aloja las dos etapas de correa de J2 (relación 16:1).');
+part('arm1t','Arm 1 Cover','imp','Tapa a presión (snap-fit) del brazo 1.');
+part('j2c','J2 Coupler','imp','Acople de la junta 2; seis pernos M4×20 lo unen al brazo 2.');
+part('arm2','Arm 2','imp','Brazo 2: aloja la correa de J3 (400 mm) y su final de carrera.');
+part('j3c','J3 Coupler','imp','Acople de la junta 3, de él cuelga el efector final.');
+part('con','Gripper to J3 connector','imp','En el artículo une la pinza a J3. En MathBot se reutiliza como brida para cualquiera de los dos cabezales.');
+part('bcov','Base cover','imp','Tapa que oculta abrazaderas y rodamiento del husillo sobre la placa inferior (limita la bajada de la plataforma).');
+part('tcov','Top cover','imp','Tapa bajo la placa superior: oculta abrazaderas, pernos y el final de carrera Z (limita la subida).');
+part('clamp','Smooth Rod Clamp (×8)','imp','Abrazaderas (4 abajo, 4 arriba) que aprietan las varillas de 10 mm con pernos M4.');
+part('case','Arduino UNO case p1','imp','Caja impresa del Arduino UNO, se atornilla a la base.');
+part('lid','Arduino UNO case p2','imp','Tapa ventilada de la caja (deja libres los disipadores de los drivers).');
+part('p110','GT2 Pulley – 110 teeth – J1','tra','Polea de la junta 1 (impresa, PLA). Etapa 2 de J1: 110/22 = 5:1.');
+part('p2280','GT2 Pulley – 22 – 80 teeth','tra','Polea intermedia de J1 sobre dos rodamientos 608 y perno M8×45. 80 dientes ← motor; 22 dientes → polea de 110.');
+part('p2380','GT2 Pulley – 23 – 80 teeth','tra','Polea intermedia de J2 en el brazo 1. 80 dientes ← motor; 23 dientes → polea de 92.');
+part('p92','GT2 Pulley – 92 teeth – J2','tra','Polea de la junta 2. Etapa 2 de J2: 92/23 = 4:1.');
+part('p90','GT2 Pulley – 90 teeth – J3','tra','Polea de la junta 3. Una sola etapa: 90/20 = 4.5:1.');
+part('p20','GT2 Pulley – 20 teeth (paramétrica, ×3)','tra','Polea de 20 dientes impresa en los motores de J1, J2 y J3.');
+part('b200','GT2 belt 200 mm','tra','J1, etapa 1: motor (20 d) → polea intermedia (80 d). Correa cerrada.');
+part('b300','GT2 belt 300 mm (×2)','tra','J1 etapa 2 (22 → 110) y J2 etapa 2 (23 → 92).');
+part('b400','GT2 belt 400 mm (×2)','tra','J2 etapa 1 (motor → 80 d) y J3 (motor → 90 d).');
+part('rods','Smooth rod shaft – 10mm (×4)','mec','Guías de la columna Z. En el artículo miden 400 mm; aquí se recortan al largo del parámetro.');
+part('lead','Lead screw – 8mm','mec','Husillo del eje Z (en el artículo se corta a 380 mm, 20 mm menos que las varillas).');
+part('nut','Lead screw nut','mec','Tuerca del husillo fija a la plataforma Z.');
+part('coup','Shaft coupler 5 mm a 8 mm','mec','Une el eje del motor Z al husillo.');
+part('lin','Linear bearings 10mm (×4)','mec','Rodamientos lineales dentro de la plataforma Z.');
+part('t40','Thrust ball bearing 40x60x13mm (×2)','mec','J1: uno entre la polea y la base, otro bajo el acople J1.');
+part('t35','Thrust ball bearing 35x52x12mm','mec','Axiales de J2 y J3.');
+part('r35','Radial ball bearing 35x47x7mm','mec','Rodamiento radial de J1 en la base (se monta primero).');
+part('r30','Radial ball bearing 30x42x7mm','mec','Rodamientos radiales de J2 y J3.');
+part('r608','Radial ball bearing 8x22x7mm (608) (×5)','mec','Poleas intermedias (2 + 2) y rodamiento del husillo.');
+part('mJ1','Stepper Motor – NEMA 17 (J1)','ele','Motor de la base; 20:1 → 44.44 pasos/° a ¼ de paso.');
+part('mJ2','Stepper Motor – NEMA 17 (J2)','ele','Motor sobre la plataforma Z; 16:1 → 35.56 pasos/°.');
+part('mJ3','Stepper Motor – NEMA 17 corto, 24 mm (J3)','ele','Motor más corto para aligerar el brazo 2; 4.5:1 → 10 pasos/°.');
+part('mZ','Stepper Motor – NEMA 17 (Z)','ele','Mueve el husillo de 8 mm/rev → 100 pasos/mm.');
+part('ls','Limit Switch (×4)','ele','Micro switches para el homing de J1 (base), J2 (brazo 1), J3 (brazo 2) y Z (placa superior).');
+part('uno','Arduino Uno','ele','Cerebro del robot. El código de HTM usa la librería AccelStepper y el servo en A0 (gripperServo.attach(A0, 600, 2500)).');
+part('cnc','Arduino CNC Shield','ele','Escudo con 4 ranuras de driver (X, Y, Z, A) y bornes de final de carrera; jumpers para ¼ de paso.');
+part('drv','A4988 Stepper Driver (×4)','ele','Un driver por motor. Ajustar la corriente al mínimo que mueva el brazo (recomendación del artículo).');
+part('psu','DC Power Supply 12V 6A','ele','El artículo pide mínimo 12 V 4 A y sugiere 6 A.');
+part('mos','Módulo MOSFET de nivel lógico (D4184) + diodo','mb','Conmuta el electroimán de 12 V desde A1. Diodo 1N5819/1N4007 en paralelo con la bobina.','mb');
+part('buck','Convertidor DC-DC buck 12 V → 6 V','mb','Alimenta el servo del cabezal (el 5 V del Arduino no alcanza). LM2596 para el disco; XL4015 (5 A) para el servo del revólver.','mb');
+part('opto','Optoacoplador PC817','mb','Aísla la salida de 12 V del sensor inductivo NPN y la entrega al Arduino en A2.','mb');
+part('discPlate','Placa-disco del cabezal (impresa)','cab','Ø136 × 6 mm aligerada; 4 M4 al Gripper to J3 connector. Las 3 herramientas cuelgan verticales a 55/45/45 mm del eje J3.','mb','disc');
+part('discHolder','Porta-plumón con camisa y resorte (impreso)','cab','Camisa deslizante: el resorte absorbe errores de Z de ±3 mm y el micro-servo sube el plumón 18 mm.','mb','disc');
+part('sg90','Micro servo SG90 / MG90S (levante del plumón)','cab','Sube el plumón cuando se usan el sensor o el electroimán. Señal en A0 (el pin del servo de la pinza en el código de HTM).','mb','disc');
+part('revYoke','Soporte en L del revólver (impreso)','cab','Va de la brida hasta 60 mm delante de J3 y lleva el servo y el rodamiento 625. Por encima del prisma no hay nada: las herramientas pueden girar sin chocar con el brazo 2.','mb','rev');
+part('revPrism','Prisma triangular del revólver (impreso)','cab','Lado 62 mm, largo 40 mm, hueco. Una cara por herramienta; la cara activa queda paralela a la hoja.','mb','rev');
+part('revServo','Servo 270° metálico DS3218MG','cab','Gira el revólver a −120°, 0° y +120°. Reemplaza al MG996R de la pinza original; señal en A0.','mb','rev');
+part('revBear','Rodamiento 625ZZ + eje M5','cab','Apoyo del eje del prisma junto al servo (el servo no carga solo el voladizo).','mb','rev');
+part('revDet','Leva de 3 muescas + émbolo de bola','cab','Enclavamiento mecánico cada 120°: corrige la zona muerta del servo (≈1° → 1.5 mm en la punta del plumón).','mb','rev');
+part('pen','Plumón Sharpie (o lápiz)','cab','Herramienta de trazo de la curva paramétrica. Disco: Sharpie fino; revólver: Sharpie Mini (≈70 mm sin tapa).','mb');
+part('magnet','Electroimán 12 V KK-P20/15','cab','Ø20 × 15 mm, ≈2.5 kgf, ≈0.25 A. Recoge las piezas metálicas.','mb');
+part('sensor','Sensor inductivo LJ12A3-4-Z/BX','cab','M12, NPN NA, 6–36 V, detecta metal a ≤4 mm. LED de estado en la parte trasera.','mb');
+
+// ---- base (fija)
+scene.add(reg(stlMesh('base', M.dark), 'base'));
+const mJ1 = reg(nema(40), 'mJ1'); at(mJ1, -114, 34, G.H_BASE, Math.PI/4); scene.add(mJ1);
+const pJ1m = reg(stlMesh('polea_20', M.pulley), 'p20'); at(pJ1m, -114, 34, 10); scene.add(pJ1m);
+const pJ1i = reg(stlMesh('polea_22_80', M.pulley), 'p2280'); at(pJ1i, -79, 0, 13); scene.add(pJ1i);
+scene.add(reg(beltMesh([-114,34], RP[20], [-79,0], RP[80], 18), 'b200'));
+scene.add(reg(beltMesh([-79,0], RP[22], [0,0], RP[110], 28.2), 'b300'));
+for (const z of [1, 38]) scene.add(reg(at(ringZ(4, 11, 7, M.bearing), -79, 0, z), 'r608'));
+scene.add(reg(at(ringZ(17.5, 23.5, 5, M.bearing), 0, 0, 40), 'r35'));
+scene.add(reg(at(ringZ(20, 30, 6.5, M.bearing), 0, 0, 33.5), 't40'));
+scene.add(reg(at(microSwitch(), 22, -63, G.H_BASE), 'ls'));
+// electrónica: caja del Arduino detrás de la base, fuente sobre la mesa, módulos MathBot sobre la base
+const CX = -188.5;
+scene.add(reg(at(stlMesh('caja_uno', M.caseM), CX, 0, 0), 'case'));
+scene.add(reg(at(stlMesh('tapa_uno', M.caseM), CX, 0, 5), 'lid'));
+{ const uno = new THREE.Group(); at(uno, CX, 0, 4);
+  uno.add(box(53.3, 68.6, 1.6, M.pcbUno));
+  uno.add(at(box(12, 16, 11, M.steel), -14, -28, 1.6)); uno.add(at(box(9, 13.5, 11, M.blk), 14, -28, 1.6));
+  uno.add(at(box(8, 35, 4, M.blk), 0, 8, 1.6));
+  for (const x of [-24.5, 24.5]) uno.add(at(box(2.6, 50, 8.5, M.blk), x, 6, 1.6));
+  scene.add(reg(uno, 'uno'));
+  const cnc = new THREE.Group(); at(cnc, CX, 0, 14.1);
+  cnc.add(box(53, 69, 1.6, M.pcbCnc)); cnc.add(at(box(10, 8, 9, M.term), -16, -30, 1.6)); cnc.add(at(box(40, 3, 9, M.blk), 4, 31, 1.6));
+  scene.add(reg(cnc, 'cnc'));
+  [['X',-12,-12],['Y',12,-12],['Z',-12,14],['A',12,14]].forEach(([n,x,y]) => {
+    const d = new THREE.Group(); at(d, CX + x, y, 25.7);
+    d.add(box(15.2, 20.3, 1.6, M.pcbDrv)); d.add(at(box(9, 9, 6, M.sink), 0, 0, 2.6)); scene.add(reg(d, 'drv'));
+    label(n, d, [0, 0, 14]); });
+  scene.add(reg(at(box(110, 58, 34, M.psu), -205, -150, 0), 'psu'));
+  const mos = new THREE.Group(); mos.add(box(33, 24, 1.6, M.pcbMod)); mos.add(at(box(10, 4.5, 9, M.blk), 4, 0, 1.6)); mos.add(at(box(8, 7, 9, M.term), -11, 0, 1.6));
+  scene.add(reg(at(mos, -92, -50, G.H_BASE), 'mos'));
+  const bk = new THREE.Group(); bk.add(box(48, 23, 1.6, M.pcbMod)); bk.add(at(cylZ(6, 9, M.blk), 8, 4, 1.6)); bk.add(at(box(12, 12, 7, M.blk), -12, 0, 1.6));
+  scene.add(reg(at(bk, -126, -48, G.H_BASE), 'buck'));
+  const op = new THREE.Group(); op.add(box(22, 15, 1.6, M.pcbMod)); op.add(at(box(6.5, 4.6, 3.5, M.blk), 0, 0, 1.6));
+  scene.add(reg(at(op, -96, -22, G.H_BASE), 'opto'));
+}
+
+// ---- columna (gira con θ1)
+const col = new THREE.Group(); scene.add(col);
+col.add(reg(at(stlMesh('polea_110', M.pulley), 0, 0, 22.6), 'p110'));
+col.add(reg(at(stlMesh('j1_coupler', M.blue), 0, 0, G.H_BASE), 'j1c'));
+col.add(reg(at(ringZ(20, 30, 12, M.bearing), 0, 0, G.H_BASE + 3), 't40'));
+col.add(reg(at(stlMesh('placa_inf', M.blue), 0, 0, G.ZROD0), 'pinf'));
+col.add(reg(at(stlMesh('tapa_base', M.blue2), 0, 0, G.ZROD0 + G.H_PINF), 'bcov'));
+col.add(reg(at(ringZ(4, 11, 7, M.bearing), 33, 0, G.ZROD0 + 2), 'r608'));
+const RODS = [[33.6,33.6],[33.6,-33.6],[-33.6,33.6],[-33.6,-33.6]];
+for (const [x,y] of RODS) col.add(reg(at(stlMesh('abrazadera', M.blue2), x, y, G.ZROD0 + G.H_PINF, Math.atan2(y,x) - Math.PI/2), 'clamp'));
+const rods = new THREE.Group(); col.add(rods);
+const colTop = new THREE.Group(); col.add(colTop);                    // cuelga de la placa superior (z = 0 en su cara inferior)
+colTop.add(reg(at(stlMesh('placa_sup', M.blue), 0, 0, 0), 'psup'));
+colTop.add(reg(at(stlMesh('tapa_sup', M.blue2), 0, 0, -G.H_TCOV), 'tcov'));
+for (const [x,y] of RODS) colTop.add(reg(at(stlMesh('abrazadera', M.blue2), x, y, -14, Math.atan2(y,x) - Math.PI/2), 'clamp'));
+colTop.add(reg(at(microSwitch(), -30, 40, -12), 'ls'));
+colTop.add(reg(at(cylZ(9.5, 25, M.steel), 33, 0, -25), 'coup'));
+colTop.add(reg(at(nema(40), 33, 0, G.H_PSUP), 'mZ'));
+label('J1', col, [0, 0, G.ZROD0 + 40]);
+
+// ---- plataforma Z + brazo 1
+const plat = new THREE.Group(); col.add(plat);
+plat.add(reg(stlMesh('plataforma', M.blue), 'plat'));
+for (const [x,y] of RODS) plat.add(reg(at(ringZ(5, 9.5, 29, M.bearing), x, y, 8), 'lin'));
+plat.add(reg(at(cylZ(11, 3, M.brass), 33, 0, G.H_PLAT), 'nut')); plat.add(reg(at(cylZ(6, 14, M.brass), 33, 0, G.H_PLAT - 14), 'nut'));
+plat.add(reg(at(nema(40), -10, 0, G.H_PLAT), 'mJ2'));
+const pJ2m = reg(stlMesh('polea_20', M.pulley), 'p20'); at(pJ2m, -10, 0, 17.9); plat.add(pJ2m);
+const pJ2i = reg(stlMesh('polea_23_80', M.pulley), 'p2380'); at(pJ2i, 138, 0, 12.1); plat.add(pJ2i);
+for (const z of [3, 38]) plat.add(reg(at(ringZ(4, 11, 7, M.bearing), 138, 0, z), 'r608'));
+plat.add(reg(beltMesh([-10,0], RP[20], [138,0], RP[80], 25.9), 'b400'));
+plat.add(reg(beltMesh([138,0], RP[23], [228,0], RP[92], 15.7), 'b300'));
+plat.add(reg(at(ringZ(15, 21, 7, M.bearing), G.L1, 0, 3), 'r30'));
+plat.add(reg(at(microSwitch(), 192, 24, 8, Math.PI), 'ls'));
+plat.add(reg(at(stlMesh('arm1', M.blue), 0, 0, G.H_PLAT - G.H_ARM1), 'arm1'));
+plat.add(reg(at(stlMesh('arm1_tapa', M.blue2), 0, 0, G.H_PLAT), 'arm1t'));
+
+// ---- junta 2 + brazo 2
+const j2g = new THREE.Group(); j2g.position.set(G.L1, 0, G.H_PLAT - G.H_ARM1); plat.add(j2g);
+const ZA2 = -G.H_J2C - G.H_ARM2;                                       // cara inferior del brazo 2 (−55)
+j2g.add(reg(at(stlMesh('polea_92', M.pulley), 0, 0, -3), 'p92'));
+j2g.add(reg(at(ringZ(17.5, 26, 12, M.bearing), 0, 0, -14), 't35'));
+j2g.add(reg(at(stlMesh('j2_coupler', M.dark), 0, 0, -G.H_J2C), 'j2c'));
+j2g.add(reg(at(stlMesh('arm2', M.blue2), 0, 0, ZA2), 'arm2'));
+const mJ3 = reg(nema(24), 'mJ3'); mJ3.rotation.x = Math.PI; mJ3.position.set(0, 0, ZA2); j2g.add(mJ3);
+const pJ3m = reg(stlMesh('polea_20', M.pulley), 'p20'); at(pJ3m, 0, 0, -49.8); j2g.add(pJ3m);
+j2g.add(reg(beltMesh([0,0], RP[20], [G.L2,0], RP[90], -41.8), 'b400'));
+j2g.add(reg(at(ringZ(15, 21, 7, M.bearing), G.L2, 0, ZA2), 'r30'));
+j2g.add(reg(at(microSwitch(), 112, 22, ZA2 + 4), 'ls'));
+label('J2', j2g, [0, 0, 22]);
+
+// ---- junta 3 (cabezales)
+const j3g = new THREE.Group(); j3g.position.set(G.L2, 0, ZA2); j2g.add(j3g);
+j3g.add(reg(at(stlMesh('polea_90', M.pulley), 0, 0, -3), 'p90'));
+j3g.add(reg(at(ringZ(17.5, 26, 12, M.bearing), 0, 0, -14), 't35'));
+j3g.add(reg(at(stlMesh('j3_coupler', M.dark), 0, 0, -G.H_J3C), 'j3c'));
+j3g.add(reg(at(stlMesh('conector_j3', M.dark), 0, 0, ZH), 'con'));
+label('J3', j3g, [0, 0, 12]);
+
+// Cabezal A: disco con herramientas verticales
+const headDisc = new THREE.Group(); j3g.add(headDisc);
+{ const H = HEADS.disc, polar = t => [t.r*Math.cos(rad(t.phi)), t.r*Math.sin(rad(t.phi))];
+  headDisc.add(reg(at(cylZ(68, G.PLATE, M.head, 48), 0, 0, ZH - G.PLATE), 'discPlate'));
+  const pb = new THREE.Group(); at(pb, ...polar(H.tools.pen), 0); headDisc.add(pb);
+  pb.add(reg(at(cylZ(9.5, 34, M.head, 24), 0, 0, ZH - G.PLATE - 14), 'discHolder'));
+  pb.add(reg(at(box(12, 23, 22, M.servo), 0, 18, ZH), 'sg90'));
+  const mov = new THREE.Group(); pb.add(mov); headDisc.userData.penMov = mov;
+  const tz = ZH - G.PLATE - H.tools.pen.below;
+  mov.add(reg(at(cylZ(0.8, 9, M.penTip, 16, 3.2), 0, 0, tz), 'pen')); mov.add(reg(at(cylZ(5, 6, M.penCap, 24), 0, 0, tz + 9), 'pen'));
+  mov.add(reg(at(cylZ(6, 112, M.pen, 24), 0, 0, tz + 15), 'pen')); mov.add(reg(at(cylZ(6.2, 10, M.red, 24), 0, 0, tz + 95), 'pen'));
+  const mg = new THREE.Group(); at(mg, ...polar(H.tools.mag), 0); headDisc.add(mg);
+  mg.add(reg(at(cylZ(3, 25, M.steel, 16), 0, 0, ZH - G.PLATE - 25), 'magnet'));
+  mg.add(reg(at(cylZ(10, 13, M.mag, 32), 0, 0, ZH - G.PLATE - 38), 'magnet'));
+  mg.add(reg(at(cylZ(10.2, 2, M.magOn, 32), 0, 0, ZH - G.PLATE - 40), 'magnet'));
+  const sg = new THREE.Group(); at(sg, ...polar(H.tools.sen), 0); headDisc.add(sg);
+  sg.add(reg(at(cylZ(6, 52, M.sen, 24), 0, 0, ZH - G.PLATE - 35), 'sensor'));
+  sg.add(reg(at(cylZ(6.1, 3, M.senFace, 24), 0, 0, ZH - G.PLATE - 38), 'sensor'));
+  for (const z of [ZH - G.PLATE - 7, ZH + 0.5]) sg.add(reg(at(cylZ(9, 5, M.steel, 6), 0, 0, z), 'sensor'));
+  sg.add(reg(at(new THREE.Mesh(new THREE.SphereGeometry(3.2, 16, 12), M.led), 0, 0, ZH + 20), 'sensor'));
+  label('Plumón', pb, [0, 0, ZH - 70], 'disc'); label('Electroimán', mg, [0, 0, ZH - 60], 'disc'); label('Sensor', sg, [0, 0, ZH - 60], 'disc');
+}
+
+// Cabezal B: revólver triangular en voladizo (eje a lo largo del brazo 2)
+const headRev = new THREE.Group(); j3g.add(headRev);
+const revG = new THREE.Group();                                         // gira con ρ alrededor del eje X local
+{ const H = HEADS.rev, zAx = ZH - H.DAX, x0 = H.OFF - H.LEN/2;
+  const yk = new THREE.Group(); headRev.add(yk);                        // soporte en L
+  yk.add(at(box(x0 + 8, 52, 5, M.yoke), (x0 - 8)/2, 0, ZH - 5));
+  yk.add(at(box(6, 34, ZH - 5 - (zAx - 16), M.yoke), x0 - 6, 0, zAx - 16));
+  reg(yk, 'revYoke');
+  const sv = new THREE.Group(); headRev.add(sv);                        // servo, eje coaxial con el revólver
+  sv.add(at(box(38, 20, 40, M.servoBlk), x0 - 28, 0, zAx - 30)); sv.add(at(box(4, 20, 54, M.servoBlk), x0 - 13, 0, zAx - 37));
+  reg(sv, 'revServo');
+  const sh = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 2.5, H.LEN + 10, 16), M.steel); sh.rotation.z = Math.PI/2; sh.position.set(H.OFF - 5, 0, zAx);
+  headRev.add(reg(sh, 'revBear'));
+  const br = ringZ(2.5, 8, 5, M.bearing); br.rotation.y = Math.PI/2; br.position.set(x0 - 3, 0, zAx); headRev.add(reg(br, 'revBear'));
+  headRev.add(reg(at(cylZ(2.5, 10, M.brass, 12), x0 - 3, 0, zAx + 15), 'revDet'));
+  revG.position.set(0, 0, zAx); headRev.add(revG);
+  const tri = new THREE.Shape(), Rc = 2*H.RIN;                          // triángulo equilátero, cara inferior a RIN del eje
+  [90, 210, 330].forEach((a, i) => { const p = [Rc*Math.cos(rad(a)), Rc*Math.sin(rad(a))]; i ? tri.lineTo(...p) : tri.moveTo(...p); }); tri.closePath();
+  const hole = new THREE.Path(); hole.absarc(0, 0, 3, 0, Math.PI*2, true); tri.holes.push(hole);
+  const pg = new THREE.ExtrudeGeometry(tri, { depth:H.LEN, bevelEnabled:true, bevelThickness:1.5, bevelSize:1.5, bevelSegments:2 });
+  pg.applyMatrix4(new THREE.Matrix4().set(0,0,1,0, 1,0,0,0, 0,1,0,0, 0,0,0,1)); pg.translate(x0, 0, 0);
+  const prism = new THREE.Mesh(pg, M.prism); prism.castShadow = true; revG.add(reg(prism, 'revPrism'));
+  const cam = new THREE.Mesh(new THREE.CylinderGeometry(14, 14, 3, 3), M.prism); cam.rotation.z = Math.PI/2; cam.position.x = x0 - 1; revG.add(reg(cam, 'revDet'));
+  const toolG = t => { const g = new THREE.Group(); g.position.x = H.OFF; g.rotation.x = rad(t.a); revG.add(g); return g; };
+  const r0 = -H.RIN, L = H.tools.pen.reach, Lm = H.tools.mag.reach, Ls = H.tools.sen.reach;
+  const tp = toolG(H.tools.pen);
+  tp.add(reg(at(cylZ(9.5, 22, M.prism, 24), 0, 0, r0 - 22), 'revPrism'));
+  tp.add(reg(at(cylZ(0.8, 9, M.penTip, 16, 3.2), 0, 0, -L), 'pen')); tp.add(reg(at(cylZ(5, 6, M.penCap, 24), 0, 0, -L + 9), 'pen'));
+  tp.add(reg(at(cylZ(6, L - 15 - H.RIN + 4, M.pen, 24), 0, 0, -L + 15), 'pen'));
+  const tm = toolG(H.tools.mag);
+  tm.add(reg(at(cylZ(3, 5, M.steel, 16), 0, 0, r0 - 5), 'magnet'));
+  tm.add(reg(at(cylZ(10, 13, M.mag, 32), 0, 0, -Lm + 2), 'magnet'));
+  tm.add(reg(at(cylZ(10.2, 2, M.magOn, 32), 0, 0, -Lm), 'magnet'));
+  const ts = toolG(H.tools.sen);
+  ts.add(reg(at(cylZ(6, Ls - 9, M.sen, 24), 0, 0, -Ls + 3), 'sensor'));
+  ts.add(reg(at(cylZ(6.1, 3, M.senFace, 24), 0, 0, -Ls), 'sensor'));
+  ts.add(reg(at(cylZ(9, 5, M.steel, 6), 0, 0, r0 - 5), 'sensor'));
+  const led = new THREE.Mesh(new THREE.SphereGeometry(3, 16, 12), M.led); led.position.set(9, 0, r0 - 3); ts.add(reg(led, 'sensor'));
+  label('Plumón', tp, [0, 0, -L - 6], 'rev'); label('Electroimán', tm, [0, 0, -Lm - 6], 'rev'); label('Sensor', ts, [0, 0, -Ls - 6], 'rev');
+}
+
+// ---- mesa: papel con tinta, guía, alcance, piezas y bandeja
+const PAPER = { w:216, h:279, px:2.2 };
+const inkCan = document.createElement('canvas');
+inkCan.width = Math.round(PAPER.w*PAPER.px*2); inkCan.height = Math.round(PAPER.h*PAPER.px*2);
+const ink = inkCan.getContext('2d');
+const inkTex = new THREE.CanvasTexture(inkCan); inkTex.colorSpace = THREE.SRGBColorSpace; inkTex.anisotropy = 4;
+const paper = new THREE.Mesh(new THREE.PlaneGeometry(PAPER.w, PAPER.h), new THREE.MeshStandardMaterial({ map: inkTex, roughness:0.95 }));
+paper.position.z = 0.2; paper.receiveShadow = true; scene.add(paper);
+let paperFrame = { cx:0, cy:0, a:0 };
+const guide = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineDashedMaterial({ color:0x8a8f96, dashSize:3, gapSize:3 }));
+guide.position.z = 0.5; scene.add(guide);
+const ws = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ color:0x4f9be0, transparent:true, opacity:0.12, side:THREE.DoubleSide, depthWrite:false }));
+ws.position.z = 0.35; scene.add(ws);
+const tipMark = new THREE.Mesh(new THREE.RingGeometry(3, 5, 24), new THREE.MeshBasicMaterial({ color:0xd1495b, transparent:true, opacity:0.8 }));
+tipMark.position.z = 0.6; scene.add(tipMark);
+
+const objMeshes = OBJ.map(o => {
+  const mat = new THREE.MeshStandardMaterial({ color:o.color, roughness: o.metal?0.3:0.7, metalness: o.metal?0.8:0 });
+  let m;
+  if (o.kind === 'washer'){
+    const sh = new THREE.Shape(); sh.absarc(0,0,o.r,0,Math.PI*2); const hole = new THREE.Path(); hole.absarc(0,0,6.5,0,Math.PI*2,true); sh.holes.push(hole);
+    m = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth:o.h, bevelEnabled:false, curveSegments:32 }), mat);
+  } else if (o.kind === 'nut') m = cylZ(o.r, o.h, mat, 6);
+  else if (o.kind === 'block') m = box(2*o.r, 2*o.r, o.h, mat);
+  else m = cylZ(o.r, o.h, mat, 32);
+  m.castShadow = true; m.receiveShadow = true; scene.add(m); return m;
+});
+const binG = new THREE.Group(); binG.position.set(BIN.x, BIN.y, 0); scene.add(binG);
+{ const bm = new THREE.MeshStandardMaterial({ color:0x3d6b4f, roughness:0.7, side:THREE.DoubleSide });
+  binG.add(box(BIN.w, BIN.d, 2, bm));
+  for (const [x,y,w,d] of [[0,-BIN.d/2,BIN.w,2],[0,BIN.d/2,BIN.w,2],[-BIN.w/2,0,2,BIN.d],[BIN.w/2,0,2,BIN.d]]){ const wl = box(w,d,BIN.h,bm); wl.position.set(x,y,0); binG.add(wl); }
+  label('Bandeja metales', binG, [0, 0, BIN.h + 12]); }
+
+// ===================================================================================
+// Estado, parámetros y reconstrucción
+// ===================================================================================
+const P = { rod:220, D:185, alpha:180, v:25, codo:-1 };
+let H = HEADS.disc, mode = 'mision', TL = null, simT = 0, playing = true, speed = 2, lastInkF = -1, follow = false;
+let plotCache = null, lastLogN = -1, selected = null, camAnim = null;
+const manual = { th1:30, th2:-110, phi:0, zp:160, lift:LIFT, rev:0, tool:'pen' };
+const show = { ws:true, ghost:true, xray:false, labels:true, guide:true };
+
+function rebuildRobotZ(){
+  rods.clear();
+  for (const [x,y] of RODS){ const r = cylZ(5, P.rod, M.steel, 20); r.position.set(x,y,G.ZROD0); rods.add(reg(r, 'rods')); }
+  const ls = cylZ(4, P.rod - 35, M.brass, 16); ls.position.set(33, 0, G.ZROD0 + 2); rods.add(reg(ls, 'lead'));
+  colTop.position.z = G.ZROD0 + P.rod - G.H_PSUP;
+  for (const p of PARTS.values()) p.meshes = p.meshes.filter(m => m.parent);   // descarta varillas viejas
+}
+function rebuildTable(){
+  const xs = [], ys = [];
+  for (let i=0;i<=400;i++){ const [x,y] = roseLocal(ROSE.T0 + (ROSE.T1-ROSE.T0)*i/400); xs.push(x); ys.push(y); }
+  const lc = [(Math.min(...xs)+Math.max(...xs))/2, (Math.min(...ys)+Math.max(...ys))/2];
+  const a = rad(P.alpha);
+  const c = [Math.cos(a)*lc[0] - Math.sin(a)*lc[1] + P.D, Math.sin(a)*lc[0] + Math.cos(a)*lc[1]];
+  paperFrame = { cx:c[0], cy:c[1], a };
+  paper.position.set(c[0], c[1], 0.2); paper.rotation.z = a;
+  guide.geometry.dispose(); guide.geometry = new THREE.BufferGeometry().setFromPoints(TL.rose.guide.map(p => new THREE.Vector3(p[0], p[1], 0))); guide.computeLineDistances();
+  const { le } = toolEq(ikTool(H, 'pen'), 0);
+  const rin = Math.sqrt(G.L1**2 + le**2 + 2*G.L1*le*Math.cos(rad(140)));
+  ws.geometry.dispose(); ws.geometry = new THREE.RingGeometry(rin, G.L1 + le, 160, 1, rad(-150), rad(300));
+}
+function rebuild(keepT=false){
+  const frac = TL ? simT / (TL.F.length*DT) : 0;
+  TL = buildTimeline(P, mode === 'rosa' ? 'rosa' : 'mision', H);
+  simT = keepT ? frac * TL.F.length*DT : 0;
+  rebuildRobotZ(); rebuildTable(); clearInk();
+  const [zmin, zmax] = zRange(P.rod), zd = zpFor(H, 0, 'pen');
+  document.getElementById('zinfo').innerHTML =
+    `Carrera de la plataforma (entre Base cover y Top cover): <b>${zmin.toFixed(0)}–${zmax.toFixed(0)} mm</b>. ` +
+    `Para dibujar con el cabezal ${H.key === 'disc' ? 'A' : 'B'} la plataforma va a <b>${zd.toFixed(1)} mm</b>. ` +
+    `Varilla mínima: A ${rodMinOf(HEADS.disc)} mm · B ${rodMinOf(HEADS.rev)} mm (original 400 mm).`;
+  const mz = document.getElementById('m_zp'); mz.min = zmin; mz.max = zmax;
+  manual.zp = Math.min(Math.max(manual.zp, zmin), zmax);
+  document.getElementById('scrub').max = TL.F.length - 1;
+  plotCache = null; lastLogN = -1;
+}
+
+function setHead(key){
+  H = HEADS[key];
+  headDisc.visible = key === 'disc'; headRev.visible = key === 'rev';
+  document.querySelectorAll('#heads button').forEach(b => b.classList.toggle('on', b.dataset.head === key));
+  document.getElementById('rowLift').style.display = key === 'disc' ? '' : 'none';
+  document.getElementById('rowRev').style.display = key === 'rev' ? '' : 'none';
+  document.getElementById('headNote').innerHTML = key === 'disc'
+    ? `Herramientas verticales en un disco bajo J3. Para cambiar de herramienta gira <b>J3</b> ±120° y el plumón tiene su micro-servo de levante. Varillas mínimas: ${rodMinOf(HEADS.disc)} mm.`
+    : `Prisma triangular 60 mm delante de J3, con su eje a lo largo del brazo 2. Un <b>servo de 270°</b> lo gira −120° / 0° / +120° y deja una cara (con su herramienta) hacia la hoja. J3 queda fijo y el plumón sube con Z. Necesita ${HEADS.rev.DAX + HEADS.rev.tools.pen.reach - G.PLATE - HEADS.disc.tools.pen.below} mm más de altura: varillas mínimas ${rodMinOf(HEADS.rev)} mm.`;
+  manual.lift = key === 'disc' ? LIFT : 0; manual.rev = revFor(H, manual.tool); manual.phi = key === 'disc' ? wrap(-HEADS.disc.tools[manual.tool].phi) : 0;
+  if (P.rod < rodMinOf(H)){ P.rod = rodMinOf(H) + 10; document.getElementById('p_rod').value = P.rod; document.getElementById('v_rod').textContent = P.rod + ' mm'; }
+  rebuild(); renderParts(); renderBOM(); syncManualInputs(); updateLabels();
+}
+
+// ===================================================================================
+// Aplicar un estado al modelo 3D
+// ===================================================================================
+function frameIndex(){ return mode === 'manual' ? -1 : Math.max(0, Math.min(TL.F.length-1, Math.floor(simT/DT))); }
+function currentState(){ return mode === 'manual' ? { ...manual, mag:0, carry:-1, sense:-1, ph:-1 } : TL.F[frameIndex()]; }
+
+function applyState(s){
+  col.rotation.z = rad(s.th1);
+  plat.position.z = s.zp;
+  j2g.rotation.z = rad(s.th2);
+  j3g.rotation.z = rad(s.phi);
+  headDisc.userData.penMov.position.z = s.lift;
+  revG.rotation.x = rad(s.rev);
+  pJ1i.rotation.z = rad(s.th1*110/22); pJ1m.rotation.z = rad(s.th1*20);        // giro visual de las poleas
+  pJ2i.rotation.z = rad(s.th2*92/23);  pJ2m.rotation.z = rad(s.th2*16);
+  pJ3m.rotation.z = rad(s.phi*4.5);
+  M.magOn.emissiveIntensity = s.mag ? 1.2 : 0; M.magOn.color.set(s.mag ? 0xd1495b : 0x4a4f55);
+  const metalHit = s.sense >= 0 && OBJ[s.sense].metal;
+  M.led.emissiveIntensity = metalHit ? 2.5 : 0; M.led.color.set(metalHit ? 0xff3030 : 0x552222);
+  const t = tipOf(s, H, s.tool || 'pen');
+  tipMark.position.set(t[0], t[1], 0.6);
+  const f = frameIndex();
+  OBJ.forEach((o, i) => {
+    let pos = [o.x, o.y, 0];
+    const p = f >= 0 && TL.picks.find(p => p.i === i);
+    if (p){
+      if (f >= p.f0 - Math.round(0.5/DT) && f < p.f1){ const tm = tipOf(s, H, 'mag'); pos = [tm[0], tm[1], tm[2] - o.h]; }
+      else if (f >= p.f1){ const u = Math.min(1, (f - p.f1)*DT/0.35);
+        pos = [p.rel[0] + (p.bin[0]-p.rel[0])*u, p.rel[1] + (p.bin[1]-p.rel[1])*u, p.rel[2] + (2 - p.rel[2])*u*u]; }
+    }
+    objMeshes[i].position.set(...pos);
+    if (o.kind === 'block' || o.kind === 'nut') objMeshes[i].rotation.z = 0.3;
+  });
+  if (f >= 0) drawInkTo(f);
+}
+
+function paperPx(x, y){
+  const dx = x - paperFrame.cx, dy = y - paperFrame.cy, c = Math.cos(-paperFrame.a), s = Math.sin(-paperFrame.a);
+  const u = c*dx - s*dy, v = s*dx + c*dy;
+  return [(u + PAPER.w/2)/PAPER.w*inkCan.width, (PAPER.h/2 - v)/PAPER.h*inkCan.height];
+}
+function clearInk(){
+  ink.fillStyle = '#fbfaf5'; ink.fillRect(0,0,inkCan.width,inkCan.height);
+  ink.strokeStyle = '#dcd6c4'; ink.lineWidth = 1;
+  for (let x=0;x<=PAPER.w;x+=10){ const X = x/PAPER.w*inkCan.width; ink.beginPath(); ink.moveTo(X,0); ink.lineTo(X,inkCan.height); ink.stroke(); }
+  for (let y=0;y<=PAPER.h;y+=10){ const Y = y/PAPER.h*inkCan.height; ink.beginPath(); ink.moveTo(0,Y); ink.lineTo(inkCan.width,Y); ink.stroke(); }
+  lastInkF = -1; inkTex.needsUpdate = true;
+}
+function drawInkTo(f){
+  if (f < lastInkF) clearInk();
+  if (f === lastInkF) return;
+  ink.strokeStyle = '#141414'; ink.lineWidth = 1.1*PAPER.px*2; ink.lineCap = 'round'; ink.lineJoin = 'round';
+  ink.beginPath(); let drew = false;
+  for (let i = Math.max(1, lastInkF); i <= f; i++){
+    const a = TL.F[i-1], b = TL.F[i];
+    if (a.ink && b.ink){ ink.moveTo(...paperPx(a.tipPen[0], a.tipPen[1])); ink.lineTo(...paperPx(b.tipPen[0], b.tipPen[1])); drew = true; }
+  }
+  if (drew){ ink.stroke(); inkTex.needsUpdate = true; }
+  lastInkF = f;
+}
+
+// ===================================================================================
+// Paneles 2D
+// ===================================================================================
+const topC = document.getElementById('top'), tctx = topC.getContext('2d');
+const VIEW2D = { x0:-250, x1:450, y0:-310, y1:300 };
+function scale2D(){ return Math.min(topC.width/(VIEW2D.x1-VIEW2D.x0), topC.height/(VIEW2D.y1-VIEW2D.y0)); }
+function origin2D(){ const s = scale2D(); return [(topC.width - s*(VIEW2D.x1-VIEW2D.x0))/2, (topC.height - s*(VIEW2D.y1-VIEW2D.y0))/2]; }
+function w2c(x, y){ const s = scale2D(), [ox, oy] = origin2D(); return [ox + (x - VIEW2D.x0)*s, topC.height - oy - (y - VIEW2D.y0)*s]; }
+function c2w(cx, cy){ const s = scale2D(), [ox, oy] = origin2D(); return [(cx - ox)/s + VIEW2D.x0, (topC.height - oy - cy)/s + VIEW2D.y0]; }
+function drawLinks(ctx, s, alpha=1, thin=false){
+  const k = fk(s.th1, s.th2, s.phi), sc = scale2D();
+  const P0 = w2c(0,0), P2 = w2c(...k.j2), P3 = w2c(...k.j3);
+  ctx.globalAlpha = alpha; ctx.lineCap = 'round';
+  ctx.strokeStyle = '#2f6db5'; ctx.lineWidth = thin ? 2 : 78*sc*0.55; ctx.beginPath(); ctx.moveTo(...P0); ctx.lineTo(...P2); ctx.stroke();
+  ctx.strokeStyle = '#4f9be0'; ctx.lineWidth = thin ? 2 : 78*sc*0.45; ctx.beginPath(); ctx.moveTo(...P2); ctx.lineTo(...P3); ctx.stroke();
+  if (!thin){
+    ctx.strokeStyle = '#f4a261'; ctx.lineWidth = 2;
+    if (H.key === 'disc'){ ctx.beginPath(); ctx.arc(P3[0], P3[1], 68*sc, 0, Math.PI*2); ctx.stroke(); }
+    else {                                                        // huella del soporte y del prisma
+      const c = Math.cos(k.psi), sn = Math.sin(k.psi), pt = (u, v) => w2c(k.j3[0] + c*u - sn*v, k.j3[1] + sn*u + c*v);
+      const x0 = H.OFF - H.LEN/2, x1 = H.OFF + H.LEN/2, hw = 31;
+      ctx.fillStyle = 'rgba(233,196,106,.55)'; ctx.beginPath(); [[x0,-hw],[x1,-hw],[x1,hw],[x0,hw]].forEach((q,i) => i ? ctx.lineTo(...pt(...q)) : ctx.moveTo(...pt(...q))); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(...P3); ctx.lineTo(...pt(x0, 0)); ctx.stroke();
+    }
+    for (const tk of ['pen','mag','sen']){
+      const t = H.tools[tk], q = w2c(...tipOf(s, H, tk));
+      ctx.strokeStyle = '#999'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(...P3); ctx.lineTo(...q); ctx.stroke();
+      ctx.fillStyle = t.color; ctx.beginPath(); ctx.arc(q[0], q[1], (tk==='pen'?6:9)*sc + 1.5, 0, Math.PI*2); ctx.fill();
+      if (tk === (s.tool || 'pen')){ ctx.strokeStyle = t.color; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(q[0], q[1], 16*sc + 3, 0, Math.PI*2); ctx.stroke(); }
+    }
+    ctx.fillStyle = '#fff'; ctx.strokeStyle = '#222'; ctx.lineWidth = 1.5;
+    for (const p of [P0, P2, P3]){ ctx.beginPath(); ctx.arc(p[0], p[1], 5, 0, Math.PI*2); ctx.fill(); ctx.stroke(); }
+  }
+  ctx.globalAlpha = 1;
+}
+function drawTop(s){
+  const ctx = tctx, sc = scale2D();
+  ctx.fillStyle = css('--bg'); ctx.fillRect(0, 0, topC.width, topC.height);
+  ctx.strokeStyle = css('--line'); ctx.lineWidth = 1; ctx.font = '18px system-ui'; ctx.fillStyle = css('--muted');
+  for (let x=-200;x<=400;x+=100){ const a = w2c(x, VIEW2D.y0), b = w2c(x, VIEW2D.y1); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.stroke(); ctx.fillText(x, a[0]+3, a[1]-6); }
+  for (let y=-300;y<=300;y+=100){ const a = w2c(VIEW2D.x0, y), b = w2c(VIEW2D.x1, y); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.stroke(); ctx.fillText(y, a[0]+3, a[1]-4); }
+  if (show.ws){
+    const { le } = toolEq(ikTool(H, 'pen'), 0), rin = Math.sqrt(G.L1**2 + le**2 + 2*G.L1*le*Math.cos(rad(140)));
+    const o = w2c(0,0); ctx.fillStyle = 'rgba(79,155,224,0.13)'; ctx.strokeStyle = 'rgba(79,155,224,0.6)';
+    ctx.beginPath(); ctx.arc(o[0], o[1], (G.L1+le)*sc, rad(150), rad(-150), true); ctx.arc(o[0], o[1], rin*sc, rad(-150), rad(150), false); ctx.closePath(); ctx.fill(); ctx.stroke();
+  }
+  ctx.fillStyle = 'rgba(31,79,143,0.35)'; ctx.strokeStyle = '#1f4f8f'; ctx.lineWidth = 1.5;
+  { const a = w2c(-150, 70), b = w2c(-5, -70), o = w2c(-5, 0); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(o[0], a[1]);
+    ctx.arc(o[0], o[1], 70*sc, -Math.PI/2, Math.PI/2); ctx.lineTo(a[0], b[1]); ctx.closePath(); ctx.fill(); ctx.stroke();
+    const c1 = w2c(-226, 45); ctx.strokeRect(c1[0], c1[1], 75*sc, 90*sc); ctx.fillStyle = css('--muted'); ctx.fillText('Arduino', c1[0] + 4, c1[1] + 22); }
+  ctx.save(); const pc = w2c(paperFrame.cx, paperFrame.cy); ctx.translate(...pc); ctx.rotate(-paperFrame.a);
+  ctx.fillStyle = '#fbfaf5'; ctx.strokeStyle = '#b59f6b'; ctx.lineWidth = 1.5;
+  ctx.fillRect(-PAPER.w/2*sc, -PAPER.h/2*sc, PAPER.w*sc, PAPER.h*sc); ctx.strokeRect(-PAPER.w/2*sc, -PAPER.h/2*sc, PAPER.w*sc, PAPER.h*sc); ctx.restore();
+  if (show.guide){ ctx.setLineDash([6,5]); ctx.strokeStyle = '#9aa0a6'; ctx.lineWidth = 1.5; ctx.beginPath();
+    TL.rose.guide.forEach((p,i) => { const q = w2c(...p); i ? ctx.lineTo(...q) : ctx.moveTo(...q); }); ctx.stroke(); ctx.setLineDash([]); }
+  const f = frameIndex();
+  if (f > 0){ ctx.strokeStyle = '#d1495b'; ctx.lineWidth = 3; ctx.beginPath(); let on = false;
+    for (let i=1;i<=f;i++){ const a = TL.F[i-1], b = TL.F[i]; if (a.ink && b.ink){ const p = w2c(a.tipPen[0], a.tipPen[1]), q = w2c(b.tipPen[0], b.tipPen[1]); if (!on){ ctx.moveTo(...p); on = true; } ctx.lineTo(...q); } else on = false; }
+    ctx.stroke(); }
+  { const a = w2c(BIN.x - BIN.w/2, BIN.y + BIN.d/2); ctx.strokeStyle = '#3d6b4f'; ctx.lineWidth = 2; ctx.strokeRect(a[0], a[1], BIN.w*sc, BIN.d*sc);
+    ctx.fillStyle = '#3d6b4f'; ctx.fillText('bandeja', a[0], a[1]-6); }
+  OBJ.forEach((o, i) => { const m = objMeshes[i].position, q = w2c(m.x, m.y); ctx.fillStyle = o.color; ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(q[0], q[1], o.r*sc, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    if (f >= 0 && TL.F[f].sense === i){ ctx.strokeStyle = o.metal ? '#d1495b' : '#888'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(q[0], q[1], o.r*sc + 7, 0, Math.PI*2); ctx.stroke(); } });
+  if (show.ghost && f > 0){ const step = Math.round(0.35/DT), n = 14;
+    for (let j = n; j >= 1; j--){ const i = f - j*step; if (i < 0) continue; drawLinks(ctx, TL.F[i], 0.06 + 0.3*(1 - j/n), true); } }
+  drawLinks(ctx, s);
+  ctx.fillStyle = css('--ink'); ctx.font = '600 18px system-ui'; { const o = w2c(0,0); ctx.fillText('J1', o[0]+8, o[1]-10); }
+}
+
+const plotC = document.getElementById('plot'), pctx = plotC.getContext('2d');
+const PHASE_COL = ['rgba(150,150,150,.10)','rgba(42,157,143,.13)','rgba(108,117,125,.13)','rgba(209,73,91,.12)'];
+const PL = { L:58, R:54, T:12, B:30 };
+function drawPlot(){
+  const ctx = pctx, W = plotC.width, Hh = plotC.height, { L, T, B } = PL, Rr = PL.R;
+  if (!plotCache){
+    ctx.fillStyle = css('--bg'); ctx.fillRect(0,0,W,Hh);
+    const N = TL.F.length, X = i => L + (W-L-Rr)*i/(N-1), Y = a => T + (Hh-T-B)*(1 - (a+270)/450);
+    const [zmin, zmax] = zRange(P.rod), Yz = z => T + (Hh-T-B)*(1 - (z - zmin)/Math.max(zmax - zmin, 1));
+    TL.phases.forEach((p, k) => { const e = k+1 < TL.phases.length ? TL.phases[k+1].f0 : N;
+      const n = p.name.startsWith('Fase 1') ? 1 : p.name.startsWith('Fase 2') ? 2 : p.name.startsWith('Fase 3') ? 3 : 0;
+      ctx.fillStyle = PHASE_COL[n]; ctx.fillRect(X(p.f0), T, X(e-1)-X(p.f0), Hh-T-B); });
+    ctx.strokeStyle = css('--line'); ctx.fillStyle = css('--muted'); ctx.font = '16px system-ui'; ctx.lineWidth = 1;
+    for (const a of [-270,-180,-90,0,90,180]){ ctx.beginPath(); ctx.moveTo(L, Y(a)); ctx.lineTo(W-Rr, Y(a)); ctx.stroke(); ctx.fillText(a+'°', 4, Y(a)+5); }
+    ctx.fillText(zmax.toFixed(0), W-Rr+6, T+10); ctx.fillText(zmin.toFixed(0), W-Rr+6, Hh-B); ctx.fillText('mm', W-Rr+6, (Hh-B+T)/2);
+    const total = N*DT; for (let t=0; t<=total; t+= total > 60 ? 20 : 10) ctx.fillText(t.toFixed(0)+' s', X(t/DT) - 10, Hh - 8);
+    const series = [['th1','#2f6db5',Y],['th2','#4f9be0',Y],['phi','#f4a261',Y],['zp','#888',Yz]];
+    if (H.key === 'rev') series.push(['rev','#9b5de5',Y]);
+    for (const [k, c, f] of series){ ctx.strokeStyle = c; ctx.lineWidth = 2.2; ctx.beginPath();
+      for (let i=0;i<N;i+=2){ const y = f(TL.F[i][k]); i ? ctx.lineTo(X(i), y) : ctx.moveTo(X(i), y); } ctx.stroke(); }
+    plotCache = ctx.getImageData(0,0,W,Hh); plotCache.X = X;
+  } else ctx.putImageData(plotCache, 0, 0);
+  const f = frameIndex(); if (f >= 0){ const x = plotCache.X(f); ctx.strokeStyle = css('--ink'); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, Hh-B); ctx.stroke(); }
+}
+
+// ===================================================================================
+// Lecturas, bitácora, piezas y lista de materiales
+// ===================================================================================
+const RO = document.getElementById('readouts');
+function readouts(s){
+  const tk = s.tool || 'pen', tool = H.tools[tk], t = tipOf(s, H, tk), J = jacInfo(s, H, tk);
+  const items = [
+    ['θ1 (J1)', s.th1.toFixed(1)+'°', `${Math.round(s.th1*STEPS.j1)} pasos`],
+    ['θ2 (J2)', s.th2.toFixed(1)+'°', `${Math.round(s.th2*STEPS.j2)} pasos`],
+    H.key === 'disc' ? ['φ (J3)', s.phi.toFixed(1)+'°', `${Math.round(s.phi*STEPS.j3)} pasos`]
+                     : ['ρ revólver', s.rev.toFixed(0)+'°', `servo en ${(135 + s.rev).toFixed(0)}° de 270°`],
+    ['z plataforma', s.zp.toFixed(1), `${Math.round(s.zp*STEPS.z)} pasos Z`],
+    ['punta x, y', `${t[0].toFixed(0)}, ${t[1].toFixed(0)}`, tool.name],
+    ['punta z', t[2].toFixed(1)+' mm', t[2] <= 0.3 ? 'en contacto' : 'en el aire'],
+    ['κ(J)', J.kappa > 999 ? '∞' : J.kappa.toFixed(2), J.kappa > 999 ? 'singularidad (θ2 ≈ 0)' : 'número de condición'],
+    ['1 micropaso', J.step.toFixed(3)+' mm', 'error máx. J1+J2'],
+    ['Imán / sensor', `${s.mag ? 'ON' : 'off'} / ${s.sense >= 0 ? (OBJ[s.sense].metal ? 'METAL' : 'nada') : '—'}`, s.carry >= 0 ? 'cargando pieza' : ' '],
+  ];
+  RO.innerHTML = items.map(([a,b,c]) => `<div class="kv"><span>${a}</span><b>${b}</b><span>${c}</span></div>`).join('');
+}
+function updateLog(){
+  const f = frameIndex(), el = document.getElementById('log');
+  const items = f < 0 ? [] : TL.log.filter(l => l.f <= f);
+  if (items.length === lastLogN) return; lastLogN = items.length;
+  el.innerHTML = items.length ? items.map(l => `<li><span class="t">${(l.f*DT).toFixed(1)} s</span><span>${l.html}</span></li>`).join('')
+    : '<li><span class="t">—</span><span>Sin eventos todavía.</span></li>';
+}
+
+const partVisible = p => !p.head || p.head === H.key;
+function isShown(o){ while (o){ if (!o.visible) return false; o = o.parent; } return true; }
+function renderParts(){
+  const el = document.getElementById('plists'), open = new Set([...el.querySelectorAll('details[open]')].map(d => d.dataset.cat));
+  el.innerHTML = '';
+  for (const [cat, title] of Object.entries(CATS)){
+    const items = [...PARTS.values()].filter(p => p.cat === cat && partVisible(p));
+    const d = document.createElement('details'); d.dataset.cat = cat;
+    d.open = open.size ? open.has(cat) : (cat === 'ele' || cat === 'cab');
+    d.innerHTML = `<summary>${title} <span>(${items.length})</span></summary><ul class="plist">${items.map(p =>
+      `<li data-id="${p.id}" class="${selected === p.id ? 'sel' : ''}">${p.name}<em>${p.src === 'htm' ? 'HTM' : 'MathBot'}</em></li>`).join('')}</ul>`;
+    el.appendChild(d);
+  }
+  el.querySelectorAll('li').forEach(li => li.onclick = () => select(li.dataset.id, true));
+}
+function select(id, focus=false){
+  if (selected) for (const m of PARTS.get(selected).meshes) if (m.userData.mat){ m.material = m.userData.mat; delete m.userData.mat; }
+  selected = (selected === id && !focus) ? null : id;
+  const card = document.getElementById('pcard');
+  if (!selected){ card.style.display = 'none'; renderParts(); return; }
+  const p = PARTS.get(selected);
+  for (const m of p.meshes){ m.userData.mat = m.material; m.material = M.hl; }
+  card.style.display = 'block';
+  card.innerHTML = `<b>${p.name}</b><span class="tag ${p.src === 'htm' ? 'htm' : 'mb'}">${p.src === 'htm' ? 'HowToMechatronics' : 'MathBot'}</span> · ${CATS[p.cat]}<p>${p.desc}</p>`;
+  renderParts();
+  if (focus){
+    tipEl.style.display = 'none';
+    const b = new THREE.Box3(); p.meshes.filter(isShown).forEach(m => b.expandByObject(m));
+    if (!b.isEmpty()){
+      const c = b.getCenter(new THREE.Vector3()), r = Math.max(70, b.getSize(new THREE.Vector3()).length());
+      const dir = camera.position.clone().sub(controls.target).normalize();
+      camAnim = { p0: camera.position.clone(), t0: controls.target.clone(), p1: c.clone().add(dir.multiplyScalar(r*2.8)), t1: c, u: 0 };
+    }
+  }
+}
+
+const BOM = {
+  disc: { masa: 150, print: [
+      ['Placa-disco del cabezal Ø136×6 mm (aligerada)', 'PLA+/PETG, 3 perímetros, 30 %', 30, 2.5],
+      ['Porta-plumón con camisa deslizante', 'PETG (roza menos)', 8, 0.8],
+      ['Leva + soporte del micro-servo', 'PLA+', 5, 0.5],
+      ['Separador del electroimán (25 mm)', 'PLA+ o varilla M4', 3, 0.3],
+      ['Abrazadera M12 del sensor', 'PLA+', 4, 0.4] ],
+    buy: [
+      ['Electroimán 12 V KK-P20/15', 1, '3–5', 32],
+      ['Sensor inductivo LJ12A3-4-Z/BX (NPN NA)', 1, '3–6', 30],
+      ['Micro servo SG90 (o MG90S de engranes metálicos)', 1, '2–4', 10],
+      ['Plumón Sharpie fino (o lápiz)', 1, '1–2', 11],
+      ['Resorte de compresión Ø10–12 × 20 mm', 1, '<1', 1],
+      ['Tornillería M3/M4 + tuercas de seguridad', '—', '2', 10] ],
+    notas: ['Cambiar de herramienta = girar J3 ±120°: no agrega actuadores, pero el plumón queda a 55 mm del eje y el juego de la correa de J3 (≈0.5°) mueve la punta ≈0.5 mm.',
+            'El micro-servo de levante es obligatorio: sin él, el plumón (la herramienta más baja) raya la hoja mientras trabajan el sensor o el electroimán.'] },
+  rev: { masa: 240, print: [
+      ['Soporte en L del revólver (brida → 60 mm adelante)', 'PETG, 4 perímetros, 40 %', 30, 3],
+      ['Prisma triangular hueco (lado 62, largo 40 mm)', 'PLA+/PETG, 30 %', 32, 3],
+      ['Porta-plumón con resorte (cara 0°)', 'PETG', 8, 0.8],
+      ['Base del electroimán (cara −120°) y boss M12 del sensor (cara +120°)', 'PLA+', 7, 0.7],
+      ['Acople horn del servo → prisma', 'PETG', 3, 0.3],
+      ['Leva de 3 muescas (enclavamiento)', 'PETG', 3, 0.3] ],
+    buy: [
+      ['Servo 270° metálico DS3218MG (20 kg·cm) — o MG996R + engranes 2:3', 1, '10–15', 60],
+      ['Rodamiento 625ZZ (5×16×5) + perno M5×50', 1, '1–2', 8],
+      ['Émbolo de bola con resorte M6/M8 (o bola Ø5 + resorte)', 1, '2–4', 5],
+      ['Electroimán 12 V KK-P20/15', 1, '3–5', 32],
+      ['Sensor inductivo LJ12A3-4-Z/BX (NPN NA)', 1, '3–6', 30],
+      ['Sharpie Mini (o lápiz recortado ≈70 mm)', 1, '1–2', 7],
+      ['Resorte de compresión Ø10–12 × 20 mm', 1, '<1', 1],
+      ['Tornillería M3/M4/M5', '—', '2', 12] ],
+    notas: ['Par necesario < 1 kg·cm (desbalance de herramientas + arrastre del plumón 0.5 N × 85 mm): alcanza cualquier servo de 270°; se pide uno metálico por rigidez y zona muerta.',
+            'Sin enclavamiento, 1° de zona muerta del servo × 85 mm = 1.5 mm en la punta del plumón; con la leva y el émbolo de bola baja a ≈0.2–0.3 mm.',
+            'Las herramientas quedan sobre la línea del brazo 2 y J3 no se mueve: su juego no afecta el trazo.'] },
+  comun: [
+    ['Módulo MOSFET de nivel lógico D4184 (o IRLZ44N) + diodo 1N5819', 1, '1–2', 'electroimán → A1'],
+    ['Optoacoplador PC817 (o divisor 10 kΩ / 4.7 kΩ)', 1, '1', 'sensor 12 V → A2'],
+    ['Convertidor buck 12→6 V: LM2596 (A) / XL4015 5 A (B)', 1, '2–5', 'servo → A0'],
+    ['Cable flexible de 6–8 hilos AWG 24–26 (silicona), 1.5 m', 1, '3–5', 'pasa por los ejes huecos de J2 y J3'],
+    ['Conectores JST-XH / Dupont y termoretráctil', '—', '2', '—'] ],
+};
+function renderBOM(){
+  const b = BOM[H.key], other = BOM[H.key === 'disc' ? 'rev' : 'disc'];
+  const g = b.print.reduce((a, r) => a + r[2], 0), h = b.print.reduce((a, r) => a + r[3], 0);
+  const gb = b.buy.reduce((a, r) => a + (+r[3] || 0), 0);
+  document.getElementById('bom').innerHTML = `
+    <p class="note"><b>${H.name}</b> · masa estimada ≈ <b>${b.masa} g</b> (cabezal ${H.key === 'disc' ? 'B' : 'A'} ≈ ${other.masa} g; pinza original con MG996R ≈ 130–150 g) ·
+      varillas mínimas <b>${rodMinOf(H)} mm</b>.</p>
+    <table><tr><th>Imprimir</th><th>Material</th><th class="n">g</th><th class="n">h</th></tr>
+      ${b.print.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="n">${r[2]}</td><td class="n">${r[3]}</td></tr>`).join('')}
+      <tr class="tot"><td>Total impreso</td><td></td><td class="n">${g}</td><td class="n">${h.toFixed(1)}</td></tr></table>
+    <table><tr><th>Comprar (cabezal)</th><th class="n">cant.</th><th class="n">USD</th><th class="n">g</th></tr>
+      ${b.buy.map(r => `<tr><td>${r[0]}</td><td class="n">${r[1]}</td><td class="n">${r[2]}</td><td class="n">${r[3]}</td></tr>`).join('')}
+      <tr class="tot"><td>Masa comprada</td><td></td><td></td><td class="n">${gb}</td></tr></table>
+    <table><tr><th>Comprar (electrónica común a A y B)</th><th class="n">cant.</th><th class="n">USD</th><th>conexión</th></tr>
+      ${BOM.comun.map(r => `<tr><td>${r[0]}</td><td class="n">${r[1]}</td><td class="n">${r[2]}</td><td>${r[3]}</td></tr>`).join('')}</table>
+    ${b.notas.map(n => `<p class="note">• ${n}</p>`).join('')}
+    <p class="note">Pines: A0 servo (el mismo del <code>gripperServo</code> de HTM), A1 electroimán, A2 sensor. En la CNC Shield A0–A3 salen como Abort/Hold/Resume/CoolEn:
+      verifiquen contra el sketch de HTM que A1/A2 no estén ocupados por un final de carrera. La fuente de 12 V 6 A alcanza si el servo solo se mueve con los steppers quietos (como en la simulación).
+      Precios de referencia en USD (AliExpress / tiendas de electrónica); confirmar en El Salvador.</p>`;
+}
+
+// ===================================================================================
+// Cámara, interacción y bucle
+// ===================================================================================
+const CAMS = {
+  iso:  [[720, -760, 560], [150, 0, 90]],
+  top:  [[190, -1, 1250], [190, 0, 0]],
+  side: [[160, -1050, 200], [160, 0, 150]],
+  elec: [[-430, -330, 250], [-150, -20, 30]],
+};
+function setCam(name){
+  if (name === 'head'){ camAnim = { p0: camera.position.clone(), t0: controls.target.clone(), p1: new THREE.Vector3(), t1: new THREE.Vector3(), u: 0, head: true }; return; }
+  const [p, t] = CAMS[name];
+  camAnim = { p0: camera.position.clone(), t0: controls.target.clone(), p1: new THREE.Vector3(...p), t1: new THREE.Vector3(...t), u: 0 };
+}
+function resize(){
+  const w = view.clientWidth, h = view.clientHeight;
+  renderer.setSize(w, h); labelR.setSize(w, h); camera.aspect = w/h; camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+document.querySelectorAll('[data-cam]').forEach(b => b.onclick = () => setCam(b.dataset.cam));
+const followBtn = document.getElementById('follow');
+followBtn.onclick = () => { follow = !follow; followBtn.classList.toggle('on', follow); };
+
+const playBtn = document.getElementById('play'), scrub = document.getElementById('scrub');
+const setPlaying = v => { playing = v; playBtn.textContent = v ? '❚❚' : '▶'; };
+playBtn.onclick = () => { if (!playing && simT >= (TL.F.length-1)*DT) simT = 0; setPlaying(!playing); };
+document.getElementById('restart').onclick = () => { simT = 0; setPlaying(true); };
+scrub.oninput = () => { simT = scrub.value*DT; setPlaying(false); };
+document.getElementById('speed').onchange = e => speed = +e.target.value;
+addEventListener('keydown', e => { if (e.code === 'Space' && !['INPUT','SELECT','BUTTON'].includes(e.target.tagName)){ e.preventDefault(); playBtn.click(); } });
+document.getElementById('mode').onchange = e => {
+  mode = e.target.value;
+  document.getElementById('manual').style.display = mode === 'manual' ? 'block' : 'none';
+  document.querySelectorAll('#play,#restart,#scrub,#speed').forEach(el => el.disabled = mode === 'manual');
+  if (mode !== 'manual'){ rebuild(); setPlaying(true); } else syncManualInputs();
+};
+document.querySelectorAll('#heads button').forEach(b => b.onclick = () => {
+  if (H.key === b.dataset.head) return;
+  if (selected) select(selected);
+  setHead(b.dataset.head); setPlaying(true);
+});
+
+const bindP = (id, key, fmt) => { const el = document.getElementById('p_'+id), out = document.getElementById('v_'+id);
+  const upd = () => { P[key] = +el.value; out.textContent = fmt(P[key]); };
+  upd(); el.oninput = upd; el.onchange = () => { upd(); rebuild(true); }; };
+bindP('rod', 'rod', v => v+' mm'); bindP('D', 'D', v => v+' mm'); bindP('alpha', 'alpha', v => v+'°'); bindP('v', 'v', v => v+' mm/s');
+document.getElementById('p_codo').onchange = e => { P.codo = +e.target.value; rebuild(true); };
+
+function updateLabels(){ labels.forEach(l => l.visible = show.labels && (!l.userData.head || l.userData.head === H.key)); }
+function toggle(id, key, fn){ const b = document.getElementById(id); b.onclick = () => { show[key] = !show[key]; b.classList.toggle('on', show[key]); fn && fn(); }; }
+toggle('t_ws', 'ws', () => ws.visible = show.ws);
+toggle('t_ghost', 'ghost');
+toggle('t_xray', 'xray', () => printedMats.forEach(m => { m.transparent = show.xray; m.opacity = show.xray ? 0.16 : 1; m.depthWrite = !show.xray; m.needsUpdate = true; }));
+toggle('t_labels', 'labels', updateLabels);
+toggle('t_guide', 'guide', () => guide.visible = show.guide);
+document.getElementById('t_theme').onclick = () => {
+  const r = document.documentElement, dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const cur = r.dataset.theme || (dark ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark';
+  scene.background = new THREE.Color(css('--scene')); tableMat.color.set(css('--table')); plotCache = null;
+};
+
+// manual
+const MI = ['th1','th2','phi','zp','lift','rev'];
+function syncManualInputs(){ for (const k of MI){ document.getElementById('m_'+k).value = manual[k];
+  document.getElementById('o_'+k).textContent = (+manual[k]).toFixed(k === 'th1' || k === 'th2' || k === 'zp' ? 1 : 0) + (k === 'zp' || k === 'lift' ? ' mm' : '°'); } }
+for (const k of MI) document.getElementById('m_'+k).oninput = e => { manual[k] = +e.target.value; syncManualInputs(); };
+document.querySelectorAll('#toolPick button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#toolPick button').forEach(x => x.classList.toggle('on', x === b));
+  manual.tool = b.dataset.tool;
+  if (H.key === 'disc'){ manual.phi = wrap(-H.tools[manual.tool].phi); if (manual.tool !== 'pen') manual.lift = LIFT; }
+  else { manual.phi = 0; manual.rev = revFor(H, manual.tool); }
+  syncManualInputs();
+});
+let dragging = false;
+function topPick(e){
+  if (mode !== 'manual') return;
+  const r = topC.getBoundingClientRect(), cx = (e.clientX - r.left)*topC.width/r.width, cy = (e.clientY - r.top)*topC.height/r.height;
+  const [x, y] = c2w(cx, cy), t = ikTool(H, manual.tool), phi = H.key === 'disc' ? manual.phi : 0;
+  let q = ik(x, y, t, phi, P.codo); if (!inLim(q)) q = ik(x, y, t, phi, -P.codo);
+  if (inLim(q)){ manual.th1 = q.th1; manual.th2 = q.th2; syncManualInputs(); }
+}
+topC.addEventListener('pointerdown', e => { dragging = true; topPick(e); });
+addEventListener('pointerup', () => dragging = false);
+topC.addEventListener('pointermove', e => dragging && topPick(e));
+plotC.addEventListener('pointerdown', e => { if (mode === 'manual') return; const r = plotC.getBoundingClientRect();
+  const x = (e.clientX - r.left)*plotC.width/r.width, u = Math.min(1, Math.max(0, (x - PL.L)/(plotC.width - PL.L - PL.R)));
+  simT = u*(TL.F.length-1)*DT; setPlaying(false); });
+
+// identificación de piezas con el cursor
+const ray = new THREE.Raycaster(), ptr = new THREE.Vector2(), tipEl = document.getElementById('tip');
+let lastPick = 0, downAt = null;
+function pickAt(e){
+  const r = renderer.domElement.getBoundingClientRect();
+  ptr.set(((e.clientX - r.left)/r.width)*2 - 1, -((e.clientY - r.top)/r.height)*2 + 1);
+  ray.setFromCamera(ptr, camera);
+  const cands = [];
+  for (const p of PARTS.values()) for (const m of p.meshes)
+    if (isShown(m) && !(show.xray && printedMats.includes(m.userData.mat || m.material))) cands.push(m);
+  const hit = ray.intersectObjects(cands, false)[0];
+  return hit ? PARTS.get(hit.object.userData.part) : null;
+}
+renderer.domElement.addEventListener('pointermove', e => {
+  if (e.buttons){ tipEl.style.display = 'none'; return; }
+  const now = performance.now(); if (now - lastPick < 60) return; lastPick = now;
+  const p = pickAt(e);
+  if (!p){ tipEl.style.display = 'none'; renderer.domElement.style.cursor = ''; return; }
+  const r = view.getBoundingClientRect();
+  tipEl.innerHTML = `<b>${p.name}</b><span class="src">${p.src === 'htm' ? 'HowToMechatronics' : 'MathBot'} · ${CATS[p.cat]}</span>`;
+  tipEl.style.display = 'block';
+  tipEl.style.left = Math.min(e.clientX - r.left + 14, r.width - 290) + 'px'; tipEl.style.top = (e.clientY - r.top + 14) + 'px';
+  renderer.domElement.style.cursor = 'pointer';
+});
+renderer.domElement.addEventListener('pointerleave', () => tipEl.style.display = 'none');
+renderer.domElement.addEventListener('pointerdown', e => downAt = [e.clientX, e.clientY]);
+renderer.domElement.addEventListener('pointerup', e => {
+  if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 4) return;
+  const p = pickAt(e); if (p) select(p.id); else if (selected) select(selected);
+});
+
+const hudPhase = document.getElementById('phase'), hudSub = document.getElementById('sub'), hudWarn = document.getElementById('warn'), timeEl = document.getElementById('time');
+let prev = performance.now();
+function loop(now){
+  const dtR = Math.max(0, Math.min(0.1, (now - prev)/1000)); prev = now;
+  if (mode !== 'manual' && playing){
+    simT += dtR*speed;
+    if (simT >= (TL.F.length-1)*DT){ simT = (TL.F.length-1)*DT; setPlaying(false); }
+  }
+  const s = currentState();
+  applyState(s);
+  if (mode !== 'manual'){
+    const ph = TL.phases[s.ph]; hudPhase.textContent = ph.name; hudSub.textContent = ph.sub;
+    scrub.value = frameIndex(); timeEl.textContent = `${simT.toFixed(1)} / ${((TL.F.length-1)*DT).toFixed(1)} s`;
+    hudWarn.hidden = !TL.warns.length; hudWarn.textContent = TL.warns.join(' ');
+  } else {
+    hudPhase.textContent = 'Modo manual'; hudSub.textContent = `${H.name} · herramienta activa: ${H.tools[manual.tool].name}`; hudWarn.hidden = true;
+  }
+  drawTop(s); drawPlot(); readouts(s); updateLog();
+  if (camAnim){
+    if (camAnim.head){ const w = new THREE.Vector3(); j3g.getWorldPosition(w); camAnim.t1.set(w.x, w.y, w.z - 70);
+      const out = new THREE.Vector3(w.x, w.y, 0).normalize(); camAnim.p1.set(w.x + 250*out.x + 120, w.y + 250*out.y - 170, w.z + 60); }
+    camAnim.u = Math.min(1, camAnim.u + dtR*1.8); const u = smooth(camAnim.u);
+    camera.position.lerpVectors(camAnim.p0, camAnim.p1, u); controls.target.lerpVectors(camAnim.t0, camAnim.t1, u); if (camAnim.u >= 1) camAnim = null; }
+  if (follow && !camAnim){ const w = new THREE.Vector3(); j3g.getWorldPosition(w); const d = w.clone().sub(controls.target).multiplyScalar(0.08); d.z *= 0.3; controls.target.add(d); camera.position.add(d); }
+  controls.update();
+  renderer.render(scene, camera); labelR.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+
+scene.background = new THREE.Color(css('--scene'));
+window.SCARA = { get TL(){ return TL; }, get H(){ return H; }, P, fk, ik, tipOf, zpFor, zRange, rodMinOf, HEADS, OBJ, BIN, PARTS, DT, setHead, select };
+camera.position.set(...CAMS.iso[0]); controls.target.set(...CAMS.iso[1]);
+setHead('disc');
+resize();
+document.getElementById('loading').remove();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
