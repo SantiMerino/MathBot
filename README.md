@@ -128,9 +128,10 @@ El diseño final toma como base el [SCARA de HowToMechatronics](https://howtomec
 usa 136.5). J3 reduce 90/20 = 4.5:1. La pinza se reemplaza por uno de dos cabezales:
 
 - **A · Disco tri-herramienta:** plumón a 55 mm hacia adelante (con J3 fijo actúa como un brazo 2 de
-  199 mm), electroimán y sensor a 45 mm y ±120°; J3 gira para cambiar de herramienta. Varillas Z ≥ 210 mm.
+  199 mm), electroimán y sensor a 45 mm y ±120°; J3 gira para cambiar de herramienta. Varillas Z ≥ 240 mm
+  (220 mm si J2 usa el NEMA 17 corto de 24 mm): el motor de J2 es lo que choca con la Top cover arriba.
 - **B · Revólver triangular:** prisma 60 mm delante de J3 que un servo de 270° gira −120°/0°/+120° para
-  dejar una cara hacia la hoja. Sin NEMA extra ni servo de levante, pero ≈90 g más y varillas Z ≥ 290 mm.
+  dejar una cara hacia la hoja. Sin NEMA extra ni servo de levante, pero ≈90 g más y varillas Z ≥ 310 mm.
 
 La rosa va centrada a 185 mm de J1, girada 180°: θ₂ ∈ [−140°, −96°], κ(J) ≤ 2.3, 0.19 mm por micropaso.
 Qué imprimir y qué comprar para cada cabezal: [simulador_scara/CABEZALES_compras.md](simulador_scara/CABEZALES_compras.md).

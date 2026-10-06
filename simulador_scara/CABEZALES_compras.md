@@ -12,7 +12,7 @@ Precios de referencia en USD (AliExpress / tiendas de electrónica); hay que con
 | Dónde queda la punta activa | 55 mm (plumón) / 45 mm del eje J3 | 60 mm delante de J3, en la línea del brazo 2 |
 | Levante del plumón | Micro-servo SG90 (obligatorio) | No hace falta: el plumón sube con Z |
 | Masa estimada | ≈ 150 g | ≈ 240 g |
-| Varillas Z mínimas | 210 mm (recomendado 220) | 290 mm (recomendado 300) |
+| Varillas Z mínimas (NEMA de J2 estándar / corto 24 mm) | 240 / 220 mm | 310 / 300 mm |
 | Principal fuente de error propia | Juego de la correa de J3 (≈0.5°) × 55 mm ≈ 0.5 mm | Zona muerta del servo (≈1°) × 85 mm ≈ 1.5 mm; con enclavamiento ≈ 0.2–0.3 mm |
 | Tiempo de la misión simulada | 86 s | 101 s |
 
