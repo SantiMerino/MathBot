@@ -6,109 +6,169 @@
 <title>SCARA MathBot · Simulador</title>
 <style>
 :root{
-  --bg:#f3f5f8; --panel:#ffffff; --ink:#18212b; --muted:#5b6876; --line:#d9dfe6; --accent:#1f6fd1;
+  --bg:#f3f5f8; --panel:#ffffff; --panel-2:#f7f9fb; --ink:#18212b; --muted:#5b6876; --line:#d9dfe6; --accent:#1f6fd1;
   --accent-soft:#e3eefb; --warn:#b4540a; --ok:#1d7f5f; --pen:#d1495b; --mag:#6c757d; --sen:#2a9d8f;
-  --scene:#e9edf2; --table:#cdb38f; --chip:#eef2f6; --hl:#ff9f1c;
+  --scene:#e9edf2; --table:#cdb38f; --chip:#eef2f6; --hl:#ff9f1c; --shadow:0 8px 28px rgba(15,25,40,.16);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0f141a; --panel:#161d25; --ink:#e6ebf1; --muted:#93a1b0; --line:#2a3542; --accent:#5aa2f5;
-    --accent-soft:#1b2b3f; --warn:#f0a35e; --ok:#4cc79a; --scene:#1a222c; --table:#6f5a3e; --chip:#1f2833;
+    --bg:#0f141a; --panel:#161d25; --panel-2:#1a222c; --ink:#e6ebf1; --muted:#93a1b0; --line:#2a3542; --accent:#5aa2f5;
+    --accent-soft:#1b2b3f; --warn:#f0a35e; --ok:#4cc79a; --scene:#1a222c; --table:#6f5a3e; --chip:#1f2833; --shadow:0 8px 28px rgba(0,0,0,.45);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0f141a; --panel:#161d25; --ink:#e6ebf1; --muted:#93a1b0; --line:#2a3542; --accent:#5aa2f5;
-  --accent-soft:#1b2b3f; --warn:#f0a35e; --ok:#4cc79a; --scene:#1a222c; --table:#6f5a3e; --chip:#1f2833;
+  --bg:#0f141a; --panel:#161d25; --panel-2:#1a222c; --ink:#e6ebf1; --muted:#93a1b0; --line:#2a3542; --accent:#5aa2f5;
+  --accent-soft:#1b2b3f; --warn:#f0a35e; --ok:#4cc79a; --scene:#1a222c; --table:#6f5a3e; --chip:#1f2833; --shadow:0 8px 28px rgba(0,0,0,.45);
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
-  font:13px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.app{display:grid;grid-template-columns:minmax(0,1fr) 420px;height:100vh}
+  font:13px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,select,input{font:inherit;color:inherit}
+button,select{color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:7px;padding:5px 10px;cursor:pointer}
+button:hover,select:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button:disabled{opacity:.45;cursor:default}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent);min-width:38px}
+button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.ico{width:16px;height:16px;vertical-align:-3px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.app{display:grid;grid-template-columns:minmax(0,1fr) 400px;height:100vh}
+.app.noside{grid-template-columns:minmax(0,1fr) 0}
+.app.noside aside{display:none}
 .stage{position:relative;min-width:0;display:flex;flex-direction:column}
+
+/* barra superior: identidad, cabezal, modo y paneles */
+.topbar{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;line-height:1.15;margin-right:6px}
+.brand b{font-size:14px}
+.brand span{font-size:11px;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--chip)}
+.seg button{border:0;border-radius:0;background:transparent;padding:6px 12px}
+.seg button + button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--accent);color:#fff}
+.grow{flex:1}
+.tbtn{display:inline-flex;align-items:center;gap:6px}
+kbd{font:600 10px system-ui;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+
 #view{flex:1;min-height:0;position:relative;background:var(--scene);overflow:hidden}
 #view canvas{display:block}
-.hud{position:absolute;left:12px;top:12px;pointer-events:none;max-width:min(560px,60%)}
-.hud .phase{display:inline-block;background:var(--panel);border:1px solid var(--line);border-radius:6px;
+.hud{position:absolute;left:12px;top:12px;pointer-events:none;z-index:3;max-width:min(520px,calc(100% - 360px))}
+.hud .phase{display:inline-block;background:var(--panel);border:1px solid var(--line);border-radius:7px;
   padding:6px 10px;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.hud .sub{margin-top:6px;color:var(--muted);font-size:12px;background:color-mix(in srgb,var(--panel) 85%,transparent);
-  padding:4px 8px;border-radius:5px;display:inline-block}
-.hud .warn{margin-top:6px;color:var(--warn);font-weight:600;background:var(--panel);padding:4px 8px;border-radius:5px;
-  border:1px solid var(--warn)}
-.cams{position:absolute;right:12px;top:12px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:40%}
+.hud .sub{margin-top:6px;color:var(--muted);font-size:12px;background:color-mix(in srgb,var(--panel) 88%,transparent);
+  padding:4px 8px;border-radius:6px;display:inline-block}
+.hud .warn{margin-top:6px;color:var(--warn);font-weight:600;background:var(--panel);padding:4px 8px;border-radius:6px;border:1px solid var(--warn)}
+.cams{position:absolute;left:12px;bottom:12px;z-index:3;display:flex;gap:4px;flex-wrap:wrap;background:color-mix(in srgb,var(--panel) 90%,transparent);
+  border:1px solid var(--line);border-radius:9px;padding:4px}
+.cams button{padding:4px 9px;font-size:12px;background:transparent;border-color:transparent}
+.cams button:hover{border-color:var(--line)}
+.cams button.on{background:var(--accent-soft);color:var(--accent)}
+
+/* paneles flotantes (diseño, visualización, manual) */
+.dock{position:absolute;right:12px;top:12px;bottom:12px;width:310px;display:flex;flex-direction:column;gap:10px;pointer-events:none;z-index:4}
+.card-f{pointer-events:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;min-height:0;max-height:100%}
+.card-f[hidden]{display:none}
+.card-f header{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--line);font-weight:600}
+.card-f header span{flex:1}
+.card-f header button{border:0;background:transparent;padding:2px 6px;font-size:16px;line-height:1;color:var(--muted)}
+.card-f .body{padding:8px 12px 12px;overflow-y:auto;min-height:0}
+.card-f .sec{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:10px 0 4px}
+.row{display:grid;grid-template-columns:118px minmax(0,1fr) 58px;align-items:center;gap:8px;margin:7px 0}
+.row label{color:var(--muted);font-size:12px}
+.row output{text-align:right;font-variant-numeric:tabular-nums;font-size:12px}
+.row select{grid-column:2 / 4}
+.row input[type=range]{width:100%}
+.toggles,.tools{display:flex;flex-wrap:wrap;gap:6px}
+.toggles button{flex:1 1 calc(50% - 6px)}
+.note{font-size:11.5px;color:var(--muted);margin:6px 0 0}
+
 .tip{position:absolute;pointer-events:none;background:var(--panel);color:var(--ink);border:1px solid var(--line);
   border-radius:6px;padding:6px 9px;max-width:280px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.18);display:none;z-index:5}
 .tip b{display:block;font-size:12.5px}
 .tip .src{font-size:10.5px;color:var(--muted)}
-.bar{display:flex;gap:10px;align-items:center;padding:8px 12px;background:var(--panel);border-top:1px solid var(--line);flex-wrap:wrap}
-.bar input[type=range]{flex:1;min-width:140px}
-button,select{font:inherit;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:6px;
-  padding:5px 10px;cursor:pointer}
-button:hover,select:hover{border-color:var(--accent)}
-button:disabled{opacity:.45;cursor:default}
-button.primary{background:var(--accent);color:#fff;border-color:var(--accent);min-width:38px}
-button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
-.time{font-variant-numeric:tabular-nums;color:var(--muted);min-width:110px}
-aside{background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;padding:12px 14px 30px}
-h1{font-size:15px;margin:0 0 2px}
-.lead{color:var(--muted);margin:0 0 10px;font-size:12px}
-h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 0 6px}
-canvas.panel{width:100%;border:1px solid var(--line);border-radius:6px;background:var(--bg);display:block}
+.bar{display:flex;gap:10px;align-items:center;padding:8px 12px;background:var(--panel);border-top:1px solid var(--line)}
+.bar input[type=range]{flex:1;min-width:120px}
+.time{font-variant-numeric:tabular-nums;color:var(--muted);min-width:104px}
+
+/* panel lateral con pestañas */
+aside{background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0;min-width:0}
+.tabs{display:flex;border-bottom:1px solid var(--line);background:var(--panel-2)}
+.tabs button{flex:1;border:0;border-radius:0;background:transparent;padding:10px 4px;color:var(--muted);border-bottom:2px solid transparent;font-weight:600;font-size:12px}
+.tabs button.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--panel)}
+.pane{display:none;overflow-y:auto;padding:12px 14px 24px;min-height:0;flex:1}
+.pane.on{display:block}
+h2{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 6px}
+.pane > h2:first-child{margin-top:2px}
+canvas.panel{width:100%;border:1px solid var(--line);border-radius:7px;background:var(--bg);display:block}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.kv{background:var(--chip);border-radius:6px;padding:5px 7px;min-width:0}
+.kv{background:var(--chip);border-radius:7px;padding:5px 8px;min-width:0}
 .kv b{display:block;font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kv span{font-size:10.5px;color:var(--muted)}
-.row{display:flex;align-items:center;gap:8px;margin:6px 0}
-.row label{flex:0 0 132px;color:var(--muted)}
-.row input[type=range]{flex:1;min-width:0}
-.row output{flex:0 0 64px;text-align:right;font-variant-numeric:tabular-nums}
-.toggles,.tools,.heads{display:flex;flex-wrap:wrap;gap:6px}
-.heads button{flex:1;text-align:left;padding:8px 10px}
-.heads button small{display:block;color:var(--muted);font-size:11px}
-.heads button.on small{color:inherit;opacity:.8}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:5px}
+.legend i{display:inline-block;width:10px;height:3px;margin-right:4px;vertical-align:middle}
 .log{list-style:none;margin:0;padding:0;font-size:12px}
-.log li{padding:4px 0;border-bottom:1px dashed var(--line);display:flex;gap:8px}
+.log li{padding:5px 0;border-bottom:1px dashed var(--line);display:flex;gap:8px}
 .log li .t{color:var(--muted);font-variant-numeric:tabular-nums;flex:0 0 44px}
 .tag{display:inline-block;padding:0 6px;border-radius:9px;font-size:11px;font-weight:600}
 .tag.metal{background:color-mix(in srgb,var(--pen) 18%,transparent);color:var(--pen)}
 .tag.no{background:var(--chip);color:var(--muted)}
 .tag.htm{background:var(--accent-soft);color:var(--accent)}
 .tag.mb{background:color-mix(in srgb,var(--hl) 22%,transparent);color:color-mix(in srgb,var(--hl) 70%,var(--ink))}
-.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:4px}
-.legend i{display:inline-block;width:10px;height:3px;margin-right:4px;vertical-align:middle}
-.note{font-size:11.5px;color:var(--muted);margin:6px 0 0}
-#manual{display:none}
-details{border:1px solid var(--line);border-radius:6px;margin:6px 0;background:var(--panel)}
-summary{cursor:pointer;padding:6px 9px;font-weight:600;font-size:12.5px}
+.search{width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:7px;background:var(--panel-2);margin:4px 0 6px}
+details{border:1px solid var(--line);border-radius:7px;margin:6px 0;background:var(--panel)}
+summary{cursor:pointer;padding:7px 10px;font-weight:600;font-size:12.5px}
 summary span{color:var(--muted);font-weight:400}
 .plist{list-style:none;margin:0;padding:0 6px 6px}
 .plist li{padding:4px 6px;border-radius:5px;cursor:pointer;display:flex;justify-content:space-between;gap:8px;font-size:12px}
 .plist li:hover{background:var(--chip)}
 .plist li.sel{background:var(--accent-soft);color:var(--accent)}
 .plist li em{font-style:normal;color:var(--muted);font-size:11px;white-space:nowrap}
-.card{border:1px solid var(--accent);background:var(--accent-soft);border-radius:6px;padding:8px 10px;margin:6px 0;display:none}
+.card{border:1px solid var(--accent);background:var(--accent-soft);border-radius:7px;padding:8px 10px;margin:6px 0;display:none}
 .card b{display:block}
 .card p{margin:4px 0 0;font-size:12px}
-table{width:100%;border-collapse:collapse;font-size:11.5px;margin:4px 0 8px}
+table{width:100%;border-collapse:collapse;font-size:11.5px;margin:4px 0 10px}
 th,td{text-align:left;padding:4px 5px;border-bottom:1px solid var(--line);vertical-align:top}
 th{color:var(--muted);font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tot{font-weight:600}
-.lbl3d{font:600 11px system-ui,sans-serif;color:#fff;background:rgba(20,30,40,.78);padding:1px 6px;border-radius:4px;
-  pointer-events:none;white-space:nowrap}
+.lbl3d{font:600 11px system-ui,sans-serif;color:#fff;background:rgba(20,30,40,.78);padding:1px 6px;border-radius:4px;pointer-events:none;white-space:nowrap}
 .loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px}
+code{font-size:11px}
+@media (max-width:1320px){ kbd{display:none} }
+@media (max-width:1180px){ .brand span{display:none} .topbar{gap:8px} .tbtn{padding:5px 8px} }
 @media (max-width:900px){
-  .app{grid-template-columns:1fr;height:auto}
-  #view{height:62vh;flex:none}
-  aside{border-left:0;border-top:1px solid var(--line)}
-  .row label{flex-basis:110px}
-  .cams{top:auto;bottom:10px;right:10px;max-width:none}
+  .app,.app.noside{grid-template-columns:1fr;height:auto}
+  #view{height:64vh;flex:none}
+  aside{border-left:0;border-top:1px solid var(--line);max-height:none}
+  .pane{overflow:visible}
+  .dock{width:auto;left:12px;top:auto;bottom:12px;max-height:55%}
   .hud{max-width:calc(100% - 24px)}
+  .cams{bottom:auto;top:auto;left:auto;right:12px;bottom:12px}
+  .brand span{display:none}
 }
 </style>
 </head>
 <body>
-<div class="app">
+<div class="app" id="app">
   <div class="stage">
+    <header class="topbar">
+      <div class="brand"><b>SCARA MathBot</b><span>HowToMechatronics · STL reales</span></div>
+      <div class="seg" id="heads" role="group" aria-label="cabezal">
+        <button data-head="disc" class="on" title="Herramientas verticales; J3 elige la herramienta">A · Disco</button>
+        <button data-head="rev" title="Prisma triangular; un servo de 270° elige la herramienta">B · Revólver</button>
+      </div>
+      <select id="mode" aria-label="modo">
+        <option value="mision" selected>Misión completa</option>
+        <option value="rosa">Solo trazar rosa</option>
+        <option value="manual">Manual (articulaciones)</option>
+      </select>
+      <span class="grow"></span>
+      <button class="tbtn" id="b_design" title="Parámetros de diseño (D)"><svg class="ico" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Diseño <kbd>D</kbd></button>
+      <button class="tbtn" id="b_view" title="Opciones de visualización (V)"><svg class="ico" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Vista <kbd>V</kbd></button>
+      <button class="tbtn on" id="b_side" title="Mostrar u ocultar el panel de datos (P)"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>Datos <kbd>P</kbd></button>
+    </header>
+
     <div id="view">
       <div class="loading" id="loading">Cargando piezas STL…</div>
       <div class="hud">
@@ -116,16 +176,71 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
         <div class="sub" id="sub"></div>
         <div class="warn" id="warn" hidden></div>
       </div>
-      <div class="cams">
+      <div class="cams" role="group" aria-label="cámaras">
         <button data-cam="iso">3D</button>
-        <button data-cam="top">Superior XY</button>
+        <button data-cam="top">Superior</button>
         <button data-cam="side">Lateral</button>
         <button data-cam="head">Cabezal</button>
         <button data-cam="elec">Electrónica</button>
         <button id="follow">Seguir</button>
       </div>
+
+      <div class="dock">
+        <section class="card-f" id="designCard" hidden>
+          <header><span>Parámetros de diseño</span><button data-close="designCard" aria-label="cerrar">×</button></header>
+          <div class="body">
+            <p class="note" id="headNote" style="margin-top:0"></p>
+            <div class="sec">Columna Z</div>
+            <div class="row"><label for="p_rod">Largo varillas</label><input type="range" id="p_rod" min="160" max="400" step="10" value="250"><output id="v_rod"></output></div>
+            <div class="row"><label for="p_mj2">Motor de J2</label>
+              <select id="p_mj2"><option value="40" selected>NEMA 17 estándar (40 mm, HTM)</option><option value="24">NEMA 17 corto (24 mm, como J3)</option></select></div>
+            <p class="note" id="zinfo"></p>
+            <div class="sec">Trayectoria</div>
+            <div class="row"><label for="p_D">Centro rosa (x)</label><input type="range" id="p_D" min="150" max="260" step="5" value="185"><output id="v_D"></output></div>
+            <div class="row"><label for="p_alpha">Giro de la rosa α</label><input type="range" id="p_alpha" min="0" max="345" step="15" value="180"><output id="v_alpha"></output></div>
+            <div class="row"><label for="p_v">Velocidad de trazo</label><input type="range" id="p_v" min="10" max="60" step="5" value="25"><output id="v_v"></output></div>
+            <div class="row"><label for="p_codo">Codo</label>
+              <select id="p_codo"><option value="-1" selected>θ2 negativo</option><option value="1">θ2 positivo</option></select></div>
+          </div>
+        </section>
+
+        <section class="card-f" id="viewCard" hidden>
+          <header><span>Visualización</span><button data-close="viewCard" aria-label="cerrar">×</button></header>
+          <div class="body">
+            <div class="toggles">
+              <button id="t_xray">Rayos X</button>
+              <button id="t_ws" class="on">Alcance</button>
+              <button id="t_ghost" class="on">Estela eslabones</button>
+              <button id="t_labels" class="on">Etiquetas</button>
+              <button id="t_guide" class="on">Guía rosa</button>
+              <button id="t_theme">Tema claro/oscuro</button>
+            </div>
+            <p class="note">Rayos X vuelve transparentes las piezas impresas para ver motores, poleas, correas, rodamientos y electrónica.
+              Pase el cursor sobre cualquier pieza para ver su nombre; clic para seleccionarla (pestaña <b>Piezas</b>).</p>
+          </div>
+        </section>
+
+        <section class="card-f" id="manual" hidden>
+          <header><span>Control manual</span></header>
+          <div class="body">
+            <div class="tools" id="toolPick">
+              <button data-tool="pen" class="on">Plumón</button>
+              <button data-tool="mag">Electroimán</button>
+              <button data-tool="sen">Sensor</button>
+            </div>
+            <div class="row"><label for="m_th1">θ1 base (J1)</label><input type="range" id="m_th1" min="-150" max="150" step="0.1"><output id="o_th1"></output></div>
+            <div class="row"><label for="m_th2">θ2 codo (J2)</label><input type="range" id="m_th2" min="-150" max="150" step="0.1"><output id="o_th2"></output></div>
+            <div class="row"><label for="m_phi">φ cabezal (J3)</label><input type="range" id="m_phi" min="-180" max="180" step="0.5"><output id="o_phi"></output></div>
+            <div class="row"><label for="m_zp">z plataforma</label><input type="range" id="m_zp" min="100" max="300" step="0.5"><output id="o_zp"></output></div>
+            <div class="row" id="rowLift"><label for="m_lift">Levantar plumón</label><input type="range" id="m_lift" min="0" max="18" step="1"><output id="o_lift"></output></div>
+            <div class="row" id="rowRev"><label for="m_rev">Giro revólver ρ</label><input type="range" id="m_rev" min="-120" max="120" step="1"><output id="o_rev"></output></div>
+            <p class="note">Clic o arrastre sobre la vista superior (pestaña Movimiento) para llevar la herramienta activa a ese punto.</p>
+          </div>
+        </section>
+      </div>
       <div class="tip" id="tip"></div>
     </div>
+
     <div class="bar" id="transport">
       <button class="primary" id="play" title="Reproducir / pausa (espacio)">❚❚</button>
       <button id="restart" title="Reiniciar">⟲</button>
@@ -135,99 +250,60 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
         <option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1">1×</option>
         <option value="2" selected>2×</option><option value="4">4×</option><option value="8">8×</option>
       </select>
-      <select id="mode" aria-label="modo">
-        <option value="mision" selected>Misión completa</option>
-        <option value="rosa">Solo trazar rosa</option>
-        <option value="manual">Manual (articulaciones)</option>
-      </select>
     </div>
   </div>
 
-  <aside>
-    <h1>SCARA MathBot</h1>
-    <p class="lead">Modelo HowToMechatronics (STL reales) · columna Z recortada · dos cabezales intercambiables para
-      plumón, electroimán y sensor inductivo.</p>
+  <aside id="side">
+    <nav class="tabs" role="tablist">
+      <button data-tab="mov" class="on" role="tab">Movimiento</button>
+      <button data-tab="graf" role="tab">Gráficas</button>
+      <button data-tab="piezas" role="tab">Piezas</button>
+      <button data-tab="bom" role="tab">Materiales</button>
+    </nav>
 
-    <h2>Cabezal</h2>
-    <div class="heads" id="heads">
-      <button data-head="disc" class="on">A · Disco<small>J3 gira para elegir herramienta</small></button>
-      <button data-head="rev">B · Revólver triangular<small>servo gira el prisma 120°</small></button>
-    </div>
-    <p class="note" id="headNote"></p>
-
-    <h2>Vista superior (plano XY de la mesa)</h2>
-    <canvas class="panel" id="top" width="740" height="700"></canvas>
-    <div class="legend">
-      <span><i style="background:#2f6db5"></i>Brazo 1</span><span><i style="background:#4f9be0"></i>Brazo 2</span>
-      <span><i style="background:var(--pen)"></i>Plumón</span><span><i style="background:var(--mag)"></i>Electroimán</span>
-      <span><i style="background:var(--sen)"></i>Sensor</span><span><i style="background:#9cc3ea"></i>Alcance</span>
-    </div>
-
-    <h2>Estado articular</h2>
-    <div class="grid" id="readouts"></div>
-
-    <div id="manual">
-      <h2>Control manual</h2>
-      <div class="tools" id="toolPick">
-        <button data-tool="pen" class="on">Plumón</button>
-        <button data-tool="mag">Electroimán</button>
-        <button data-tool="sen">Sensor</button>
+    <section class="pane on" id="pane-mov">
+      <h2>Vista superior (plano XY de la mesa)</h2>
+      <canvas class="panel" id="top" width="740" height="700"></canvas>
+      <div class="legend">
+        <span><i style="background:#2f6db5"></i>Brazo 1</span><span><i style="background:#4f9be0"></i>Brazo 2</span>
+        <span><i style="background:var(--pen)"></i>Plumón</span><span><i style="background:var(--mag)"></i>Electroimán</span>
+        <span><i style="background:var(--sen)"></i>Sensor</span><span><i style="background:#9cc3ea"></i>Alcance</span>
       </div>
-      <div class="row"><label>θ1 base (J1)</label><input type="range" id="m_th1" min="-150" max="150" step="0.1"><output id="o_th1"></output></div>
-      <div class="row"><label>θ2 codo (J2)</label><input type="range" id="m_th2" min="-150" max="150" step="0.1"><output id="o_th2"></output></div>
-      <div class="row"><label>φ cabezal (J3)</label><input type="range" id="m_phi" min="-180" max="180" step="0.5"><output id="o_phi"></output></div>
-      <div class="row"><label>z plataforma</label><input type="range" id="m_zp" min="100" max="300" step="0.5"><output id="o_zp"></output></div>
-      <div class="row" id="rowLift"><label>Levantar plumón</label><input type="range" id="m_lift" min="0" max="18" step="1"><output id="o_lift"></output></div>
-      <div class="row" id="rowRev"><label>Giro revólver ρ</label><input type="range" id="m_rev" min="-120" max="120" step="1"><output id="o_rev"></output></div>
-      <p class="note">Clic o arrastre sobre la vista superior para llevar la herramienta activa a ese punto (cinemática inversa).</p>
-    </div>
+      <h2>Estado articular</h2>
+      <div class="grid" id="readouts"></div>
+    </section>
 
-    <h2>Ángulos y altura en el tiempo</h2>
-    <canvas class="panel" id="plot" width="740" height="330"></canvas>
-    <div class="legend">
-      <span><i style="background:#2f6db5"></i>θ1</span><span><i style="background:#4f9be0"></i>θ2</span>
-      <span><i style="background:#f4a261"></i>φ (J3)</span><span><i style="background:#9b5de5"></i>ρ revólver</span>
-      <span><i style="background:#888"></i>z plataforma (eje der.)</span>
-    </div>
+    <section class="pane" id="pane-graf">
+      <h2>Ángulos y altura en el tiempo</h2>
+      <canvas class="panel" id="plot" width="740" height="360"></canvas>
+      <div class="legend">
+        <span><i style="background:#2f6db5"></i>θ1</span><span><i style="background:#4f9be0"></i>θ2</span>
+        <span><i style="background:#f4a261"></i>φ (J3)</span><span><i style="background:#9b5de5"></i>ρ revólver</span>
+        <span><i style="background:#888"></i>z plataforma (eje der.)</span>
+      </div>
+      <p class="note">Clic en la gráfica para saltar a ese instante.</p>
+      <h2>Bitácora del sensor / electroimán</h2>
+      <ul class="log" id="log"><li><span class="t">—</span><span>Sin eventos todavía.</span></li></ul>
+    </section>
 
-    <h2>Bitácora del sensor / electroimán</h2>
-    <ul class="log" id="log"><li><span class="t">—</span><span>Sin eventos todavía.</span></li></ul>
+    <section class="pane" id="pane-piezas">
+      <h2>Piezas e identificación</h2>
+      <p class="note" style="margin-top:0"><span class="tag htm">HTM</span> nombre de HowToMechatronics · <span class="tag mb">MathBot</span> agregado para los requisitos del curso.
+        Clic en un nombre para resaltarlo y enfocarlo.</p>
+      <input class="search" id="pfilter" type="search" placeholder="Buscar pieza (p. ej. NEMA, polea, A4988)…" aria-label="buscar pieza">
+      <div class="card" id="pcard"></div>
+      <div id="plists"></div>
+    </section>
 
-    <h2>Piezas e identificación</h2>
-    <p class="note">Pase el cursor sobre el modelo 3D para ver el nombre de cada pieza; clic para seleccionarla.
-      <span class="tag htm">HTM</span> = nombre usado en HowToMechatronics · <span class="tag mb">MathBot</span> = agregado para los requisitos del curso.
-      Active <b>Rayos X</b> para ver motores, poleas, correas, rodamientos y electrónica dentro de las piezas impresas.</p>
-    <div class="card" id="pcard"></div>
-    <div id="plists"></div>
-
-    <h2>Qué imprimir y qué comprar</h2>
-    <div id="bom"></div>
-
-    <h2>Parámetros de diseño</h2>
-    <div class="row"><label>Largo varillas Z</label><input type="range" id="p_rod" min="160" max="400" step="10" value="220"><output id="v_rod"></output></div>
-    <div class="row"><label>Centro rosa (x)</label><input type="range" id="p_D" min="150" max="260" step="5" value="185"><output id="v_D"></output></div>
-    <div class="row"><label>Giro de la rosa α</label><input type="range" id="p_alpha" min="0" max="345" step="15" value="180"><output id="v_alpha"></output></div>
-    <div class="row"><label>Velocidad de trazo</label><input type="range" id="p_v" min="10" max="60" step="5" value="25"><output id="v_v"></output></div>
-    <div class="row"><label>Configuración codo</label>
-      <select id="p_codo"><option value="-1" selected>θ2 negativo</option><option value="1">θ2 positivo</option></select></div>
-    <p class="note" id="zinfo"></p>
-
-    <h2>Visualización</h2>
-    <div class="toggles">
-      <button id="t_xray">Rayos X</button>
-      <button id="t_ws" class="on">Alcance</button>
-      <button id="t_ghost" class="on">Estela eslabones</button>
-      <button id="t_labels" class="on">Etiquetas</button>
-      <button id="t_guide" class="on">Guía rosa</button>
-      <button id="t_theme">Tema</button>
-    </div>
-
-    <h2>Notas del modelo</h2>
-    <p class="note">L1 = 228 mm y L2 = 144 mm medidos entre agujeros de rodamiento en las STL (el código Arduino original
-      usa L2 = 136.5 mm). Reducciones GT2: J1 (80/20)·(110/22) = 20:1, J2 (80/20)·(92/23) = 16:1, J3 90/20 = 4.5:1;
-      Z tornillo de 8 mm/rev; NEMA 17 a ¼ de paso.
-      Las posiciones de motores y poleas salen de los agujeros de las STL y coinciden con los largos de correa del
-      artículo (200/300 mm en J1, 400/300 en J2, 400 en J3). Alturas internas aproximadas.</p>
+    <section class="pane" id="pane-bom">
+      <h2>Qué imprimir y qué comprar</h2>
+      <div id="bom"></div>
+      <h2>Notas del modelo</h2>
+      <p class="note">L1 = 228 mm y L2 = 144 mm medidos entre agujeros de rodamiento en las STL (el código Arduino original
+        usa L2 = 136.5 mm). Reducciones GT2: J1 (80/20)·(110/22) = 20:1, J2 (80/20)·(92/23) = 16:1, J3 90/20 = 4.5:1;
+        Z tornillo de 8 mm/rev; NEMA 17 a ¼ de paso. Las posiciones de motores y poleas salen de los agujeros de las STL
+        y coinciden con los largos de correa del artículo (200/300 mm en J1, 400/300 en J2, 400 en J3). Alturas internas aproximadas.</p>
+    </section>
   </aside>
 </div>
 
@@ -246,7 +322,7 @@ const STL = JSON.parse(document.getElementById('stl-data').textContent);
 // ===================================================================================
 // Geometría (mm). Igual que python/scara_modelo.py
 // ===================================================================================
-const G = { L1:228, L2:144, H_BASE:45, H_J1C:27, H_PINF:10, H_PSUP:26, H_BCOV:21.5, H_TCOV:23, H_PLAT:45,
+const G = { L1:228, L2:144, H_BASE:45, H_J1C:27, H_PINF:10, H_PSUP:26, H_PSUP_DISK:8, H_BCOV:21.5, H_TCOV:23, H_PLAT:45,
   H_ARM1:42, H_J2C:24, H_ARM2:31, H_J3C:22, H_CON:4.5, PLATE:6, ZROD0:72 };
 G.DROP = -((G.H_PLAT - G.H_ARM1) - G.H_J2C - G.H_ARM2 - G.H_J3C - G.H_CON);   // 78.5: plataforma → brida
 const ZH = -G.H_J3C - G.H_CON;                                                    // brida, en el marco de J3
@@ -323,8 +399,11 @@ function zpFor(H, ztip, tk, lift=0){
 }
 // Altura de tránsito: 60 mm libres bajo la herramienta más baja (el revólver barre su herramienta más larga al girar)
 const zTravelOf = H => H.key === 'disc' ? zpFor(H, 60, 'mag') : 60 + G.DROP + H.DAX + Math.max(...Object.values(H.tools).map(t => t.reach));
-const zRange = rod => [G.ZROD0 + G.H_PINF + G.H_BCOV, G.ZROD0 + rod - G.H_PSUP - G.H_TCOV - G.H_PLAT];
-const rodMinOf = H => Math.ceil((zTravelOf(H) - G.ZROD0 + G.H_PSUP + G.H_TCOV + G.H_PLAT)/10)*10;
+// Tope superior: la Top cover cuelga del disco de la placa superior (y 18..26 de la STL, 8 mm) y el
+// NEMA de J2 sobresale P.mj2 mm por encima de la plataforma (+3 mm de holgura) → define la altura máxima.
+const coverBottom = rod => G.ZROD0 + rod - G.H_PSUP_DISK - G.H_TCOV;
+const zRange = rod => [G.ZROD0 + G.H_PINF + G.H_BCOV, coverBottom(rod) - G.H_PLAT - P.mj2 - 3];
+const rodMinOf = H => Math.ceil((zTravelOf(H) + G.H_PLAT + P.mj2 + 3 + G.H_PSUP_DISK + G.H_TCOV - G.ZROD0)/10)*10;
 function jacInfo(s, H, tk){
   const { le, beta } = toolEq(ikTool(H, tk), H.key === 'disc' ? s.phi : 0);
   const a1 = rad(s.th1), a12 = rad(s.th1 + s.th2 + beta);
@@ -464,7 +543,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 view.appendChild(renderer.domElement);
 const labelR = new CSS2DRenderer();
-labelR.domElement.style.cssText = 'position:absolute;inset:0;pointer-events:none';
+labelR.domElement.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:1';
 view.appendChild(labelR.domElement);
 
 const scene = new THREE.Scene();
@@ -611,7 +690,7 @@ part('r35','Radial ball bearing 35x47x7mm','mec','Rodamiento radial de J1 en la 
 part('r30','Radial ball bearing 30x42x7mm','mec','Rodamientos radiales de J2 y J3.');
 part('r608','Radial ball bearing 8x22x7mm (608) (×5)','mec','Poleas intermedias (2 + 2) y rodamiento del husillo.');
 part('mJ1','Stepper Motor – NEMA 17 (J1)','ele','Motor de la base; 20:1 → 44.44 pasos/° a ¼ de paso.');
-part('mJ2','Stepper Motor – NEMA 17 (J2)','ele','Motor sobre la plataforma Z; 16:1 → 35.56 pasos/°.');
+part('mJ2','Stepper Motor – NEMA 17 (J2)','ele','Motor sobre la plataforma Z; 16:1 → 35.56 pasos/°. Es lo más alto de la plataforma: su largo fija la altura máxima de Z (choca con la Top cover).');
 part('mJ3','Stepper Motor – NEMA 17 corto, 24 mm (J3)','ele','Motor más corto para aligerar el brazo 2; 4.5:1 → 10 pasos/°.');
 part('mZ','Stepper Motor – NEMA 17 (Z)','ele','Mueve el husillo de 8 mm/rev → 100 pasos/mm.');
 part('ls','Limit Switch (×4)','ele','Micro switches para el homing de J1 (base), J2 (brazo 1), J3 (brazo 2) y Z (placa superior).');
@@ -684,10 +763,11 @@ for (const [x,y] of RODS) col.add(reg(at(stlMesh('abrazadera', M.blue2), x, y, G
 const rods = new THREE.Group(); col.add(rods);
 const colTop = new THREE.Group(); col.add(colTop);                    // cuelga de la placa superior (z = 0 en su cara inferior)
 colTop.add(reg(at(stlMesh('placa_sup', M.blue), 0, 0, 0), 'psup'));
-colTop.add(reg(at(stlMesh('tapa_sup', M.blue2), 0, 0, -G.H_TCOV), 'tcov'));
-for (const [x,y] of RODS) colTop.add(reg(at(stlMesh('abrazadera', M.blue2), x, y, -14, Math.atan2(y,x) - Math.PI/2), 'clamp'));
-colTop.add(reg(at(microSwitch(), -30, 40, -12), 'ls'));
-colTop.add(reg(at(cylZ(9.5, 25, M.steel), 33, 0, -25), 'coup'));
+const ZDISK = G.H_PSUP - G.H_PSUP_DISK;                               // cara inferior del disco de la placa (18)
+colTop.add(reg(at(stlMesh('tapa_sup', M.blue2), 0, 0, ZDISK - G.H_TCOV), 'tcov'));   // borde de la tapa pegado al disco
+for (const [x,y] of RODS) colTop.add(reg(at(stlMesh('abrazadera', M.blue2), x, y, ZDISK - 14, Math.atan2(y,x) - Math.PI/2), 'clamp'));
+colTop.add(reg(at(microSwitch(), -30, 40, ZDISK - 12), 'ls'));
+colTop.add(reg(at(cylZ(9.5, 25, M.steel), 33, 0, 0), 'coup'));          // dentro del saliente de la placa
 colTop.add(reg(at(nema(40), 33, 0, G.H_PSUP), 'mZ'));
 label('J1', col, [0, 0, G.ZROD0 + 40]);
 
@@ -696,7 +776,7 @@ const plat = new THREE.Group(); col.add(plat);
 plat.add(reg(stlMesh('plataforma', M.blue), 'plat'));
 for (const [x,y] of RODS) plat.add(reg(at(ringZ(5, 9.5, 29, M.bearing), x, y, 8), 'lin'));
 plat.add(reg(at(cylZ(11, 3, M.brass), 33, 0, G.H_PLAT), 'nut')); plat.add(reg(at(cylZ(6, 14, M.brass), 33, 0, G.H_PLAT - 14), 'nut'));
-plat.add(reg(at(nema(40), -10, 0, G.H_PLAT), 'mJ2'));
+const mJ2g = new THREE.Group(); plat.add(mJ2g);                       // se reconstruye según el largo del motor elegido
 const pJ2m = reg(stlMesh('polea_20', M.pulley), 'p20'); at(pJ2m, -10, 0, 17.9); plat.add(pJ2m);
 const pJ2i = reg(stlMesh('polea_23_80', M.pulley), 'p2380'); at(pJ2i, 138, 0, 12.1); plat.add(pJ2i);
 for (const z of [3, 38]) plat.add(reg(at(ringZ(4, 11, 7, M.bearing), 138, 0, z), 'r608'));
@@ -829,16 +909,17 @@ const binG = new THREE.Group(); binG.position.set(BIN.x, BIN.y, 0); scene.add(bi
 // ===================================================================================
 // Estado, parámetros y reconstrucción
 // ===================================================================================
-const P = { rod:220, D:185, alpha:180, v:25, codo:-1 };
+const P = { rod:250, D:185, alpha:180, v:25, codo:-1, mj2:40 };
 let H = HEADS.disc, mode = 'mision', TL = null, simT = 0, playing = true, speed = 2, lastInkF = -1, follow = false;
-let plotCache = null, lastLogN = -1, selected = null, camAnim = null;
+let plotCache = null, lastLogN = -1, selected = null, camAnim = null, partsOpen = new Set(['ele', 'cab']);
 const manual = { th1:30, th2:-110, phi:0, zp:160, lift:LIFT, rev:0, tool:'pen' };
 const show = { ws:true, ghost:true, xray:false, labels:true, guide:true };
 
 function rebuildRobotZ(){
   rods.clear();
   for (const [x,y] of RODS){ const r = cylZ(5, P.rod, M.steel, 20); r.position.set(x,y,G.ZROD0); rods.add(reg(r, 'rods')); }
-  const ls = cylZ(4, P.rod - 35, M.brass, 16); ls.position.set(33, 0, G.ZROD0 + 2); rods.add(reg(ls, 'lead'));
+  const ls = cylZ(4, P.rod - 18, M.brass, 16); ls.position.set(33, 0, G.ZROD0 + 2); rods.add(reg(ls, 'lead'));
+  mJ2g.clear(); mJ2g.add(reg(at(nema(P.mj2), -10, 0, G.H_PLAT), 'mJ2'));
   colTop.position.z = G.ZROD0 + P.rod - G.H_PSUP;
   for (const p of PARTS.values()) p.meshes = p.meshes.filter(m => m.parent);   // descarta varillas viejas
 }
@@ -864,7 +945,8 @@ function rebuild(keepT=false){
   document.getElementById('zinfo').innerHTML =
     `Carrera de la plataforma (entre Base cover y Top cover): <b>${zmin.toFixed(0)}–${zmax.toFixed(0)} mm</b>. ` +
     `Para dibujar con el cabezal ${H.key === 'disc' ? 'A' : 'B'} la plataforma va a <b>${zd.toFixed(1)} mm</b>. ` +
-    `Varilla mínima: A ${rodMinOf(HEADS.disc)} mm · B ${rodMinOf(HEADS.rev)} mm (original 400 mm).`;
+    `Varilla mínima con este motor de J2: A ${rodMinOf(HEADS.disc)} mm · B ${rodMinOf(HEADS.rev)} mm (original 400 mm). ` +
+    `Columna total ≈ ${(G.ZROD0 + P.rod + 40).toFixed(0)} mm con el motor Z.`;
   const mz = document.getElementById('m_zp'); mz.min = zmin; mz.max = zmax;
   manual.zp = Math.min(Math.max(manual.zp, zmin), zmax);
   document.getElementById('scrub').max = TL.F.length - 1;
@@ -877,12 +959,18 @@ function setHead(key){
   document.querySelectorAll('#heads button').forEach(b => b.classList.toggle('on', b.dataset.head === key));
   document.getElementById('rowLift').style.display = key === 'disc' ? '' : 'none';
   document.getElementById('rowRev').style.display = key === 'rev' ? '' : 'none';
-  document.getElementById('headNote').innerHTML = key === 'disc'
+  updateHeadNote();
+  manual.lift = key === 'disc' ? LIFT : 0; manual.rev = revFor(H, manual.tool); manual.phi = key === 'disc' ? wrap(-HEADS.disc.tools[manual.tool].phi) : 0;
+  ensureRod();
+  rebuild(); renderParts(); renderBOM(); syncManualInputs(); updateLabels();
+}
+function ensureRod(){
+  if (P.rod < rodMinOf(H)){ P.rod = rodMinOf(H); document.getElementById('p_rod').value = P.rod; document.getElementById('v_rod').textContent = P.rod + ' mm'; }
+}
+function updateHeadNote(){
+  document.getElementById('headNote').innerHTML = H.key === 'disc'
     ? `Herramientas verticales en un disco bajo J3. Para cambiar de herramienta gira <b>J3</b> ±120° y el plumón tiene su micro-servo de levante. Varillas mínimas: ${rodMinOf(HEADS.disc)} mm.`
     : `Prisma triangular 60 mm delante de J3, con su eje a lo largo del brazo 2. Un <b>servo de 270°</b> lo gira −120° / 0° / +120° y deja una cara (con su herramienta) hacia la hoja. J3 queda fijo y el plumón sube con Z. Necesita ${HEADS.rev.DAX + HEADS.rev.tools.pen.reach - G.PLATE - HEADS.disc.tools.pen.below} mm más de altura: varillas mínimas ${rodMinOf(HEADS.rev)} mm.`;
-  manual.lift = key === 'disc' ? LIFT : 0; manual.rev = revFor(H, manual.tool); manual.phi = key === 'disc' ? wrap(-HEADS.disc.tools[manual.tool].phi) : 0;
-  if (P.rod < rodMinOf(H)){ P.rod = rodMinOf(H) + 10; document.getElementById('p_rod').value = P.rod; document.getElementById('v_rod').textContent = P.rod + ' mm'; }
-  rebuild(); renderParts(); renderBOM(); syncManualInputs(); updateLabels();
 }
 
 // ===================================================================================
@@ -1072,12 +1160,14 @@ function updateLog(){
 const partVisible = p => !p.head || p.head === H.key;
 function isShown(o){ while (o){ if (!o.visible) return false; o = o.parent; } return true; }
 function renderParts(){
-  const el = document.getElementById('plists'), open = new Set([...el.querySelectorAll('details[open]')].map(d => d.dataset.cat));
+  const el = document.getElementById('plists'), q = document.getElementById('pfilter').value.trim().toLowerCase();
+  if (!q) partsOpen = new Set([...el.querySelectorAll('details')].length ? [...el.querySelectorAll('details[open]')].map(d => d.dataset.cat) : ['ele', 'cab']);
   el.innerHTML = '';
   for (const [cat, title] of Object.entries(CATS)){
-    const items = [...PARTS.values()].filter(p => p.cat === cat && partVisible(p));
+    const items = [...PARTS.values()].filter(p => p.cat === cat && partVisible(p) && (!q || (p.name + ' ' + p.desc).toLowerCase().includes(q)));
+    if (q && !items.length) continue;
     const d = document.createElement('details'); d.dataset.cat = cat;
-    d.open = open.size ? open.has(cat) : (cat === 'ele' || cat === 'cab');
+    d.open = q ? true : partsOpen.has(cat);
     d.innerHTML = `<summary>${title} <span>(${items.length})</span></summary><ul class="plist">${items.map(p =>
       `<li data-id="${p.id}" class="${selected === p.id ? 'sel' : ''}">${p.name}<em>${p.src === 'htm' ? 'HTM' : 'MathBot'}</em></li>`).join('')}</ul>`;
     el.appendChild(d);
@@ -1200,7 +1290,7 @@ document.getElementById('speed').onchange = e => speed = +e.target.value;
 addEventListener('keydown', e => { if (e.code === 'Space' && !['INPUT','SELECT','BUTTON'].includes(e.target.tagName)){ e.preventDefault(); playBtn.click(); } });
 document.getElementById('mode').onchange = e => {
   mode = e.target.value;
-  document.getElementById('manual').style.display = mode === 'manual' ? 'block' : 'none';
+  document.getElementById('manual').hidden = mode !== 'manual';
   document.querySelectorAll('#play,#restart,#scrub,#speed').forEach(el => el.disabled = mode === 'manual');
   if (mode !== 'manual'){ rebuild(); setPlaying(true); } else syncManualInputs();
 };
@@ -1215,6 +1305,38 @@ const bindP = (id, key, fmt) => { const el = document.getElementById('p_'+id), o
   upd(); el.oninput = upd; el.onchange = () => { upd(); rebuild(true); }; };
 bindP('rod', 'rod', v => v+' mm'); bindP('D', 'D', v => v+' mm'); bindP('alpha', 'alpha', v => v+'°'); bindP('v', 'v', v => v+' mm/s');
 document.getElementById('p_codo').onchange = e => { P.codo = +e.target.value; rebuild(true); };
+document.getElementById('p_mj2').onchange = e => { P.mj2 = +e.target.value; ensureRod(); updateHeadNote(); rebuild(true); renderBOM(); };
+document.getElementById('pfilter').oninput = () => renderParts();
+
+// ---- paneles: diseño / visualización (flotantes), datos (lateral con pestañas)
+const store = { get(k, d){ try { const v = localStorage.getItem('scara.' + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+                set(k, v){ try { localStorage.setItem('scara.' + k, JSON.stringify(v)); } catch {} } };
+const appEl = document.getElementById('app');
+function setCard(id, open){ const c = document.getElementById(id); c.hidden = !open;
+  if (open && matchMedia('(max-width:900px)').matches){ const o = id === 'designCard' ? 'viewCard' : 'designCard';   // en pantallas angostas, un panel a la vez
+    document.getElementById(o).hidden = true; document.getElementById(o === 'designCard' ? 'b_design' : 'b_view').classList.remove('on'); store.set(o, false); }
+  document.getElementById(id === 'designCard' ? 'b_design' : 'b_view').classList.toggle('on', open); store.set(id, open); }
+function setSide(open){ appEl.classList.toggle('noside', !open); document.getElementById('b_side').classList.toggle('on', open); store.set('side', open); }
+function setTab(t){
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  document.querySelectorAll('.pane').forEach(p => p.classList.toggle('on', p.id === 'pane-' + t));
+  store.set('tab', t);
+}
+document.getElementById('b_design').onclick = () => setCard('designCard', document.getElementById('designCard').hidden);
+document.getElementById('b_view').onclick = () => setCard('viewCard', document.getElementById('viewCard').hidden);
+document.getElementById('b_side').onclick = () => setSide(appEl.classList.contains('noside'));
+document.querySelectorAll('[data-close]').forEach(b => b.onclick = () => setCard(b.dataset.close, false));
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => setTab(b.dataset.tab));
+addEventListener('keydown', e => {
+  if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName) || e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (k === 'd') document.getElementById('b_design').click();
+  else if (k === 'v') document.getElementById('b_view').click();
+  else if (k === 'p') document.getElementById('b_side').click();
+});
+setCard('designCard', store.get('designCard', false)); setCard('viewCard', store.get('viewCard', false));
+setSide(store.get('side', true)); setTab(store.get('tab', 'mov'));
+new ResizeObserver(() => resize()).observe(view);
 
 function updateLabels(){ labels.forEach(l => l.visible = show.labels && (!l.userData.head || l.userData.head === H.key)); }
 function toggle(id, key, fn){ const b = document.getElementById(id); b.onclick = () => { show[key] = !show[key]; b.classList.toggle('on', show[key]); fn && fn(); }; }
@@ -1284,7 +1406,7 @@ renderer.domElement.addEventListener('pointerleave', () => tipEl.style.display =
 renderer.domElement.addEventListener('pointerdown', e => downAt = [e.clientX, e.clientY]);
 renderer.domElement.addEventListener('pointerup', e => {
   if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 4) return;
-  const p = pickAt(e); if (p) select(p.id); else if (selected) select(selected);
+  const p = pickAt(e); if (p){ select(p.id); if (selected) setTab('piezas'); } else if (selected) select(selected);
 });
 
 const hudPhase = document.getElementById('phase'), hudSub = document.getElementById('sub'), hudWarn = document.getElementById('warn'), timeEl = document.getElementById('time');

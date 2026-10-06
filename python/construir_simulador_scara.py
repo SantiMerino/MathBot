@@ -32,7 +32,8 @@ PIEZAS = {
     "j1_coupler": ("J1 coupler.STL", "A", (60.0, 60.0), False),
     "placa_inf": ("Z-axis Bottom Plate.STL", "B", (60.0, 60.0), False),
     "placa_sup": ("Z-axis Top Plate.STL", "B", (60.0, 60.0), False),
-    "plataforma": ("Z-axis Mount Platform.STL", "B", (60.0, 60.0), False),
+    # Volteada: la cara cerrada queda arriba (el motor de J2 se apoya en ella, como en el modelo de HTM)
+    "plataforma": ("Z-axis Mount Platform.STL", "B", (60.0, 60.0), True),
     "arm1": ("Arm 1.STL", "A", (-62.0, 39.0), False),
     "arm1_tapa": ("Arm 1 Cover.STL", "A", (-62.0, 39.0), True),
     "j2_coupler": ("J2 Coupler.STL", "A", (39.0, 39.0), False),
