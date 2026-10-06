@@ -238,8 +238,13 @@ def fig_pila_z(varilla):
         ax.add_patch(Rectangle((-60, m.Z_VARILLA_INF), 120, m.H_PLACA_INF, fc="#5d7fa3", ec="k"))
         for xv in (-33.6, 33.6):
             ax.add_patch(Rectangle((xv - 5, m.Z_VARILLA_INF), 10, L, fc="#ddd", ec="#777"))
-        ax.add_patch(Rectangle((-60, top - m.H_PLACA_SUP), 120, m.H_PLACA_SUP, fc="#5d7fa3", ec="k"))
+        ax.add_patch(Rectangle((-60, m.Z_VARILLA_INF + m.H_PLACA_INF), 120, m.H_TAPA_INF, fc="#7f9bb8", ec="k"))
+        ax.add_patch(Rectangle((-60, top - m.H_PLACA_SUP_DISCO), 120, m.H_PLACA_SUP_DISCO, fc="#5d7fa3", ec="k"))
+        ax.add_patch(Rectangle((-60, m.fondo_tapa_sup(L)), 120, m.H_TAPA_SUP, fc="#7f9bb8", ec="k"))
         ax.add_patch(Rectangle((-60, zp), 122, m.H_PLATAFORMA, fc=C_ARM1, ec="k"))
+        # NEMA de J2 en su altura maxima: fija el tope superior de Z
+        ax.add_patch(Rectangle((-31, zmax + m.H_PLATAFORMA), 42, m.H_MOTOR_J2, fc="#2b2f33", ec="k", alpha=0.35, ls="--"))
+        ax.add_patch(Rectangle((-31, zp + m.H_PLATAFORMA), 42, m.H_MOTOR_J2, fc="#2b2f33", ec="k"))
         a1 = zp + m.H_PLATAFORMA - m.H_ARM1
         ax.add_patch(Rectangle((62, a1), 205, m.H_ARM1, fc=C_ARM1, ec="k"))
         a2 = a1 - m.H_J2_COUPLER - m.H_ARM2
@@ -343,7 +348,7 @@ def gif(s, varilla, n_frames=150):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--gif", action="store_true")
-    ap.add_argument("--varilla", type=float, default=220.0, help="largo de varillas Z (mm)")
+    ap.add_argument("--varilla", type=float, default=240.0, help="largo de varillas Z (mm)")
     args = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
 

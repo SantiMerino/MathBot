@@ -56,7 +56,8 @@ TH2_LIM = (-150.0, 150.0)
 H_BASE = 45.0  # Base.STL
 H_J1_COUPLER = 27.0  # J1 coupler.STL (gira con J1)
 H_PLACA_INF = 10.0  # Z-axis Bottom Plate.STL
-H_PLACA_SUP = 26.0  # Z-axis Top Plate.STL
+H_PLACA_SUP = 26.0  # Z-axis Top Plate.STL (disco de 8 mm + saliente de 18 mm hacia abajo)
+H_PLACA_SUP_DISCO = 8.0  # la Top cover se pega bajo este disco y envuelve el saliente
 H_TAPA_INF = 21.5  # Base cover.STL (sobre la placa inferior)
 H_TAPA_SUP = 23.0  # Top cover.STL (bajo la placa superior)
 H_PLATAFORMA = 45.0  # Z-axis Mount Platform.STL (desliza en 4 varillas)
@@ -66,6 +67,8 @@ H_ARM2 = 31.0
 H_J3_COUPLER = 22.0
 H_CONECTOR = 4.5  # Gripper to J3 connector.STL -> brida del cabezal
 LARGO_VARILLA_ORIGINAL = 400.0
+H_MOTOR_J2 = 40.0  # NEMA 17 estandar sobre la plataforma (24 mm si se usa el corto, como en J3)
+HOLGURA_MOTOR_J2 = 3.0
 
 Z_VARILLA_INF = H_BASE + H_J1_COUPLER  # donde arrancan las varillas (72)
 
@@ -105,11 +108,18 @@ def z_plataforma_para_punta(z_punta: float, herr: Herramienta, cab: Cabezal) -> 
     return z_punta + caida_brida_desde_plataforma() + cab.espesor_placa + herr.bajo_cabezal_mm
 
 
-def carrera_z(largo_varilla: float) -> tuple[float, float]:
-    """Rango [min, max] de la base de la plataforma para un largo de varilla dado."""
-    # Las tapas (Base cover / Top cover) ocultan abrazaderas y limitan la carrera
+def fondo_tapa_sup(largo_varilla: float) -> float:
+    """Altura de la cara inferior de la Top cover (pegada al disco de la placa superior)."""
+    return Z_VARILLA_INF + largo_varilla - H_PLACA_SUP_DISCO - H_TAPA_SUP
+
+
+def carrera_z(largo_varilla: float, h_motor_j2: float = H_MOTOR_J2) -> tuple[float, float]:
+    """Rango [min, max] de la base de la plataforma para un largo de varilla dado.
+
+    Abajo limita la Base cover; arriba, el NEMA de J2 (lo mas alto de la plataforma) contra la Top cover.
+    """
     z_min = Z_VARILLA_INF + H_PLACA_INF + H_TAPA_INF
-    z_max = Z_VARILLA_INF + largo_varilla - H_PLACA_SUP - H_TAPA_SUP - H_PLATAFORMA
+    z_max = fondo_tapa_sup(largo_varilla) - H_PLATAFORMA - h_motor_j2 - HOLGURA_MOTOR_J2
     return z_min, z_max
 
 
