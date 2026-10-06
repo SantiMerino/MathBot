@@ -1,0 +1,54 @@
+{
+  "samples": 20001,
+  "units": "mm / degrees",
+  "rose": {
+    "A_mm": 102.9,
+    "k": 1.3552,
+    "t": [
+      0,
+      "pi"
+    ]
+  },
+  "SCARA": {
+    "L1": 200,
+    "L2": 200,
+    "center": [
+      220,
+      0
+    ],
+    "q1": [
+      -79.467,
+      -17.963
+    ],
+    "q2": [
+      83.419,
+      145.955
+    ],
+    "Z_stroke_proposal_mm": 60
+  },
+  "EEZY_original_TCP": {
+    "L1": 92,
+    "L2": 135,
+    "L3": 147,
+    "L4": 87,
+    "center": [
+      250,
+      0,
+      5
+    ],
+    "q1": [
+      -22.696,
+      22.696
+    ],
+    "q2": [
+      6.577,
+      26.388
+    ],
+    "q3": [
+      -136.213,
+      -50.766
+    ],
+    "fraction_within_stock_q2_q3_limits": 0.0
+  },
+  "scope": "Original mathematical TCP. New tool offsets, collisions, load and actual joint stops are not validated."
+}
