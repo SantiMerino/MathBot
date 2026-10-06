@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+*.pyc
+
+# Archivos de bloqueo de SolidWorks / Office
+~$*
+
+# Comprimidos que duplican carpetas ya extraidas
+*.zip
