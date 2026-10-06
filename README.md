@@ -121,6 +121,31 @@ el umbral.
 
 ---
 
+## Simulación del SCARA de referencia (HowToMechatronics)
+
+El diseño final toma como base el [SCARA de HowToMechatronics](https://howtomechatronics.com/projects/scara-robot-how-to-build-your-own-arduino-based-robot/)
+(STL en `BRAZO SCARA/`). Medido en las STL: `L1 = 228 mm`, `L2 = 144 mm` (el código Arduino original
+usa 136.5). J3 reduce 90/20 = 4.5:1. La pinza se reemplaza por uno de dos cabezales:
+
+- **A · Disco tri-herramienta:** plumón a 55 mm hacia adelante (con J3 fijo actúa como un brazo 2 de
+  199 mm), electroimán y sensor a 45 mm y ±120°; J3 gira para cambiar de herramienta. Varillas Z ≥ 210 mm.
+- **B · Revólver triangular:** prisma 60 mm delante de J3 que un servo de 270° gira −120°/0°/+120° para
+  dejar una cara hacia la hoja. Sin NEMA extra ni servo de levante, pero ≈90 g más y varillas Z ≥ 290 mm.
+
+La rosa va centrada a 185 mm de J1, girada 180°: θ₂ ∈ [−140°, −96°], κ(J) ≤ 2.3, 0.19 mm por micropaso.
+Qué imprimir y qué comprar para cada cabezal: [simulador_scara/CABEZALES_compras.md](simulador_scara/CABEZALES_compras.md).
+
+- `simulador_scara/simulador_scara.html`: simulador 3D interactivo con las STL reales (abrir con doble
+  clic; necesita internet para Three.js). Misión completa: escaneo con sensor → recolección con
+  electroimán → trazo de la rosa, con cambio de cabezal A/B. Electrónica del artículo ubicada dentro
+  de las piezas (motores, poleas, correas, rodamientos, Arduino + CNC Shield + A4988, finales de carrera),
+  modo Rayos X e identificación de cada pieza con el cursor usando los nombres de HowToMechatronics.
+  Se regenera con `python python/construir_simulador_scara.py` tras editar `plantilla.html`.
+- `python/simular_scara.py [--gif] [--varilla 220]`: figuras para el informe (`python/figuras/scara_*.png`)
+  y CSV con ángulos y pasos de motor por muestra.
+
+---
+
 ## Cronograma de entregables — Cálculo III (15%)
 
 | Entregable | Semana | Peso | Qué se evalúa |
