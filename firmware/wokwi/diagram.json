@@ -1,0 +1,801 @@
+{
+  "version": 1,
+  "author": "MathBot",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-arduino-mega",
+      "id": "mega",
+      "top": 260,
+      "left": 120,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-a4988",
+      "id": "drv_j1",
+      "top": 120,
+      "left": 80,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-stepper-motor",
+      "id": "mot_j1",
+      "top": -130,
+      "left": 40,
+      "attrs": {
+        "size": "17",
+        "display": "angle"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "txt_j1",
+      "top": -160,
+      "left": 50,
+      "attrs": {
+        "text": "J1 · ranura X"
+      }
+    },
+    {
+      "type": "wokwi-a4988",
+      "id": "drv_j2",
+      "top": 120,
+      "left": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-stepper-motor",
+      "id": "mot_j2",
+      "top": -130,
+      "left": 230,
+      "attrs": {
+        "size": "17",
+        "display": "angle"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "txt_j2",
+      "top": -160,
+      "left": 240,
+      "attrs": {
+        "text": "J2 · ranura Y"
+      }
+    },
+    {
+      "type": "wokwi-a4988",
+      "id": "drv_j3",
+      "top": 120,
+      "left": 460,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-stepper-motor",
+      "id": "mot_j3",
+      "top": -130,
+      "left": 420,
+      "attrs": {
+        "size": "17",
+        "display": "angle"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "txt_j3",
+      "top": -160,
+      "left": 430,
+      "attrs": {
+        "text": "J3 · ranura Z"
+      }
+    },
+    {
+      "type": "wokwi-a4988",
+      "id": "drv_z",
+      "top": 120,
+      "left": 650,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-stepper-motor",
+      "id": "mot_z",
+      "top": -130,
+      "left": 610,
+      "attrs": {
+        "size": "17",
+        "display": "angle"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "txt_z",
+      "top": -160,
+      "left": 620,
+      "attrs": {
+        "text": "Z · ranura A"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "sw1",
+      "top": 560,
+      "left": 60,
+      "attrs": {
+        "color": "red",
+        "label": "SW1 J1",
+        "key": "1"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "sw2",
+      "top": 560,
+      "left": 170,
+      "attrs": {
+        "color": "red",
+        "label": "SW2 J2",
+        "key": "2"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "sw3",
+      "top": 560,
+      "left": 280,
+      "attrs": {
+        "color": "red",
+        "label": "SW3 J3",
+        "key": "3"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "sw4",
+      "top": 560,
+      "left": 390,
+      "attrs": {
+        "color": "red",
+        "label": "SW4 Z",
+        "key": "4"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "sensor",
+      "top": 560,
+      "left": 540,
+      "attrs": {
+        "color": "blue",
+        "label": "Sensor: metal",
+        "key": "m"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "start",
+      "top": 560,
+      "left": 650,
+      "attrs": {
+        "color": "green",
+        "label": "START",
+        "key": "s"
+      }
+    },
+    {
+      "type": "wokwi-slide-switch",
+      "id": "paro",
+      "top": 570,
+      "left": 780,
+      "attrs": {
+        "value": "1"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "txt_paro",
+      "top": 620,
+      "left": 760,
+      "attrs": {
+        "text": "PARO (izq = normal)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_iman",
+      "top": 250,
+      "left": 870,
+      "attrs": {
+        "color": "purple"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_led_iman",
+      "top": 330,
+      "left": 845,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_v",
+      "top": 250,
+      "left": 925,
+      "attrs": {
+        "color": "green"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_led_v",
+      "top": 330,
+      "left": 900,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_a",
+      "top": 250,
+      "left": 980,
+      "attrs": {
+        "color": "yellow"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_led_a",
+      "top": 330,
+      "left": 955,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_r",
+      "top": 250,
+      "left": 1035,
+      "attrs": {
+        "color": "red"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_led_r",
+      "top": 330,
+      "left": 1010,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "txt_iman",
+      "top": 220,
+      "left": 850,
+      "attrs": {
+        "text": "imán  V  A  R"
+      }
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "buzzer",
+      "top": 380,
+      "left": 1100,
+      "attrs": {
+        "volume": "0.1"
+      }
+    },
+    {
+      "type": "wokwi-servo",
+      "id": "servo",
+      "top": 100,
+      "left": 900,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-text",
+      "id": "txt_servo",
+      "top": 80,
+      "left": 900,
+      "attrs": {
+        "text": "SG90 levante del plumón (D44)"
+      }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "v12",
+      "top": 540,
+      "left": 900,
+      "attrs": {
+        "value": "620"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "txt_v12",
+      "top": 620,
+      "left": 880,
+      "attrs": {
+        "text": "Divisor 12 V -> A8"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "drv_j1:STEP",
+      "mega:2",
+      "orange",
+      []
+    ],
+    [
+      "drv_j1:DIR",
+      "mega:5",
+      "gold",
+      []
+    ],
+    [
+      "drv_j1:ENABLE",
+      "mega:8",
+      "gray",
+      []
+    ],
+    [
+      "drv_j1:RESET",
+      "drv_j1:SLEEP",
+      "gray",
+      []
+    ],
+    [
+      "drv_j1:MS2",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "drv_j1:VDD",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "drv_j1:GND.1",
+      "mega:GND.2",
+      "black",
+      []
+    ],
+    [
+      "drv_j1:2B",
+      "mot_j1:A-",
+      "green",
+      []
+    ],
+    [
+      "drv_j1:2A",
+      "mot_j1:A+",
+      "green",
+      []
+    ],
+    [
+      "drv_j1:1A",
+      "mot_j1:B+",
+      "blue",
+      []
+    ],
+    [
+      "drv_j1:1B",
+      "mot_j1:B-",
+      "blue",
+      []
+    ],
+    [
+      "drv_j2:STEP",
+      "mega:3",
+      "orange",
+      []
+    ],
+    [
+      "drv_j2:DIR",
+      "mega:6",
+      "gold",
+      []
+    ],
+    [
+      "drv_j2:ENABLE",
+      "mega:8",
+      "gray",
+      []
+    ],
+    [
+      "drv_j2:RESET",
+      "drv_j2:SLEEP",
+      "gray",
+      []
+    ],
+    [
+      "drv_j2:MS2",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "drv_j2:VDD",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "drv_j2:GND.1",
+      "mega:GND.2",
+      "black",
+      []
+    ],
+    [
+      "drv_j2:2B",
+      "mot_j2:A-",
+      "green",
+      []
+    ],
+    [
+      "drv_j2:2A",
+      "mot_j2:A+",
+      "green",
+      []
+    ],
+    [
+      "drv_j2:1A",
+      "mot_j2:B+",
+      "blue",
+      []
+    ],
+    [
+      "drv_j2:1B",
+      "mot_j2:B-",
+      "blue",
+      []
+    ],
+    [
+      "drv_j3:STEP",
+      "mega:4",
+      "orange",
+      []
+    ],
+    [
+      "drv_j3:DIR",
+      "mega:7",
+      "gold",
+      []
+    ],
+    [
+      "drv_j3:ENABLE",
+      "mega:8",
+      "gray",
+      []
+    ],
+    [
+      "drv_j3:RESET",
+      "drv_j3:SLEEP",
+      "gray",
+      []
+    ],
+    [
+      "drv_j3:MS2",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "drv_j3:VDD",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "drv_j3:GND.1",
+      "mega:GND.2",
+      "black",
+      []
+    ],
+    [
+      "drv_j3:2B",
+      "mot_j3:A-",
+      "green",
+      []
+    ],
+    [
+      "drv_j3:2A",
+      "mot_j3:A+",
+      "green",
+      []
+    ],
+    [
+      "drv_j3:1A",
+      "mot_j3:B+",
+      "blue",
+      []
+    ],
+    [
+      "drv_j3:1B",
+      "mot_j3:B-",
+      "blue",
+      []
+    ],
+    [
+      "drv_z:STEP",
+      "mega:12",
+      "orange",
+      []
+    ],
+    [
+      "drv_z:DIR",
+      "mega:13",
+      "gold",
+      []
+    ],
+    [
+      "drv_z:ENABLE",
+      "mega:8",
+      "gray",
+      []
+    ],
+    [
+      "drv_z:RESET",
+      "drv_z:SLEEP",
+      "gray",
+      []
+    ],
+    [
+      "drv_z:MS2",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "drv_z:VDD",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "drv_z:GND.1",
+      "mega:GND.2",
+      "black",
+      []
+    ],
+    [
+      "drv_z:2B",
+      "mot_z:A-",
+      "green",
+      []
+    ],
+    [
+      "drv_z:2A",
+      "mot_z:A+",
+      "green",
+      []
+    ],
+    [
+      "drv_z:1A",
+      "mot_z:B+",
+      "blue",
+      []
+    ],
+    [
+      "drv_z:1B",
+      "mot_z:B-",
+      "blue",
+      []
+    ],
+    [
+      "sw1:1.l",
+      "mega:11",
+      "red",
+      []
+    ],
+    [
+      "sw1:2.l",
+      "mega:GND.3",
+      "black",
+      []
+    ],
+    [
+      "sw2:1.l",
+      "mega:10",
+      "red",
+      []
+    ],
+    [
+      "sw2:2.l",
+      "mega:GND.3",
+      "black",
+      []
+    ],
+    [
+      "sw3:1.l",
+      "mega:9",
+      "red",
+      []
+    ],
+    [
+      "sw3:2.l",
+      "mega:GND.3",
+      "black",
+      []
+    ],
+    [
+      "sw4:1.l",
+      "mega:A3",
+      "red",
+      []
+    ],
+    [
+      "sw4:2.l",
+      "mega:GND.3",
+      "black",
+      []
+    ],
+    [
+      "sensor:1.l",
+      "mega:22",
+      "blue",
+      []
+    ],
+    [
+      "sensor:2.l",
+      "mega:GND.3",
+      "black",
+      []
+    ],
+    [
+      "start:1.l",
+      "mega:26",
+      "green",
+      []
+    ],
+    [
+      "start:2.l",
+      "mega:GND.3",
+      "black",
+      []
+    ],
+    [
+      "paro:2",
+      "mega:28",
+      "violet",
+      []
+    ],
+    [
+      "paro:1",
+      "mega:GND.3",
+      "black",
+      []
+    ],
+    [
+      "led_iman:A",
+      "r_led_iman:1",
+      "purple",
+      []
+    ],
+    [
+      "r_led_iman:2",
+      "mega:24",
+      "purple",
+      []
+    ],
+    [
+      "led_iman:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "led_v:A",
+      "r_led_v:1",
+      "green",
+      []
+    ],
+    [
+      "r_led_v:2",
+      "mega:30",
+      "green",
+      []
+    ],
+    [
+      "led_v:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "led_a:A",
+      "r_led_a:1",
+      "yellow",
+      []
+    ],
+    [
+      "r_led_a:2",
+      "mega:32",
+      "yellow",
+      []
+    ],
+    [
+      "led_a:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "led_r:A",
+      "r_led_r:1",
+      "red",
+      []
+    ],
+    [
+      "r_led_r:2",
+      "mega:34",
+      "red",
+      []
+    ],
+    [
+      "led_r:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "buzzer:2",
+      "mega:36",
+      "orange",
+      []
+    ],
+    [
+      "buzzer:1",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "servo:PWM",
+      "mega:44",
+      "orange",
+      []
+    ],
+    [
+      "servo:V+",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "servo:GND",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "v12:SIG",
+      "mega:A8",
+      "yellow",
+      []
+    ],
+    [
+      "v12:VCC",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "v12:GND",
+      "mega:GND.3",
+      "black",
+      []
+    ]
+  ],
+  "dependencies": {}
+}

@@ -1,0 +1,375 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 1180" width="1680" height="1180">
+<defs><linearGradient id="metal" x1="0" x2="1"><stop offset="0" stop-color="#d7dadf"/><stop offset=".5" stop-color="#f4f5f7"/><stop offset="1" stop-color="#b9bec4"/></linearGradient></defs>
+<rect x="0" y="0" width="1680" height="1180" rx="0" fill="#ffffff" stroke="none" stroke-width="2"/>
+<rect x="30" y="30" width="330" height="150" rx="0" fill="#34495e" stroke="none" stroke-width="2"/>
+<text x="195" y="78" font-family="Segoe UI, Arial, sans-serif" font-size="32" fill="#fff" text-anchor="middle" font-weight="normal">MathBot SCARA</text>
+<text x="195" y="110" font-family="Segoe UI, Arial, sans-serif" font-size="17" fill="#fff" text-anchor="middle" font-weight="normal">Arduino MEGA 2560 + CNC Shield V3</text>
+<text x="195" y="140" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#cfd8dc" text-anchor="middle" font-weight="normal">Cabezal A · disco tri-herramienta</text>
+<text x="195" y="160" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#cfd8dc" text-anchor="middle" font-weight="normal">plumón + electroimán + sensor inductivo</text>
+<rect x="520" y="420" width="640" height="300" rx="12" fill="#1f5fa8" stroke="#174a85" stroke-width="2"/>
+<rect x="490" y="450" width="50" height="60" rx="3" fill="#b0b6bc" stroke="none" stroke-width="2"/>
+<rect x="498" y="620" width="42" height="55" rx="3" fill="#222" stroke="none" stroke-width="2"/>
+<text x="480" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#333" text-anchor="end" font-weight="normal">USB → PC</text>
+<text x="1030" y="570" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#ffffffcc" text-anchor="middle" font-weight="bold">ARDUINO</text>
+<text x="1030" y="592" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#ffffffcc" text-anchor="middle" font-weight="bold">MEGA 2560</text>
+<rect x="950" y="428" width="12" height="12" fill="#111"/>
+<rect x="950" y="696" width="12" height="12" fill="#111"/>
+<rect x="968" y="428" width="12" height="12" fill="#111"/>
+<rect x="968" y="696" width="12" height="12" fill="#111"/>
+<rect x="986" y="428" width="12" height="12" fill="#111"/>
+<rect x="986" y="696" width="12" height="12" fill="#111"/>
+<rect x="1004" y="428" width="12" height="12" fill="#111"/>
+<rect x="1004" y="696" width="12" height="12" fill="#111"/>
+<rect x="1022" y="428" width="12" height="12" fill="#111"/>
+<rect x="1022" y="696" width="12" height="12" fill="#111"/>
+<rect x="1040" y="428" width="12" height="12" fill="#111"/>
+<rect x="1040" y="696" width="12" height="12" fill="#111"/>
+<rect x="1058" y="428" width="12" height="12" fill="#111"/>
+<rect x="1058" y="696" width="12" height="12" fill="#111"/>
+<rect x="1076" y="428" width="12" height="12" fill="#111"/>
+<rect x="1076" y="696" width="12" height="12" fill="#111"/>
+<text x="1025" y="476" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="middle" font-weight="normal">14–21: Serial1-3 · I2C</text>
+<text x="1025" y="490" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="middle" font-weight="normal">(reservados)</text>
+<text x="1020" y="690" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="middle" font-weight="normal">A8 … A15</text>
+<rect x="1108" y="436.0" width="12" height="12" fill="#111"/>
+<rect x="1126" y="436.0" width="12" height="12" fill="#111"/>
+<rect x="1108" y="452.5" width="12" height="12" fill="#111"/>
+<rect x="1126" y="452.5" width="12" height="12" fill="#111"/>
+<rect x="1108" y="469.0" width="12" height="12" fill="#111"/>
+<rect x="1126" y="469.0" width="12" height="12" fill="#111"/>
+<rect x="1108" y="485.5" width="12" height="12" fill="#111"/>
+<rect x="1126" y="485.5" width="12" height="12" fill="#111"/>
+<rect x="1108" y="502.0" width="12" height="12" fill="#111"/>
+<rect x="1126" y="502.0" width="12" height="12" fill="#111"/>
+<rect x="1108" y="518.5" width="12" height="12" fill="#111"/>
+<rect x="1126" y="518.5" width="12" height="12" fill="#111"/>
+<rect x="1108" y="535.0" width="12" height="12" fill="#111"/>
+<rect x="1126" y="535.0" width="12" height="12" fill="#111"/>
+<rect x="1108" y="551.5" width="12" height="12" fill="#111"/>
+<rect x="1126" y="551.5" width="12" height="12" fill="#111"/>
+<rect x="1108" y="568.0" width="12" height="12" fill="#111"/>
+<rect x="1126" y="568.0" width="12" height="12" fill="#111"/>
+<rect x="1108" y="584.5" width="12" height="12" fill="#111"/>
+<rect x="1126" y="584.5" width="12" height="12" fill="#111"/>
+<rect x="1108" y="601.0" width="12" height="12" fill="#111"/>
+<rect x="1126" y="601.0" width="12" height="12" fill="#111"/>
+<rect x="1108" y="617.5" width="12" height="12" fill="#111"/>
+<rect x="1126" y="617.5" width="12" height="12" fill="#111"/>
+<rect x="1108" y="634.0" width="12" height="12" fill="#111"/>
+<rect x="1126" y="634.0" width="12" height="12" fill="#111"/>
+<rect x="1108" y="650.5" width="12" height="12" fill="#111"/>
+<rect x="1126" y="650.5" width="12" height="12" fill="#111"/>
+<rect x="1108" y="667.0" width="12" height="12" fill="#111"/>
+<rect x="1126" y="667.0" width="12" height="12" fill="#111"/>
+<rect x="1108" y="683.5" width="12" height="12" fill="#111"/>
+<rect x="1126" y="683.5" width="12" height="12" fill="#111"/>
+<rect x="1108" y="436.0" width="12" height="12" fill="#ffd54f"/>
+<rect x="1108" y="452.5" width="12" height="12" fill="#ffd54f"/>
+<rect x="1108" y="469.0" width="12" height="12" fill="#ffd54f"/>
+<rect x="1108" y="485.5" width="12" height="12" fill="#ffd54f"/>
+<rect x="1108" y="502.0" width="12" height="12" fill="#ffd54f"/>
+<rect x="1108" y="518.5" width="12" height="12" fill="#ffd54f"/>
+<rect x="1108" y="535.0" width="12" height="12" fill="#ffd54f"/>
+<rect x="1108" y="551.5" width="12" height="12" fill="#ffd54f"/>
+<rect x="1108" y="617.5" width="12" height="12" fill="#ffd54f"/>
+<text x="1122" y="738" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="middle" font-weight="bold">D22 – D53</text>
+<rect x="540" y="410" width="400" height="320" rx="10" fill="#d32f2f" stroke="#a32020" stroke-width="2"/>
+<text x="740" y="716" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#ffffffdd" text-anchor="middle" font-weight="bold">CNC SHIELD V3</text>
+<rect x="580" y="440" width="120" height="110" rx="4" fill="#b71c1c" stroke="#7f1010" stroke-width="2"/>
+<rect x="615" y="470" width="50" height="45" rx="3" fill="#111" stroke="none" stroke-width="2"/>
+<rect x="625" y="480" width="30" height="25" rx="2" fill="#c0c4c8" stroke="none" stroke-width="2"/>
+<text x="640" y="540" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">A4988 · X</text>
+<rect x="708" y="458" width="10" height="10" fill="#111"/>
+<rect x="708" y="474" width="10" height="10" fill="#111"/>
+<rect x="708" y="490" width="10" height="10" fill="#111"/>
+<rect x="708" y="506" width="10" height="10" fill="#111"/>
+<rect x="740" y="440" width="120" height="110" rx="4" fill="#b71c1c" stroke="#7f1010" stroke-width="2"/>
+<rect x="775" y="470" width="50" height="45" rx="3" fill="#111" stroke="none" stroke-width="2"/>
+<rect x="785" y="480" width="30" height="25" rx="2" fill="#c0c4c8" stroke="none" stroke-width="2"/>
+<text x="800" y="540" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">A4988 · Y</text>
+<rect x="868" y="458" width="10" height="10" fill="#111"/>
+<rect x="868" y="474" width="10" height="10" fill="#111"/>
+<rect x="868" y="490" width="10" height="10" fill="#111"/>
+<rect x="868" y="506" width="10" height="10" fill="#111"/>
+<rect x="580" y="580" width="120" height="110" rx="4" fill="#b71c1c" stroke="#7f1010" stroke-width="2"/>
+<rect x="615" y="610" width="50" height="45" rx="3" fill="#111" stroke="none" stroke-width="2"/>
+<rect x="625" y="620" width="30" height="25" rx="2" fill="#c0c4c8" stroke="none" stroke-width="2"/>
+<text x="640" y="680" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">A4988 · Z</text>
+<rect x="708" y="598" width="10" height="10" fill="#111"/>
+<rect x="708" y="614" width="10" height="10" fill="#111"/>
+<rect x="708" y="630" width="10" height="10" fill="#111"/>
+<rect x="708" y="646" width="10" height="10" fill="#111"/>
+<rect x="740" y="580" width="120" height="110" rx="4" fill="#b71c1c" stroke="#7f1010" stroke-width="2"/>
+<rect x="775" y="610" width="50" height="45" rx="3" fill="#111" stroke="none" stroke-width="2"/>
+<rect x="785" y="620" width="30" height="25" rx="2" fill="#c0c4c8" stroke="none" stroke-width="2"/>
+<text x="800" y="680" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">A4988 · A</text>
+<rect x="868" y="598" width="10" height="10" fill="#111"/>
+<rect x="868" y="614" width="10" height="10" fill="#111"/>
+<rect x="868" y="630" width="10" height="10" fill="#111"/>
+<rect x="868" y="646" width="10" height="10" fill="#111"/>
+<rect x="548" y="650" width="50" height="34" rx="3" fill="#1976d2" stroke="none" stroke-width="2"/>
+<text x="573" y="695" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="middle" font-weight="normal">12–36 V</text>
+<rect x="914" y="450" width="12" height="12" fill="#eee" stroke="#111"/>
+<rect x="914" y="470" width="12" height="12" fill="#eee" stroke="#111"/>
+<rect x="914" y="490" width="12" height="12" fill="#eee" stroke="#111"/>
+<rect x="914" y="510" width="12" height="12" fill="#eee" stroke="#111"/>
+<rect x="914" y="530" width="12" height="12" fill="#eee" stroke="#111"/>
+<rect x="914" y="550" width="12" height="12" fill="#eee" stroke="#111"/>
+<rect x="914" y="570" width="12" height="12" fill="#eee" stroke="#111"/>
+<rect x="914" y="590" width="12" height="12" fill="#eee" stroke="#111"/>
+<rect x="914" y="610" width="12" height="12" fill="#eee" stroke="#111"/>
+<rect x="914" y="630" width="12" height="12" fill="#eee" stroke="#111"/>
+<text x="908" y="460" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="end" font-weight="normal">Z+</text>
+<text x="908" y="480" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="end" font-weight="normal">Z−</text>
+<text x="908" y="500" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="end" font-weight="normal">Y+</text>
+<text x="908" y="520" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="end" font-weight="normal">Y−</text>
+<text x="908" y="540" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="end" font-weight="normal">X+</text>
+<text x="908" y="560" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="end" font-weight="normal">X−</text>
+<text x="908" y="580" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="end" font-weight="normal">SpnEn</text>
+<text x="908" y="600" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="end" font-weight="normal">SpnDir</text>
+<text x="908" y="620" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="end" font-weight="normal">CoolEn</text>
+<text x="908" y="640" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="end" font-weight="normal">Abort</text>
+<text x="570" y="568" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="start" font-weight="normal">Jumpers MS: solo MS2 (1/4 paso) · eje A clonado en D12/D13</text>
+<rect x="380" y="200" width="130" height="130" rx="10" fill="url(#metal)" stroke="#8a8f95" stroke-width="2"/>
+<rect x="392" y="212" width="106" height="106" rx="8" fill="#3a3d42" stroke="none" stroke-width="2"/>
+<circle cx="445.0" cy="265.0" r="30" fill="#c9ccd1" stroke="#9aa0a6" stroke-width="2"/>
+<circle cx="445.0" cy="265.0" r="9" fill="#eceff1" stroke="#777"/>
+<circle cx="394" cy="214" r="5" fill="#2b2b2b"/>
+<circle cx="496" cy="214" r="5" fill="#2b2b2b"/>
+<circle cx="394" cy="316" r="5" fill="#2b2b2b"/>
+<circle cx="496" cy="316" r="5" fill="#2b2b2b"/>
+<text x="445.0" y="174" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#222" text-anchor="middle" font-weight="normal">Joint 1</text>
+<text x="445.0" y="192" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#555" text-anchor="middle" font-weight="normal">ranura X · D2/D5</text>
+<polyline points="445,330 445,375 713,375 713,458" fill="none" stroke="#f39c12" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="700" y="200" width="130" height="130" rx="10" fill="url(#metal)" stroke="#8a8f95" stroke-width="2"/>
+<rect x="712" y="212" width="106" height="106" rx="8" fill="#3a3d42" stroke="none" stroke-width="2"/>
+<circle cx="765.0" cy="265.0" r="30" fill="#c9ccd1" stroke="#9aa0a6" stroke-width="2"/>
+<circle cx="765.0" cy="265.0" r="9" fill="#eceff1" stroke="#777"/>
+<circle cx="714" cy="214" r="5" fill="#2b2b2b"/>
+<circle cx="816" cy="214" r="5" fill="#2b2b2b"/>
+<circle cx="714" cy="316" r="5" fill="#2b2b2b"/>
+<circle cx="816" cy="316" r="5" fill="#2b2b2b"/>
+<text x="765.0" y="174" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#222" text-anchor="middle" font-weight="normal">Joint 2</text>
+<text x="765.0" y="192" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#555" text-anchor="middle" font-weight="normal">ranura Y · D3/D6</text>
+<polyline points="765,330 765,375 873,375 873,458" fill="none" stroke="#f39c12" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="470" y="900" width="130" height="130" rx="10" fill="url(#metal)" stroke="#8a8f95" stroke-width="2"/>
+<rect x="482" y="912" width="106" height="106" rx="8" fill="#3a3d42" stroke="none" stroke-width="2"/>
+<circle cx="535.0" cy="965.0" r="30" fill="#c9ccd1" stroke="#9aa0a6" stroke-width="2"/>
+<circle cx="535.0" cy="965.0" r="9" fill="#eceff1" stroke="#777"/>
+<circle cx="484" cy="914" r="5" fill="#2b2b2b"/>
+<circle cx="586" cy="914" r="5" fill="#2b2b2b"/>
+<circle cx="484" cy="1016" r="5" fill="#2b2b2b"/>
+<circle cx="586" cy="1016" r="5" fill="#2b2b2b"/>
+<text x="535.0" y="874" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#222" text-anchor="middle" font-weight="normal">Joint 3</text>
+<text x="535.0" y="892" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#555" text-anchor="middle" font-weight="normal">ranura Z · D4/D7 · gira el disco</text>
+<polyline points="535,900 535,860 713,860 713,650" fill="none" stroke="#f39c12" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="720" y="900" width="130" height="130" rx="10" fill="url(#metal)" stroke="#8a8f95" stroke-width="2"/>
+<rect x="732" y="912" width="106" height="106" rx="8" fill="#3a3d42" stroke="none" stroke-width="2"/>
+<circle cx="785.0" cy="965.0" r="30" fill="#c9ccd1" stroke="#9aa0a6" stroke-width="2"/>
+<circle cx="785.0" cy="965.0" r="9" fill="#eceff1" stroke="#777"/>
+<circle cx="734" cy="914" r="5" fill="#2b2b2b"/>
+<circle cx="836" cy="914" r="5" fill="#2b2b2b"/>
+<circle cx="734" cy="1016" r="5" fill="#2b2b2b"/>
+<circle cx="836" cy="1016" r="5" fill="#2b2b2b"/>
+<text x="785.0" y="874" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#222" text-anchor="middle" font-weight="normal">Z-axis</text>
+<text x="785.0" y="892" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#555" text-anchor="middle" font-weight="normal">ranura A · D12/D13</text>
+<polyline points="785,900 785,860 873,860 873,650" fill="none" stroke="#f39c12" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="1000" y="210" width="100" height="44" rx="5" fill="#2d2d2d" stroke="none" stroke-width="2"/>
+<text x="1050" y="237" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="normal">Microswitch</text>
+<line x1="1010" y1="210" x2="1092" y2="198" stroke="#888" stroke-width="3"/>
+<circle cx="1092" cy="196" r="5" fill="#bbb"/>
+<rect x="1015" y="254" width="6" height="12" fill="#c0a060"/>
+<text x="1018" y="280" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">C</text>
+<rect x="1047" y="254" width="6" height="12" fill="#c0a060"/>
+<text x="1050" y="280" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">NA</text>
+<rect x="1079" y="254" width="6" height="12" fill="#c0a060"/>
+<text x="1082" y="280" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">NC</text>
+<text x="1112" y="238" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#222" text-anchor="start" font-weight="normal">SW1 · J1</text>
+<polyline points="926,456 944,456 944,395 1082,395 1082,266" fill="none" stroke="#e53935" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1018,266 1018,274" fill="none" stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1018" y="294" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#333" text-anchor="middle" font-weight="normal">GND</text>
+<rect x="1230" y="210" width="100" height="44" rx="5" fill="#2d2d2d" stroke="none" stroke-width="2"/>
+<text x="1280" y="237" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="normal">Microswitch</text>
+<line x1="1240" y1="210" x2="1322" y2="198" stroke="#888" stroke-width="3"/>
+<circle cx="1322" cy="196" r="5" fill="#bbb"/>
+<rect x="1245" y="254" width="6" height="12" fill="#c0a060"/>
+<text x="1248" y="280" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">C</text>
+<rect x="1277" y="254" width="6" height="12" fill="#c0a060"/>
+<text x="1280" y="280" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">NA</text>
+<rect x="1309" y="254" width="6" height="12" fill="#c0a060"/>
+<text x="1312" y="280" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">NC</text>
+<text x="1342" y="238" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#222" text-anchor="start" font-weight="normal">SW2 · J2</text>
+<polyline points="926,496 954,496 954,391 1312,391 1312,266" fill="none" stroke="#e53935" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1248,266 1248,274" fill="none" stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1248" y="294" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#333" text-anchor="middle" font-weight="normal">GND</text>
+<rect x="1000" y="300" width="100" height="44" rx="5" fill="#2d2d2d" stroke="none" stroke-width="2"/>
+<text x="1050" y="327" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="normal">Microswitch</text>
+<line x1="1010" y1="300" x2="1092" y2="288" stroke="#888" stroke-width="3"/>
+<circle cx="1092" cy="286" r="5" fill="#bbb"/>
+<rect x="1015" y="344" width="6" height="12" fill="#c0a060"/>
+<text x="1018" y="370" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">C</text>
+<rect x="1047" y="344" width="6" height="12" fill="#c0a060"/>
+<text x="1050" y="370" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">NA</text>
+<rect x="1079" y="344" width="6" height="12" fill="#c0a060"/>
+<text x="1082" y="370" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">NC</text>
+<text x="1112" y="328" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#222" text-anchor="start" font-weight="normal">SW3 · J3</text>
+<polyline points="926,536 964,536 964,387 1082,387 1082,356" fill="none" stroke="#e53935" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1018,356 1018,364" fill="none" stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1018" y="384" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#333" text-anchor="middle" font-weight="normal">GND</text>
+<rect x="1230" y="300" width="100" height="44" rx="5" fill="#2d2d2d" stroke="none" stroke-width="2"/>
+<text x="1280" y="327" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="normal">Microswitch</text>
+<line x1="1240" y1="300" x2="1322" y2="288" stroke="#888" stroke-width="3"/>
+<circle cx="1322" cy="286" r="5" fill="#bbb"/>
+<rect x="1245" y="344" width="6" height="12" fill="#c0a060"/>
+<text x="1248" y="370" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">C</text>
+<rect x="1277" y="344" width="6" height="12" fill="#c0a060"/>
+<text x="1280" y="370" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">NA</text>
+<rect x="1309" y="344" width="6" height="12" fill="#c0a060"/>
+<text x="1312" y="370" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#555" text-anchor="middle" font-weight="normal">NC</text>
+<text x="1342" y="328" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#222" text-anchor="start" font-weight="normal">SW4 · Z</text>
+<polyline points="926,616 974,616 974,383 1312,383 1312,356" fill="none" stroke="#e53935" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1248,356 1248,364" fill="none" stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1248" y="384" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#333" text-anchor="middle" font-weight="normal">GND</text>
+<text x="1000" y="175" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#555" text-anchor="start" font-weight="normal">Finales NC a GND (como HTM): pin en NC, común a GND</text>
+<rect x="60" y="560" width="150" height="90" rx="6" fill="#263238" stroke="none" stroke-width="2"/>
+<text x="135" y="595" font-family="Segoe UI, Arial, sans-serif" font-size="16" fill="#fff" text-anchor="middle" font-weight="bold">Fuente</text>
+<text x="135" y="618" font-family="Segoe UI, Arial, sans-serif" font-size="16" fill="#fff" text-anchor="middle" font-weight="normal">12 V · 6 A</text>
+<text x="135" y="638" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#cfd8dc" text-anchor="middle" font-weight="normal">(reusar la del artículo)</text>
+<polyline points="210,590 500,590 500,667 560,667" fill="none" stroke="#e53935" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="210,625 490,625 490,681 585,681" fill="none" stroke="#222" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="135,650 135,1150 1250,1150 1250,760" fill="none" stroke="#e53935" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="120,650 120,1162 1265,1162 1265,760" fill="none" stroke="#222" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="140" y="1142" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#e53935" text-anchor="start" font-weight="bold">+12 V</text>
+<text x="140" y="1176" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222" text-anchor="start" font-weight="bold">GND común (fuente, Mega, buck, MOSFET, PC817)</text>
+<polyline points="1250,760 1250,440" fill="none" stroke="#e53935" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1265,760 1265,440" fill="none" stroke="#222" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1258" y="430" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#333" text-anchor="middle" font-weight="normal">12 V / GND</text>
+<rect x="1300" y="440" width="150" height="70" rx="8" fill="#00897b" stroke="#00000033" stroke-width="2"/>
+<text x="1375.0" y="462" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#fff" text-anchor="middle" font-weight="bold">PC817</text>
+<text x="1375.0" y="482" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">opto 12 V → 5 V</text>
+<text x="1375.0" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">salida → D22</text>
+<rect x="1500" y="430" width="160" height="90" rx="8" fill="#455a64" stroke="#00000033" stroke-width="2"/>
+<text x="1580.0" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#fff" text-anchor="middle" font-weight="bold">LJ12A3-4-Z/BX</text>
+<text x="1580.0" y="472" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">sensor inductivo</text>
+<text x="1580.0" y="489" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">NPN NA · 4 mm</text>
+<text x="1580.0" y="506" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">café +12 · azul GND</text>
+<polyline points="1114,442.0 1215,442.0 1215,465 1300,465" fill="none" stroke="#1e88e5" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1220" y="437.0" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1e88e5" text-anchor="start" font-weight="bold">D22</text>
+<polyline points="1500,470 1450,470" fill="none" stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1455" y="462" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="bold">negro</text>
+<polyline points="1250,495 1300,495" fill="none" stroke="#e53935" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="1300" y="560" width="150" height="70" rx="8" fill="#6d4c41" stroke="#00000033" stroke-width="2"/>
+<text x="1375.0" y="582" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#fff" text-anchor="middle" font-weight="bold">MOSFET D4184</text>
+<text x="1375.0" y="602" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">gate ← D24</text>
+<text x="1375.0" y="619" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">+ diodo 1N5819</text>
+<rect x="1500" y="555" width="160" height="80" rx="8" fill="#546e7a" stroke="#00000033" stroke-width="2"/>
+<text x="1580.0" y="577" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#fff" text-anchor="middle" font-weight="bold">Electroimán</text>
+<text x="1580.0" y="597" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">12 V KK-P20/15</text>
+<text x="1580.0" y="614" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">≈2.5 kgf</text>
+<polyline points="1114,458.5 1225,458.5 1225,585 1300,585" fill="none" stroke="#8e44ad" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1230" y="472.5" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#8e44ad" text-anchor="start" font-weight="bold">D24</text>
+<polyline points="1450,585 1500,585" fill="none" stroke="#e53935" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1450,610 1500,610" fill="none" stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1250,610 1300,610" fill="none" stroke="#e53935" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1265,622 1300,622" fill="none" stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="1300" y="680" width="150" height="70" rx="8" fill="#37474f" stroke="#00000033" stroke-width="2"/>
+<text x="1375.0" y="702" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#fff" text-anchor="middle" font-weight="bold">Buck LM2596</text>
+<text x="1375.0" y="722" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">12 V → 5.5–6 V</text>
+<text x="1375.0" y="739" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">solo para el servo</text>
+<rect x="1500" y="670" width="160" height="90" rx="6" fill="#2b2b2b" stroke="none" stroke-width="2"/>
+<text x="1580" y="700" font-family="Segoe UI, Arial, sans-serif" font-size="16" fill="#f1c40f" text-anchor="middle" font-weight="bold">SERVO SG90</text>
+<text x="1580" y="722" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">levante del plumón</text>
+<text x="1580" y="740" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#ccc" text-anchor="middle" font-weight="normal">(18 mm)</text>
+<polyline points="1250,700 1300,700" fill="none" stroke="#e53935" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1265,720 1300,720" fill="none" stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1450,700 1500,700" fill="none" stroke="#e53935" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1450,730 1500,730" fill="none" stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1462" y="694" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#e53935" text-anchor="start" font-weight="bold">6 V</text>
+<polyline points="1114,623.5 1200,623.5 1200,790 1480,790 1480,745 1500,745" fill="none" stroke="#f39c12" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1205" y="637.5" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#f39c12" text-anchor="start" font-weight="bold">D44 señal</text>
+<rect x="880" y="790" width="170" height="60" rx="8" fill="#78909c" stroke="#00000033" stroke-width="2"/>
+<text x="965.0" y="812" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="bold">Divisor 10k / 3.3k</text>
+<text x="965.0" y="832" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">12 V → ≈3 V en A8</text>
+<polyline points="956,702 956,820 880,820" fill="none" stroke="#f1c40f" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="950" y="780" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#b8860b" text-anchor="end" font-weight="bold">A8</text>
+<polyline points="1050,805 1250,805" fill="none" stroke="#e53935" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 4"/>
+<polyline points="1050,835 1265,835" fill="none" stroke="#222" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 4"/>
+<rect x="1000" y="900" width="640" height="220" rx="10" fill="#f5f5f5" stroke="#bbb" stroke-width="2"/>
+<text x="1020" y="930" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#333" text-anchor="start" font-weight="bold">Panel del operador (todo a GND, entradas con INPUT_PULLUP)</text>
+<circle cx="1060" cy="1010" r="26" fill="#2e9d4f" stroke="#333" stroke-width="3"/>
+<text x="1060" y="1072" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">START</text>
+<text x="1060" y="1088" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#666" text-anchor="middle" font-weight="normal">pulsador NA</text>
+<text x="1060" y="974" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#2e9d4f" text-anchor="middle" font-weight="bold">D26</text>
+<polyline points="1114,475.0 1130,475.0" fill="none" stroke="#2e9d4f" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1130,475.0 1130,880 1060,880 1060,960" fill="none" stroke="#2e9d4f" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="1162" cy="1010" r="26" fill="#e53935" stroke="#333" stroke-width="3"/>
+<text x="1162" y="1072" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">PARO</text>
+<text x="1162" y="1088" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#666" text-anchor="middle" font-weight="normal">hongo NC</text>
+<text x="1162" y="974" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#e53935" text-anchor="middle" font-weight="bold">D28</text>
+<polyline points="1114,491.5 1135,491.5" fill="none" stroke="#e53935" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1135,491.5 1135,883 1162,883 1162,960" fill="none" stroke="#e53935" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="1264" cy="1010" r="16" fill="#43a047" stroke="#333" stroke-width="2"/>
+<text x="1264" y="1050" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#666" text-anchor="middle" font-weight="normal">+220 Ω</text>
+<text x="1264" y="1072" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">LED verde</text>
+<text x="1264" y="1088" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#666" text-anchor="middle" font-weight="normal">listo</text>
+<text x="1264" y="974" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#43a047" text-anchor="middle" font-weight="bold">D30</text>
+<polyline points="1114,508.0 1140,508.0" fill="none" stroke="#43a047" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1140,508.0 1140,886 1264,886 1264,960" fill="none" stroke="#43a047" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="1366" cy="1010" r="16" fill="#fbc02d" stroke="#333" stroke-width="2"/>
+<text x="1366" y="1050" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#666" text-anchor="middle" font-weight="normal">+220 Ω</text>
+<text x="1366" y="1072" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">LED amarillo</text>
+<text x="1366" y="1088" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#666" text-anchor="middle" font-weight="normal">moviendo</text>
+<text x="1366" y="974" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#fbc02d" text-anchor="middle" font-weight="bold">D32</text>
+<polyline points="1114,524.5 1145,524.5" fill="none" stroke="#fbc02d" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1145,524.5 1145,889 1366,889 1366,960" fill="none" stroke="#fbc02d" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="1468" cy="1010" r="16" fill="#e53935" stroke="#333" stroke-width="2"/>
+<text x="1468" y="1050" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#666" text-anchor="middle" font-weight="normal">+220 Ω</text>
+<text x="1468" y="1072" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">LED rojo</text>
+<text x="1468" y="1088" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#666" text-anchor="middle" font-weight="normal">paro / error</text>
+<text x="1468" y="974" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#e53935" text-anchor="middle" font-weight="bold">D34</text>
+<polyline points="1114,541.0 1150,541.0" fill="none" stroke="#e53935" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1150,541.0 1150,892 1468,892 1468,960" fill="none" stroke="#e53935" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="1570" cy="1010" r="22" fill="#222"/><circle cx="1570" cy="1010" r="5" fill="#666"/>
+<text x="1570" y="1072" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">Buzzer</text>
+<text x="1570" y="1088" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#666" text-anchor="middle" font-weight="normal">activo/pasivo</text>
+<text x="1570" y="974" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">D36</text>
+<polyline points="1114,557.5 1155,557.5" fill="none" stroke="#555" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="1155,557.5 1155,895 1570,895 1570,960" fill="none" stroke="#555" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="30" y="220" width="330" height="300" rx="8" fill="#fafafa" stroke="#ccc" stroke-width="2"/>
+<text x="45" y="246" font-family="Segoe UI, Arial, sans-serif" font-size="16" fill="#222" text-anchor="start" font-weight="bold">Mapa de pines</text>
+<text x="45" y="272" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal">J1 · J2 · J3 · Z</text>
+<text x="205" y="272" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">STEP 2·3·4·12 / DIR 5·6·7·13</text>
+<text x="45" y="292" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal">Enable drivers</text>
+<text x="205" y="292" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">D8</text>
+<text x="45" y="312" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal">SW1 · SW2 · SW3 · SW4</text>
+<text x="205" y="312" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">D11 · D10 · D9 · A3</text>
+<text x="45" y="332" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal">Sensor inductivo</text>
+<text x="205" y="332" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">D22 (LOW = metal)</text>
+<text x="45" y="352" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal">Electroimán</text>
+<text x="205" y="352" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">D24</text>
+<text x="45" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal">START · PARO</text>
+<text x="205" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">D26 · D28</text>
+<text x="45" y="392" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal">LED V · A · R</text>
+<text x="205" y="392" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">D30 · D32 · D34</text>
+<text x="45" y="412" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal">Buzzer</text>
+<text x="205" y="412" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">D36</text>
+<text x="45" y="432" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal">Servo plumón</text>
+<text x="205" y="432" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">D44</text>
+<text x="45" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal">Monitor 12 V</text>
+<text x="205" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">A8</text>
+<text x="45" y="472" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal">Libres</text>
+<text x="205" y="472" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">Serial1-3, I2C 20/21, A9–A15</text>
+<text x="45" y="492" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#333" text-anchor="start" font-weight="normal"></text>
+<text x="205" y="492" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1f5fa8" text-anchor="start" font-weight="bold">impares D23–D53</text>
+<text x="160" y="700" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#222" text-anchor="start" font-weight="bold">Notas</text>
+<text x="160" y="720" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222" text-anchor="start" font-weight="normal">• El servo NO va al 5 V del Mega: usa el</text>
+<text x="160" y="740" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222" text-anchor="start" font-weight="normal">  buck y une las tierras.</text>
+<text x="160" y="760" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222" text-anchor="start" font-weight="normal">• Diodo 1N5819 en paralelo al electroimán</text>
+<text x="160" y="780" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222" text-anchor="start" font-weight="normal">  (cátodo a +12 V).</text>
+<text x="160" y="800" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222" text-anchor="start" font-weight="normal">• Cinta aislante sobre el USB del Mega</text>
+<text x="160" y="820" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222" text-anchor="start" font-weight="normal">  antes de montar la shield.</text>
+<text x="160" y="840" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222" text-anchor="start" font-weight="normal">• Ajusta Vref de cada A4988 antes de</text>
+<text x="160" y="860" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222" text-anchor="start" font-weight="normal">  conectar los motores.</text>
+<text x="160" y="880" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222" text-anchor="start" font-weight="normal">• Cable al cabezal (D22, D24, D44, 12 V,</text>
+<text x="160" y="900" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222" text-anchor="start" font-weight="normal">  6 V, GND) por los ejes huecos J2 y J3.</text>
+</svg>
