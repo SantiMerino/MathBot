@@ -142,6 +142,9 @@ Qué imprimir y qué comprar para cada cabezal: [simulador_scara/CABEZALES_compr
   de las piezas (motores, poleas, correas, rodamientos, Arduino + CNC Shield + A4988, finales de carrera),
   modo Rayos X e identificación de cada pieza con el cursor usando los nombres de HowToMechatronics.
   Se regenera con `python python/construir_simulador_scara.py` tras editar `plantilla.html`.
+- `presupuesto/MathBot_Presupuesto_SCARA.xlsx`: presupuesto del robot con el cabezal de disco: lista de materiales con
+  precios locales y de Amazon puestos en El Salvador, estado de compra, registro de gastos por integrante e impresión 3D.
+  Se regenera con `python presupuesto/construir_presupuesto.py`.
 - `python/simular_scara.py [--gif] [--varilla 220]`: figuras para el informe (`python/figuras/scara_*.png`)
   y CSV con ángulos y pasos de motor por muestra.
 
