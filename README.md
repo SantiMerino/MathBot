@@ -63,7 +63,7 @@ MathBot/
 ├── mathbot_investigacion_construccion.html # investigación: arquitecturas, presupuesto de error, BOM y costos
 ├── mathbot_compras_el_salvador.html        # abastecimiento 100% local: tiendas, sustituciones, BOM en El Salvador
 ├── matlab/                                # simulación y validación (Avance 1 y 2)
-└── firmware/                              # control Arduino del brazo (por definir)
+└── firmware/                              # Arduino MEGA: firmware, pruebas, diagrama y Wokwi (ver firmware/README.md)
 ```
 
 ---
