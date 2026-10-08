@@ -1,7 +1,7 @@
 # Cabezales MathBot: qué imprimir y qué comprar
 
 Supuesto de materiales para los dos efectores que reemplazan la pinza del SCARA de HowToMechatronics.
-El resto del robot (base, columna Z, brazos, poleas, NEMA 17, A4988, CNC Shield, Arduino UNO) se mantiene como en el artículo.
+El resto del robot (base, columna Z, brazos, poleas, NEMA 17, A4988, CNC Shield) se mantiene como en el artículo; el Arduino UNO se cambia por un MEGA 2560 (ver `firmware/README.md`).
 Precios de referencia en USD (AliExpress / tiendas de electrónica); hay que confirmarlos en El Salvador.
 
 ## Comparación rápida
@@ -76,14 +76,14 @@ Par necesario: menos de 1 kg·cm (desbalance de herramientas + arrastre del plum
 
 | Componente | Cant. | USD | Conexión |
 |---|---:|---:|---|
-| Módulo MOSFET de nivel lógico D4184 (o IRLZ44N) + diodo 1N5819 | 1 | 1–2 | electroimán → A1 |
-| Optoacoplador PC817 (o divisor 10 kΩ / 4.7 kΩ) | 1 | 1 | sensor de 12 V → A2 |
-| Convertidor buck 12 → 6 V: LM2596 (A) o XL4015 5 A (B) | 1 | 2–5 | alimenta el servo; señal en A0 |
+| Módulo MOSFET de nivel lógico D4184 (o IRLZ44N) + diodo 1N5819 | 1 | 1–2 | electroimán → D24 |
+| Optoacoplador PC817 (o divisor 10 kΩ / 4.7 kΩ) | 1 | 1 | sensor de 12 V → D22 |
+| Convertidor buck 12 → 6 V: LM2596 (A) o XL4015 5 A (B) | 1 | 2–5 | alimenta el servo; señal en D44 |
 | Cable flexible de 6–8 hilos AWG 24–26 (silicona), 1.5 m | 1 | 3–5 | pasa por los ejes huecos de J2 y J3 |
-| Conectores JST-XH / Dupont y termoretráctil | — | 2 | — |
+| Conectores JST-XH / Dupont y termorretráctil | — | 2 | — |
 
-- **A0** es el pin que el código de HTM usa para la pinza (`gripperServo.attach(A0, 600, 2500)`).
-- **A1 y A2** salen en la CNC Shield como *Hold* y *Resume*. Antes de cablear hay que verificar en el sketch de HTM que no los ocupe ningún final de carrera (el código tiene `limitSwitch1..4`).
+- Con el MEGA 2560 el cabezal usa pines que no toca la CNC Shield: **D22** sensor, **D24** electroimán y **D44** servo. Los finales de carrera siguen en D9, D10, D11 y A3, como en HTM.
+- Diagrama completo y firmware en [`firmware/`](../firmware/README.md).
 - **Fuente:** la de 12 V 6 A del artículo alcanza si el servo solo se mueve con los steppers quietos, como en la simulación.
 
 El simulador (`simulador_scara.html`) muestra estas mismas tablas para el cabezal seleccionado.
