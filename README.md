@@ -145,6 +145,8 @@ Qué imprimir y qué comprar para cada cabezal: [simulador_scara/CABEZALES_compr
 - `presupuesto/MathBot_Presupuesto_SCARA.xlsx`: presupuesto del robot con el cabezal de disco: lista de materiales con
   precios locales y de Amazon puestos en El Salvador, estado de compra, registro de gastos por integrante e impresión 3D.
   Se regenera con `python presupuesto/construir_presupuesto.py`.
+- `presupuesto/rodamientos_scara.svg`: los 18 rodamientos (medidas, cantidad y dónde va cada uno), cotejados con el
+  ensamble de HowToMechatronics. La lista de compras del artículo pide menos 51107/51108 y omite los radiales 6807/6806.
 - `python/simular_scara.py [--gif] [--varilla 220]`: figuras para el informe (`python/figuras/scara_*.png`)
   y CSV con ángulos y pasos de motor por muestra.
 
