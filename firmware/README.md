@@ -27,6 +27,7 @@ Microstepping: jumper **solo en MS2** de cada driver (1/4 de paso, el que usa `p
 | Carpeta | Para qué |
 |---|---|
 | `mathbot_mega/` | Firmware completo: homing, IK por herramienta, cambio de herramienta con J3, misión (escaneo → recolección → rosa), paro de emergencia y comandos por Serial |
+| `prueba_nema/` | Prueba mínima de los NEMA sin bibliotecas, finales ni PARO: cada motor ida y vuelta, luego X+Y+Z juntos |
 | `prueba_componentes/` | Menú para probar cada motor, final de carrera, sensor, electroimán, botones, LED, buzzer y los 12 V por separado |
 | `prueba_servo/` | Calibra las posiciones ARRIBA/ABAJO del plumón; copia los valores a `SERVO_ARRIBA` / `SERVO_ABAJO` |
 
