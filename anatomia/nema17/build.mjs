@@ -254,7 +254,7 @@ draw();
 const body = k.plateHtml({
   fig: "Fig 1",
   title: "NEMA 17 · los dos",
-  hint: "Pasa el puntero para mandar pasos · ← → un paso completo",
+  hint: "Puntero o ← →",
   readout: "0 µpasos · 0.00° · 0 rpm",
   keys: [
     { mark: "lit", label: "Disco graduado: gira 0.45° por micropaso, 3.6° por división" },

@@ -266,7 +266,7 @@ show(0);
 const body = k.plateHtml({
   fig: "Fig 2",
   title: "Arduino MEGA 2560 · pines",
-  hint: "Pasa el puntero o ← → para recorrer los pines",
+  hint: "Puntero o ← →",
   readout: STOPS[0].text,
   keys: [
     { mark: "lit", label: "Lo que usa la función elegida" },
