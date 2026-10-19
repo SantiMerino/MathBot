@@ -160,7 +160,7 @@ code{font-size:11px}
       </div>
       <select id="mode" aria-label="modo">
         <option value="mision" selected>Misión completa</option>
-        <option value="iman">Solo recolectar con electroimán</option>
+        <option value="iman">Solo detectar y recolectar</option>
         <option value="rosa">Solo trazar rosa</option>
         <option value="manual">Manual (articulaciones)</option>
       </select>
@@ -478,7 +478,8 @@ function buildTimeline(P, mode, H){
   hold(0.8);
   zTo(zTravel);
 
-  if (mode === 'mision'){
+  const collect = mode === 'mision' || mode === 'iman';
+  if (collect){
     phase('Fase 1 · Escaneo con sensor inductivo', disc ? 'J3 gira +120° para poner el sensor al frente; se acerca a 3 mm de cada pieza'
       : 'El servo gira el revólver +120°: el sensor apunta a la mesa; se acerca a 3 mm de cada pieza');
     OBJ.forEach((o, i) => {
@@ -490,7 +491,7 @@ function buildTimeline(P, mode, H){
     });
   }
 
-  if (mode === 'mision' || mode === 'iman'){
+  if (collect){
     phase('Fase 2 · Recolección con electroimán', disc ? 'Solo las piezas metálicas; J3 gira para poner el electroimán al frente'
       : 'Solo las piezas metálicas; el revólver gira a −120° (electroimán abajo)');
     let slot = 0;
