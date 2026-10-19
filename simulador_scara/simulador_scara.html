@@ -160,6 +160,7 @@ code{font-size:11px}
       </div>
       <select id="mode" aria-label="modo">
         <option value="mision" selected>Misión completa</option>
+        <option value="iman">Solo recolectar con electroimán</option>
         <option value="rosa">Solo trazar rosa</option>
         <option value="manual">Manual (articulaciones)</option>
       </select>
@@ -487,6 +488,9 @@ function buildTimeline(P, mode, H){
       hold(0.9); s.sense = -1;
       zTo(zTravel);
     });
+  }
+
+  if (mode === 'mision' || mode === 'iman'){
     phase('Fase 2 · Recolección con electroimán', disc ? 'Solo las piezas metálicas; J3 gira para poner el electroimán al frente'
       : 'Solo las piezas metálicas; el revólver gira a −120° (electroimán abajo)');
     let slot = 0;
@@ -509,20 +513,22 @@ function buildTimeline(P, mode, H){
   }
 
   const rose = roseArc(P, DT);
-  phase('Fase 3 · Trazo de la rosa con plumón', (disc ? 'J3 en 0°: el plumón queda al frente' : 'Revólver en 0°: plumón abajo, sin servo de levante') + `; ${rose.total.toFixed(0)} mm a ${P.v} mm/s`);
-  const p0 = rose.pts[0];
-  if (goAbove(p0[0], p0[1], 'pen')){
-    if (disc) servo(0);
-    zTo(zpFor(H, 8, 'pen')); zTo(zpFor(H, 0, 'pen'), 10);
-    const f0 = F.length;
-    for (const p of rose.pts){
-      const q = solve(p[0], p[1], 'pen');
-      if (q){ s.th1 = q.th1; s.th2 = q.th2; s.phi = q.phi; }
-      push();
+  if (mode !== 'iman'){
+    phase('Fase 3 · Trazo de la rosa con plumón', (disc ? 'J3 en 0°: el plumón queda al frente' : 'Revólver en 0°: plumón abajo, sin servo de levante') + `; ${rose.total.toFixed(0)} mm a ${P.v} mm/s`);
+    const p0 = rose.pts[0];
+    if (goAbove(p0[0], p0[1], 'pen')){
+      if (disc) servo(0);
+      zTo(zpFor(H, 8, 'pen')); zTo(zpFor(H, 0, 'pen'), 10);
+      const f0 = F.length;
+      for (const p of rose.pts){
+        const q = solve(p[0], p[1], 'pen');
+        if (q){ s.th1 = q.th1; s.th2 = q.th2; s.phi = q.phi; }
+        push();
+      }
+      log.push({ f: f0, html: `Plumón abajo: inicia la rosa (${rose.total.toFixed(0)} mm)` });
+      zTo(zpFor(H, 10, 'pen'), 20); if (disc) servo(LIFT);
+      log.push({ f: F.length, html: 'Rosa terminada, plumón arriba' });
     }
-    log.push({ f: f0, html: `Plumón abajo: inicia la rosa (${rose.total.toFixed(0)} mm)` });
-    zTo(zpFor(H, 10, 'pen'), 20); if (disc) servo(LIFT);
-    log.push({ f: F.length, html: 'Rosa terminada, plumón arriba' });
   }
   phase('Regreso a home', 'Sube a altura de tránsito y vuelve a la posición inicial');
   zTo(zTravel); joints(home); hold(0.8);
@@ -938,7 +944,7 @@ function rebuildTable(){
 }
 function rebuild(keepT=false){
   const frac = TL ? simT / (TL.F.length*DT) : 0;
-  TL = buildTimeline(P, mode === 'rosa' ? 'rosa' : 'mision', H);
+  TL = buildTimeline(P, mode, H);
   simT = keepT ? frac * TL.F.length*DT : 0;
   rebuildRobotZ(); rebuildTable(); clearInk();
   const [zmin, zmax] = zRange(P.rod), zd = zpFor(H, 0, 'pen');
