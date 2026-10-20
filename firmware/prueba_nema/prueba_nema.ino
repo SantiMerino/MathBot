@@ -2,9 +2,10 @@
   MathBot · prueba mínima de los NEMA 17 (sin bibliotecas, sin finales de carrera ni PARO)
   Arduino MEGA 2560 + CNC Shield V3 + A4988 con 1/4 de micropaso (jumper solo en MS2) -> 800 pasos/vuelta.
 
-  Monitor Serie a 115200. Escribe una tecla y Enter:
+  Monitor Serie a 115200 con "New Line". Escribe y Enter:
     1  motor X (J1)    2  motor Y (J2)    3  motor Z (J3)    4  motor A (Z, solo con los jumpers D12/D13)
-    t  X, Y y Z a la vez
+    varios números juntos mueven esos motores a la vez: 12, 13, 123, 1234...
+    t  X, Y y Z a la vez (igual que 123)
   Cada prueba da media vuelta de motor hacia adelante, espera 1 s y regresa al mismo punto,
   con rampa de aceleración al arrancar y al frenar para no perder pasos.
   Al terminar suelta los drivers (EN en HIGH) para que no se calienten.
@@ -65,18 +66,26 @@ void setup() {
     pinMode(DIR[i], OUTPUT);
   }
   Serial.begin(115200);
-  Serial.println(F("1 X | 2 Y | 3 Z | 4 A | t X+Y+Z juntos"));
+  Serial.println(F("1 X | 2 Y | 3 Z | 4 A | juntos: 12, 123, 1234... | t = 123"));
 }
 
 void loop() {
   if (!Serial.available()) return;
-  char c = Serial.read();
-  if (c >= '1' && c <= '4') {
-    Serial.print(F("Motor "));
-    Serial.println(NOMBRE[c - '1']);
-    prueba(1 << (c - '1'));
-  } else if (c == 't') {
-    Serial.println(F("X, Y y Z a la vez"));
-    prueba(0b0111);
-  }
+  String linea = Serial.readStringUntil('\n');
+  linea.trim();
+  if (linea == "t") linea = "123";
+
+  byte mascara = 0;
+  for (unsigned int k = 0; k < linea.length(); k++)
+    if (linea[k] >= '1' && linea[k] <= '4') mascara |= 1 << (linea[k] - '1');
+  if (!mascara) return;
+
+  Serial.print(F("Motores:"));
+  for (int i = 0; i < 4; i++)
+    if (mascara & (1 << i)) {
+      Serial.print(' ');
+      Serial.print(NOMBRE[i]);
+    }
+  Serial.println();
+  prueba(mascara);
 }
