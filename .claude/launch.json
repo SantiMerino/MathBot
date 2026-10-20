@@ -4,8 +4,26 @@
     {
       "name": "simulador-scara",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "simulador_scara"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--directory",
+        "simulador_scara"
+      ],
       "port": 8765
+    },
+    {
+      "name": "anatomia",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8767",
+        "--directory",
+        "anatomia"
+      ],
+      "port": 8767
     }
   ]
 }
