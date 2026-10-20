@@ -10,8 +10,8 @@ Geometria medida directamente de las STL de `BRAZO SCARA/.../STL Files - updated
 
 Cabezal propuesto (reemplaza la pinza): disco tri-herramienta montado en J3.
   - Plumon/lapiz   a phi =   0 deg, radio 55 mm (hacia adelante de Arm 2)
-  - Electroiman    a phi = 120 deg, radio 45 mm
-  - Sensor induct. a phi = 240 deg, radio 45 mm
+  - Electroiman    a phi = 120 deg, radio 55 mm
+  - Sensor induct. a phi = 240 deg, radio 55 mm
 Con J3 fijo (phi = 0) al dibujar, el plumon se comporta como si Arm 2 midiera
 L2 + 55 = 199 mm: eslabones mas balanceados (228 / 199) y J3 no se mueve
 durante el trazo.
@@ -85,9 +85,9 @@ class Herramienta:
 class Cabezal:
     espesor_placa: float = 6.0
     pluma: Herramienta = field(default_factory=lambda: Herramienta("Plumon", 0.0, 55.0, 50.0))
-    iman: Herramienta = field(default_factory=lambda: Herramienta("Electroiman", 120.0, 45.0, 40.0))
+    iman: Herramienta = field(default_factory=lambda: Herramienta("Electroiman", 120.0, 55.0, 40.0))
     sensor: Herramienta = field(
-        default_factory=lambda: Herramienta("Sensor inductivo", 240.0, 45.0, 38.0)
+        default_factory=lambda: Herramienta("Sensor inductivo", 240.0, 55.0, 38.0)
     )
     levante_pluma: float = 18.0  # carrera del micro-servo que sube la pluma
 

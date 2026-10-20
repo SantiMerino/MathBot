@@ -3,7 +3,8 @@
   Arduino MEGA 2560 + CNC Shield V3 + 4 x A4988 (1/4 de micropaso: jumper solo en MS2)
 
   SCARA de HowToMechatronics con el cabezal A · disco tri-herramienta:
-    plumón (phi 0°, r 55 mm), electroimán (phi 120°, r 45 mm), sensor inductivo (phi 240°, r 45 mm).
+    plumón (phi 0°, r 55 mm), electroimán (phi 120°, r 55 mm), sensor inductivo (phi 240°, r 55 mm).
+    (v2: electroimán y sensor pasaron de 45 a 55 mm; a 45 mm la tuerca del sensor chocaba con el J3 coupler)
   J3 gira el disco para poner al frente la herramienta activa; un micro-servo SG90 sube/baja el plumón.
 
   La CNC Shield usa los mismos pines en el Mega que en el UNO (D2–D13, A0–A3), así que los motores y
@@ -80,8 +81,8 @@ struct Herramienta {
 enum { PLUMON = 0, IMAN = 1, SENSOR = 2 };
 const Herramienta HERR[3] = {
   { "plumon", 0.0, 55.0, 50.0 },
-  { "electroiman", 120.0, 45.0, 40.0 },
-  { "sensor", 240.0, 45.0, 38.0 },
+  { "electroiman", 120.0, 55.0, 40.0 },
+  { "sensor", 240.0, 55.0, 38.0 },
 };
 
 // ---- Accionamiento: NEMA 17, 200 pasos x 1/4 ----
