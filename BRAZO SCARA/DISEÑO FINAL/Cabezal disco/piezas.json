@@ -1,0 +1,128 @@
+[
+ {
+  "clave": "separador",
+  "archivo": "01_separador_brida",
+  "nombre": "Separador de brida",
+  "material": "PETG",
+  "perimetros": 4,
+  "relleno": 40,
+  "volumen_cm3": 9.72,
+  "area_cm2": 89.9,
+  "gramos": 12.4,
+  "horas": 1.06,
+  "caja_mm": [
+   66.9,
+   72.7,
+   15.5
+  ],
+  "nota": "Sin soportes. Cejas hacia arriba. Tuercas M3 por abajo antes de montar."
+ },
+ {
+  "clave": "placa",
+  "archivo": "02_placa_trebol",
+  "nombre": "Placa trébol",
+  "material": "PETG",
+  "perimetros": 3,
+  "relleno": 30,
+  "volumen_cm3": 35.79,
+  "area_cm2": 191.8,
+  "gramos": 31.5,
+  "horas": 2.69,
+  "caja_mm": [
+   130.3,
+   121.0,
+   20.0
+  ],
+  "nota": "Boca abajo (cara superior en la cama). Sin soportes."
+ },
+ {
+  "clave": "soporte",
+  "archivo": "03_soporte_plumon_servo",
+  "nombre": "Soporte del plumón y del servo",
+  "material": "PETG",
+  "perimetros": 4,
+  "relleno": 40,
+  "volumen_cm3": 6.87,
+  "area_cm2": 56.0,
+  "gramos": 8.1,
+  "horas": 0.69,
+  "caja_mm": [
+   45.0,
+   45.5,
+   28.1
+  ],
+  "nota": "Pie en la cama. Ventana del servo: puente de 23 mm sin soporte."
+ },
+ {
+  "clave": "puente",
+  "archivo": "04_puente_plumon",
+  "nombre": "Puente del plumón",
+  "material": "PETG",
+  "perimetros": 4,
+  "relleno": 40,
+  "volumen_cm3": 1.46,
+  "area_cm2": 14.0,
+  "gramos": 1.9,
+  "horas": 0.16,
+  "caja_mm": [
+   22.0,
+   29.5,
+   5.0
+  ],
+  "nota": "Boca abajo: el asiento del resorte queda arriba."
+ },
+ {
+  "clave": "collar",
+  "archivo": "05_collar_plumon",
+  "nombre": "Collar del plumón",
+  "material": "PETG",
+  "perimetros": 4,
+  "relleno": 50,
+  "volumen_cm3": 1.39,
+  "area_cm2": 17.9,
+  "gramos": 1.8,
+  "horas": 0.15,
+  "caja_mm": [
+   26.5,
+   27.6,
+   7.0
+  ],
+  "nota": "Boca abajo (oreja en la cama). Tuerca M3 en el alojamiento lateral."
+ },
+ {
+  "clave": "porta_iman",
+  "archivo": "06_separador_electroiman",
+  "nombre": "Separador del electroimán",
+  "material": "PLA+",
+  "perimetros": 3,
+  "relleno": 30,
+  "volumen_cm3": 6.5,
+  "area_cm2": 39.4,
+  "gramos": 6.0,
+  "horas": 0.52,
+  "caja_mm": [
+   24.1,
+   24.1,
+   31.0
+  ],
+  "nota": "Brida en la cama, copa hacia arriba. Chaflán de 42°, sin soportes."
+ },
+ {
+  "clave": "abrazadera",
+  "archivo": "07_abrazadera_sensor_M12",
+  "nombre": "Abrazadera M12 del sensor",
+  "material": "PLA+",
+  "perimetros": 4,
+  "relleno": 40,
+  "volumen_cm3": 6.92,
+  "area_cm2": 38.2,
+  "gramos": 6.1,
+  "horas": 0.52,
+  "caja_mm": [
+   32.8,
+   33.2,
+   14.0
+  ],
+  "nota": "Cara de la placa en la cama. Tuercas M3 por abajo."
+ }
+]

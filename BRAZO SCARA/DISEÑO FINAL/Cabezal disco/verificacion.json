@@ -1,0 +1,509 @@
+{
+ "interferencias": [],
+ "homing_contacto_phi": -119.5,
+ "barrido_J3": {
+  "rango_phi": [
+   -120.5,
+   121.0
+  ],
+  "pares": {
+   "J3 Coupler ↔ Final de carrera J3": {
+    "holgura_mm": -0.17,
+    "phi": -120.0,
+    "plumon": "abajo"
+   },
+   "J3 Coupler ↔ Arm 2 Cover": {
+    "holgura_mm": 0.5,
+    "phi": 121.0,
+    "plumon": "arriba"
+   },
+   "Polea 90 J3 ↔ Arm 2": {
+    "holgura_mm": 0.6,
+    "phi": 62.0,
+    "plumon": "arriba"
+   },
+   "Pernos M4 × 35 + tuercas + M3 × 35 del electroimán ↔ Final de carrera J3": {
+    "holgura_mm": 1.8,
+    "phi": -58.0,
+    "plumon": "arriba"
+   },
+   "Plumón Sharpie fino ↔ Arm 2": {
+    "holgura_mm": 2.14,
+    "phi": 121.0,
+    "plumon": "abajo"
+   },
+   "Plumón Sharpie fino ↔ Arm 2 Cover": {
+    "holgura_mm": 2.14,
+    "phi": 121.0,
+    "plumon": "abajo"
+   },
+   "Puente del plumón ↔ Arm 2 Cover": {
+    "holgura_mm": 3.4,
+    "phi": -44.0,
+    "plumon": "arriba"
+   },
+   "Polea 90 J3 ↔ Arm 2 Cover": {
+    "holgura_mm": 4.7,
+    "phi": 120.0,
+    "plumon": "abajo"
+   },
+   "Resorte Ø16 × 30 ↔ Arm 2 Cover": {
+    "holgura_mm": 5.9,
+    "phi": 121.0,
+    "plumon": "abajo"
+   },
+   "Sensor inductivo LJ12A3-4-Z/BX ↔ Final de carrera J3": {
+    "holgura_mm": 6.4,
+    "phi": -42.0,
+    "plumon": "arriba"
+   },
+   "Pernos M4 × 35 + tuercas + M3 × 35 del electroimán ↔ Arm 2 Cover": {
+    "holgura_mm": 7.8,
+    "phi": -117.0,
+    "plumon": "arriba"
+   },
+   "Soporte del plumón y del servo ↔ Arm 2 Cover": {
+    "holgura_mm": 8.4,
+    "phi": -117.0,
+    "plumon": "arriba"
+   },
+   "J3 Coupler ↔ Arm 2": {
+    "holgura_mm": 8.5,
+    "phi": -31.0,
+    "plumon": "abajo"
+   },
+   "Collar del plumón ↔ Arm 2 Cover": {
+    "holgura_mm": 8.9,
+    "phi": -34.0,
+    "plumon": "arriba"
+   },
+   "Puente del plumón ↔ Arm 2": {
+    "holgura_mm": 11.4,
+    "phi": -44.0,
+    "plumon": "arriba"
+   },
+   "Brazo simple del servo ↔ Arm 2 Cover": {
+    "holgura_mm": 11.9,
+    "phi": 121.0,
+    "plumon": "arriba"
+   },
+   "Gripper to J3 connector ↔ Final de carrera J3": {
+    "holgura_mm": 12.0,
+    "phi": 117.0,
+    "plumon": "arriba"
+   },
+   "Sensor inductivo LJ12A3-4-Z/BX ↔ Arm 2 Cover": {
+    "holgura_mm": 12.4,
+    "phi": 71.0,
+    "plumon": "arriba"
+   },
+   "Micro servo SG90 / MG90S ↔ Arm 2 Cover": {
+    "holgura_mm": 13.65,
+    "phi": 121.0,
+    "plumon": "abajo"
+   },
+   "Resorte Ø16 × 30 ↔ Arm 2": {
+    "holgura_mm": 13.9,
+    "phi": 121.0,
+    "plumon": "abajo"
+   },
+   "Puente del plumón ↔ Final de carrera J3": {
+    "holgura_mm": 15.6,
+    "phi": -120.0,
+    "plumon": "arriba"
+   },
+   "Soporte del plumón y del servo ↔ Final de carrera J3": {
+    "holgura_mm": 15.97,
+    "phi": -120.0,
+    "plumon": "arriba"
+   },
+   "Separador de brida ↔ Final de carrera J3": {
+    "holgura_mm": 16.5,
+    "phi": -58.0,
+    "plumon": "arriba"
+   },
+   "Polea 90 J3 ↔ Final de carrera J3": {
+    "holgura_mm": 17.34,
+    "phi": 85.0,
+    "plumon": "arriba"
+   },
+   "Collar del plumón ↔ Final de carrera J3": {
+    "holgura_mm": 19.11,
+    "phi": -120.0,
+    "plumon": "arriba"
+   },
+   "Resorte Ø16 × 30 ↔ Final de carrera J3": {
+    "holgura_mm": 20.64,
+    "phi": -120.0,
+    "plumon": "arriba"
+   },
+   "Plumón Sharpie fino ↔ Final de carrera J3": {
+    "holgura_mm": 22.59,
+    "phi": -120.0,
+    "plumon": "arriba"
+   },
+   "Micro servo SG90 / MG90S ↔ Final de carrera J3": {
+    "holgura_mm": 26.64,
+    "phi": 121.0,
+    "plumon": "arriba"
+   },
+   "Brazo simple del servo ↔ Final de carrera J3": {
+    "holgura_mm": 35.12,
+    "phi": -120.0,
+    "plumon": "arriba"
+   }
+  }
+ },
+ "contacto_fuera_de_rango": {
+  "J3 Coupler ↔ Final de carrera J3": [
+   -120.0,
+   null
+  ]
+ },
+ "mision": {
+  "cuadros": 5170,
+  "duracion_s": 86.2,
+  "zmin": 103.5,
+  "zmax": 203,
+  "z_transito": 200.5035,
+  "avisos": [],
+  "z_plumon_trazo": 150.5,
+  "holguras": {
+   "Plumón Sharpie fino": {
+    "mm": 0.0,
+    "fase": "rosa",
+    "herramienta": "plumon",
+    "zp": 150.5,
+    "sobre": "mesa",
+    "xy": [
+     185.0,
+     -1.0
+    ],
+    "th1": 56.5,
+    "th2": -129.2
+   },
+   "Electroimán KK-P20/15": {
+    "mm": 0.5,
+    "fase": "recoleccion",
+    "herramienta": "iman",
+    "zp": 144.0,
+    "sobre": "Arandela de acero",
+    "xy": [
+     58.0,
+     -205.0
+    ],
+    "th1": -22.1,
+    "th2": -117.4
+   },
+   "Sensor inductivo LJ12A3-4-Z/BX": {
+    "mm": 3.0,
+    "fase": "escaneo",
+    "herramienta": "sensor",
+    "zp": 144.5,
+    "sobre": "Arandela de acero",
+    "xy": [
+     56.0,
+     -219.0
+    ],
+    "th1": -22.1,
+    "th2": -117.4
+   },
+   "Separador del electroimán": {
+    "mm": 9.5,
+    "fase": "recoleccion",
+    "herramienta": "iman",
+    "zp": 144.0,
+    "sobre": "Arandela de acero",
+    "xy": [
+     68.0,
+     -206.0
+    ],
+    "th1": -22.1,
+    "th2": -117.4
+   },
+   "Pernos M4 × 35 + tuercas + M3 × 35 del electroimán": {
+    "mm": 11.5,
+    "fase": "recoleccion",
+    "herramienta": "iman",
+    "zp": 144.0,
+    "sobre": "Arandela de acero",
+    "xy": [
+     60.0,
+     -214.0
+    ],
+    "th1": -22.1,
+    "th2": -117.4
+   },
+   "Abrazadera M12 del sensor": {
+    "mm": 27.0,
+    "fase": "escaneo",
+    "herramienta": "sensor",
+    "zp": 144.5,
+    "sobre": "Arandela de acero",
+    "xy": [
+     65.0,
+     -229.0
+    ],
+    "th1": -22.1,
+    "th2": -117.4
+   },
+   "Placa trébol": {
+    "mm": 29.5,
+    "fase": "recoleccion",
+    "herramienta": "iman",
+    "zp": 144.0,
+    "sobre": "mesa",
+    "xy": [
+     90.0,
+     -116.0
+    ],
+    "th1": -22.1,
+    "th2": -117.4
+   },
+   "Separador de brida": {
+    "mm": 49.5,
+    "fase": "recoleccion",
+    "herramienta": "iman",
+    "zp": 144.0,
+    "sobre": "mesa",
+    "xy": [
+     135.0,
+     -191.0
+    ],
+    "th1": -22.1,
+    "th2": -117.4
+   },
+   "Soporte del plumón y del servo": {
+    "mm": 49.5,
+    "fase": "recoleccion",
+    "herramienta": "iman",
+    "zp": 144.0,
+    "sobre": "mesa",
+    "xy": [
+     78.0,
+     -140.0
+    ],
+    "th1": -22.1,
+    "th2": -117.4
+   },
+   "Brazo simple del servo": {
+    "mm": 56.6,
+    "fase": "rosa",
+    "herramienta": "plumon",
+    "zp": 150.5,
+    "sobre": "mesa",
+    "xy": [
+     197.0,
+     -2.0
+    ],
+    "th1": 56.5,
+    "th2": -129.2
+   },
+   "Collar del plumón": {
+    "mm": 58.6,
+    "fase": "rosa",
+    "herramienta": "plumon",
+    "zp": 150.5,
+    "sobre": "mesa",
+    "xy": [
+     182.0,
+     -10.0
+    ],
+    "th1": 56.5,
+    "th2": -129.2
+   },
+   "Micro servo SG90 / MG90S": {
+    "mm": 60.15,
+    "fase": "recoleccion",
+    "herramienta": "iman",
+    "zp": 144.0,
+    "sobre": "mesa",
+    "xy": [
+     73.0,
+     -131.0
+    ],
+    "th1": -22.1,
+    "th2": -117.4
+   },
+   "Resorte Ø16 × 30": {
+    "mm": 61.1,
+    "fase": "rosa",
+    "herramienta": "plumon",
+    "zp": 150.5,
+    "sobre": "mesa",
+    "xy": [
+     187.0,
+     -8.0
+    ],
+    "th1": 56.5,
+    "th2": -129.2
+   },
+   "Puente del plumón": {
+    "mm": 77.6,
+    "fase": "recoleccion",
+    "herramienta": "iman",
+    "zp": 144.0,
+    "sobre": "mesa",
+    "xy": [
+     100.0,
+     -118.0
+    ],
+    "th1": -22.1,
+    "th2": -117.4
+   }
+  },
+  "radio_min_al_eje_J1": {
+   "mm": 99.9,
+   "fase": "rosa",
+   "th2": -139.6
+  },
+  "drop_real_mm": 80.5,
+  "drop_simulador_mm": 78.5
+ },
+ "masa": {
+  "total_g": 190.9,
+  "centro_de_masa_mm": [
+   5.0,
+   4.0,
+   -6.0
+  ],
+  "radio_cm_mm": 6.4,
+  "piezas": [
+   [
+    "Separador de brida",
+    12.4,
+    [
+     0.4,
+     -0.4,
+     7.3
+    ]
+   ],
+   [
+    "Placa trébol",
+    31.5,
+    [
+     17.0,
+     3.6,
+     -3.6
+    ]
+   ],
+   [
+    "Soporte del plumón y del servo",
+    8.1,
+    [
+     61.2,
+     4.6,
+     9.1
+    ]
+   ],
+   [
+    "Puente del plumón",
+    1.9,
+    [
+     55.0,
+     -4.1,
+     30.8
+    ]
+   ],
+   [
+    "Collar del plumón",
+    1.8,
+    [
+     58.0,
+     1.4,
+     5.9
+    ]
+   ],
+   [
+    "Separador del electroimán",
+    6.0,
+    [
+     -27.7,
+     48.1,
+     -20.0
+    ]
+   ],
+   [
+    "Abrazadera M12 del sensor",
+    6.1,
+    [
+     -28.4,
+     -49.4,
+     -12.9
+    ]
+   ],
+   [
+    "Plumón Sharpie fino",
+    11.0,
+    [
+     55.0,
+     0.0,
+     12.3
+    ]
+   ],
+   [
+    "Micro servo SG90 / MG90S",
+    13.4,
+    [
+     63.9,
+     30.0,
+     16.7
+    ]
+   ],
+   [
+    "Brazo simple del servo",
+    0.6,
+    [
+     66.6,
+     12.7,
+     13.1
+    ]
+   ],
+   [
+    "Resorte Ø16 × 30",
+    0.7,
+    [
+     55.0,
+     -0.0,
+     17.9
+    ]
+   ],
+   [
+    "Electroimán KK-P20/15",
+    32.0,
+    [
+     -27.5,
+     47.6,
+     -38.5
+    ]
+   ],
+   [
+    "Sensor inductivo LJ12A3-4-Z/BX",
+    30.0,
+    [
+     -27.3,
+     -47.2,
+     -12.2
+    ]
+   ],
+   [
+    "Pernos M4 × 35 + tuercas + M3 × 35 del electroimán",
+    25.9,
+    [
+     -2.7,
+     4.6,
+     5.9
+    ]
+   ],
+   [
+    "Tornillería M3 (estimada)",
+    9.5,
+    [
+     30.0,
+     0.0,
+     0.0
+    ]
+   ]
+  ]
+ }
+}
