@@ -354,9 +354,14 @@ const STL = JSON.parse(document.getElementById('stl-data').textContent);
 // Geometría (mm). Igual que python/scara_modelo.py
 // ===================================================================================
 const G = { L1:228, L2:144, H_BASE:45, H_J1C:27, H_PINF:10, H_PSUP:26, H_PSUP_DISK:8, H_BCOV:21.5, H_TCOV:23, H_PLAT:45,
-  H_ARM1:42, H_J2C:24, H_ARM2:31, H_J3C:22, H_CON:4.5, PLATE:6, ZROD0:72 };
-G.DROP = -((G.H_PLAT - G.H_ARM1) - G.H_J2C - G.H_ARM2 - G.H_J3C - G.H_CON);   // 78.5: plataforma → brida
+  H_ARM1:42, H_J2C:24, H_ARM2:31, H_J3C:22, H_CON:4.5, PLATE:6, ZROD0:72,
+  // H_J3GAP: en el STEP de HTM el J3 Coupler queda 4 mm bajo el brazo 2 (cubierta de 8 mm) y el brazo 2
+  // 2 mm más arriba que aquí: con 2 mm de hueco la caída plataforma → brida es la medida (80.5 mm).
+  // SEP: separador de brida del cabezal A v3 (BRAZO SCARA/DISEÑO FINAL/Cabezal disco).
+  H_J3GAP:2, SEP:14 };
+G.DROP = -((G.H_PLAT - G.H_ARM1) - G.H_J2C - G.H_ARM2 - G.H_J3GAP - G.H_J3C - G.H_CON);   // 80.5: plataforma → brida
 const ZH = -G.H_J3C - G.H_CON;                                                    // brida, en el marco de J3
+const ZT = ZH - G.SEP;                                                            // cara superior de la placa del cabezal A
 const STEPS = { j1: 800*20/360, j2: 800*16/360, j3: 800*4.5/360, z: 800/8 };
 const LIM = { th1:150, th2:150 };
 const LIFT = 18;
@@ -380,7 +385,7 @@ const OBJ = [
   { name:'Tuerca de acero',   metal:true,  kind:'nut',    x:240, y:-215, h:7,  r:13, color:'#8d969e' },
   { name:'Bloque de madera',  metal:false, kind:'block',  x:325, y:-172, h:12, r:15, color:'#b07d4f' },
 ];
-const BIN = { x:95, y:235, w:80, d:80, h:25 };
+const BIN = { x:95, y:265, w:80, d:80, h:25 };   // en y = 235 el electroimán del cabezal A rozaba su esquina al trazar la rosa
 
 const rad = d => d*Math.PI/180, deg = r => r*180/Math.PI;
 const wrap = a => ((a+180)%360+360)%360-180;
@@ -419,13 +424,13 @@ function tipOf(s, H, tk){
   const k = fk(s.th1, s.th2, s.phi), c = Math.cos(k.psi), sn = Math.sin(k.psi);
   if (H.key === 'disc'){
     const t = H.tools[tk], a = k.psi + rad(t.phi);
-    return [k.j3[0] + t.r*Math.cos(a), k.j3[1] + t.r*Math.sin(a), s.zp - G.DROP - G.PLATE - t.below + (tk === 'pen' ? s.lift : 0)];
+    return [k.j3[0] + t.r*Math.cos(a), k.j3[1] + t.r*Math.sin(a), s.zp - G.DROP - G.SEP - G.PLATE - t.below + (tk === 'pen' ? s.lift : 0)];
   }
   const t = H.tools[tk], al = rad(t.a + s.rev), ly = Math.sin(al)*t.reach, lz = -Math.cos(al)*t.reach;
   return [k.j3[0] + c*H.OFF - sn*ly, k.j3[1] + sn*H.OFF + c*ly, s.zp - G.DROP - H.DAX + lz];
 }
 function zpFor(H, ztip, tk, lift=0){
-  if (H.key === 'disc'){ const t = H.tools[tk]; return ztip + G.DROP + G.PLATE + t.below - (tk === 'pen' ? lift : 0); }
+  if (H.key === 'disc'){ const t = H.tools[tk]; return ztip + G.DROP + G.SEP + G.PLATE + t.below - (tk === 'pen' ? lift : 0); }
   return ztip + G.DROP + H.DAX + H.tools[tk].reach;
 }
 // Altura de tránsito: 60 mm libres bajo la herramienta más baja (el revólver barre su herramienta más larga al girar)
@@ -740,10 +745,11 @@ part('mos','Módulo MOSFET de nivel lógico (D4184) + diodo','mb','Conmuta el el
 part('buck','Convertidor DC-DC buck 12 V → 6 V','mb','Alimenta el servo del cabezal (el 5 V del Arduino no alcanza). LM2596 para el disco; XL4015 (5 A) para el servo del revólver.','mb');
 part('opto','Optoacoplador PC817','mb','Aísla la salida de 12 V del sensor inductivo NPN y la entrega al Arduino en A2.','mb');
 part('discPlate','Placa trébol del cabezal (impresa)','cab','v2: tres brazos de 6 mm (más una oreja para el servo) en lugar del disco macizo Ø136. Las tres herramientas quedan a 55 mm del eje J3, fuera del J3 coupler y de la brida (r ≤ 39 mm). Pesa la mitad y tiene un paso central Ø14 para los cables.','mb','disc');
+part('discSep','Separador de brida 14 mm (impreso)','cab','v3: baja la placa 14 mm bajo el Gripper to J3 connector. En el robot real la cubierta del brazo 2 queda a 22.5 mm de la brida y el final de carrera de J3 a 16.5 mm; sin el separador el sensor y el levante del plumón chocaban al girar J3. CAD en BRAZO SCARA/DISEÑO FINAL/Cabezal disco.','mb','disc');
 part('discBolt','Pernos M4×12 + insertos térmicos (×4)','cab','Unen la placa al Gripper to J3 connector en un cuadro de 4 agujeros a 16 mm del eje.','mb','disc');
 part('discHolder','Guía del plumón (impresa)','cab','Tubo de PETG Ø19 × 30 mm con pestaña. El plumón desliza adentro con 0.6 mm de holgura.','mb','disc');
 part('penCollar','Collar del plumón + prisionero M3','cab','Se aprieta al cuerpo del plumón. El resorte empuja el collar hacia abajo y el brazo del servo lo levanta.','mb','disc');
-part('penSpring','Resorte de compresión Ø16 × 36 mm','cab','Da una fuerza de trazo casi constante (≈0.5 N) y absorbe errores de Z de ±3 mm.','mb','disc');
+part('penSpring','Resorte de compresión Ø16 × 30 mm, alambre 0.5–0.6','cab','Va alrededor del plumón (Ø int. ≥ 13.5, sólido ≤ 6 mm). Da ≈0.2 N de trazo (≈0.33 N con el peso del plumón) y absorbe errores de Z.','mb','disc');
 part('penBridge','Puente del resorte con 2 postes (impreso)','cab','Tope superior del resorte, 52 mm sobre la cara inferior de la placa. Los postes se atornillan a la placa.','mb','disc');
 part('servoMount','Soporte del micro-servo (impreso)','cab','Cuna de dos paredes que deja el eje del servo horizontal, 25 mm sobre la placa.','mb','disc');
 part('sg90','Micro servo SG90 / MG90S (levante del plumón)','cab','Va con el eje horizontal y su brazo de 12 mm sube el collar 18 mm cuando trabajan el sensor o el electroimán. Señal en D44 del Mega.','mb','disc');
@@ -848,7 +854,7 @@ j2g.add(reg(at(microSwitch(), 112, 22, ZA2 + 4), 'ls'));
 label('J2', j2g, [0, 0, 22]);
 
 // ---- junta 3 (cabezales)
-const j3g = new THREE.Group(); j3g.position.set(G.L2, 0, ZA2); j2g.add(j3g);
+const j3g = new THREE.Group(); j3g.position.set(G.L2, 0, ZA2 - G.H_J3GAP); j2g.add(j3g);
 j3g.add(reg(at(stlMesh('polea_90', M.pulley), 0, 0, -3), 'p90'));
 j3g.add(reg(at(ringZ(17.5, 26, 12, M.bearing), 0, 0, -14), 't35'));
 j3g.add(reg(at(stlMesh('j3_coupler', M.dark), 0, 0, -G.H_J3C), 'j3c'));
@@ -888,7 +894,7 @@ function helix(R, turns, len, wire){
 }
 // Sobre la placa, todo debe quedar fuera de r = 39 mm (J3 coupler, brida y punta del brazo 2) y bajo z = 0 si pasa bajo el brazo 2
 const TREFOIL = trefoil([{ a:0, d:55, r:20, w:40 }, { a:-13.5, d:73, r:9, w:0 }, { a:120, d:55, r:13, w:20 }, { a:240, d:55, r:12, w:20 }], 27);
-{ const H = HEADS.disc, Zp = ZH - G.PLATE, polar = t => [t.r*Math.cos(rad(t.phi)), t.r*Math.sin(rad(t.phi))];
+{ const H = HEADS.disc, Zp = ZT - G.PLATE, polar = t => [t.r*Math.cos(rad(t.phi)), t.r*Math.sin(rad(t.phi))];
   const radial = (t, k) => [k*Math.cos(rad(t.phi)), k*Math.sin(rad(t.phi))];
   const [mx, my] = polar(H.tools.mag), [sx, sy] = polar(H.tools.sen);
 
@@ -906,6 +912,8 @@ const TREFOIL = trefoil([{ a:0, d:55, r:20, w:40 }, { a:-13.5, d:73, r:9, w:0 },
   pg.translate(0, 0, 0.6);
   const plate = new THREE.Mesh(pg, M.head); plate.castShadow = true; plate.receiveShadow = true;
   headDisc.add(reg(exp(at(plate, 0, 0, Zp), [0, 0, -20]), 'discPlate'));
+  { const sep = stlMesh('conector_j3', M.head2); sep.scale.z = G.SEP / G.H_CON;          // v3: separador de brida
+    headDisc.add(reg(exp(at(sep, 0, 0, ZT), [0, 0, -8]), 'discSep')); }
 
   // 2 · pernos M4 desde abajo
   const bolts = exp(new THREE.Group(), [0, 0, -48]); headDisc.add(bolts);
@@ -916,7 +924,7 @@ const TREFOIL = trefoil([{ a:0, d:55, r:20, w:40 }, { a:-13.5, d:73, r:9, w:0 },
   // módulo del plumón: guía fija, plumón + collar que suben con el servo, resorte arriba
   const pb = exp(at(new THREE.Group(), ...polar(H.tools.pen), 0), [30, 0, -20]); headDisc.add(pb);
   const guide = new THREE.Group(); pb.add(guide);
-  guide.add(at(ringZ(6.6, 9.5, 30, M.head), 0, 0, Zp - 16)); guide.add(at(ringZ(9.5, 13, 2, M.head), 0, 0, ZH));
+  guide.add(at(ringZ(6.6, 9.5, 30, M.head), 0, 0, Zp - 16)); guide.add(at(ringZ(9.5, 13, 2, M.head), 0, 0, ZT));
   reg(guide, 'discHolder');
   const mov = new THREE.Group(); pb.add(mov);
   const penEx = exp(new THREE.Group(), [0, 0, -60]); mov.add(penEx);
@@ -932,12 +940,12 @@ const TREFOIL = trefoil([{ a:0, d:55, r:20, w:40 }, { a:-13.5, d:73, r:9, w:0 },
   const spring = new THREE.Mesh(new THREE.BufferGeometry(), M.steel); spring.castShadow = true; springEx.add(reg(spring, 'penSpring'));
   const bridge = exp(new THREE.Group(), [0, 0, 58]); pb.add(bridge);
   bridge.add(at(ringZ(6.4, 10, 4, M.head2), 0, 0, Zb)); bridge.add(at(box(16, 6, 4, M.head2), 7, 4, Zb, Math.atan2(8, 14)));
-  bridge.add(at(cylZ(3, Zb + 4 - ZH, M.head2, 20), 14, 8, ZH));           // poste hacia afuera: no pasa bajo el brazo 2
+  bridge.add(at(cylZ(3, Zb + 4 - ZT, M.head2, 20), 14, 8, ZT));           // poste hacia afuera: no pasa bajo el brazo 2
   reg(bridge, 'penBridge');
   // servo con el eje a lo largo de y, del lado −y del plumón (el electroimán está del lado +y):
   // queda a r ≥ 51 mm del eje J3 y bajo z = 0
   const mount = new THREE.Group(); pb.add(mount);                         // dos pilares donde se atornillan las orejas
-  for (const x of [-7.6, 20.9]) mount.add(at(box(4, 3, Zs + 6.1 - ZH, M.head2), x, -17.25, ZH));
+  for (const x of [-7.6, 20.9]) mount.add(at(box(4, 3, Zs + 6.1 - ZT, M.head2), x, -17.25, ZT));
   reg(mount, 'servoMount');
   const servo = exp(new THREE.Group(), [0, -30, 10]); pb.add(servo);
   const sb = new THREE.Group(); servo.add(sb);
@@ -965,7 +973,7 @@ const TREFOIL = trefoil([{ a:0, d:55, r:20, w:40 }, { a:-13.5, d:73, r:9, w:0 },
   const mg = exp(at(new THREE.Group(), mx, my, 0), [...radial(H.tools.mag, 28), -20]); headDisc.add(mg);
   mg.add(reg(at(cylZ(6.5, 25, M.head2, 6), 0, 0, Zp - 25), 'magStand'));
   const screw = exp(new THREE.Group(), [0, 0, 30]); mg.add(screw);
-  screw.add(at(cylZ(2.8, 3, M.blk, 16), 0, 0, ZH)); screw.add(at(cylZ(1.5, 35, M.steel, 12), 0, 0, ZH - 35));
+  screw.add(at(cylZ(2.8, 3, M.blk, 16), 0, 0, ZT)); screw.add(at(cylZ(1.5, 35, M.steel, 12), 0, 0, ZT - 35));
   reg(screw, 'magStand');
   const magG = exp(new THREE.Group(), [0, 0, -38]); mg.add(magG);
   magG.add(at(cylZ(10, 13, M.mag, 32), 0, 0, Zp - 38)); magG.add(at(cylZ(10.2, 2, M.magOn, 32), 0, 0, Zp - 40));
@@ -980,9 +988,9 @@ const TREFOIL = trefoil([{ a:0, d:55, r:20, w:40 }, { a:-13.5, d:73, r:9, w:0 },
   body.add(at(new THREE.Mesh(new THREE.SphereGeometry(2, 14, 10), M.led), 4.4, 0, Zp + 20));
   reg(body, 'sensor');
   const nutLo = exp(at(cylZ(9.5, 5, M.steel, 6), 0, 0, Zp - 5), [0, 0, -12]); sg.add(reg(nutLo, 'senNut'));
-  const nutHi = exp(at(cylZ(9.5, 5, M.steel, 6), 0, 0, ZH), [0, 0, 18]); sg.add(reg(nutHi, 'senNut'));
+  const nutHi = exp(at(cylZ(9.5, 5, M.steel, 6), 0, 0, ZT), [0, 0, 18]); sg.add(reg(nutHi, 'senNut'));
 
-  label('Plumón', pb, [0, 0, ZH - 70], 'disc'); label('Electroimán', mg, [0, 0, ZH - 60], 'disc'); label('Sensor', sg, [0, 0, ZH - 60], 'disc');
+  label('Plumón', pb, [0, 0, ZT - 70], 'disc'); label('Electroimán', mg, [0, 0, ZT - 60], 'disc'); label('Sensor', sg, [0, 0, ZT - 60], 'disc');
 
   callout(1, 'Placa trébol', plate, [-4, -27, 3]);
   callout(2, 'Pernos M4', bolts, [-11.3, -11.3, Zp - 4]);
@@ -991,13 +999,14 @@ const TREFOIL = trefoil([{ a:0, d:55, r:20, w:40 }, { a:-13.5, d:73, r:9, w:0 },
   callout(5, 'Collar', collar, [0, -12, Zc + 3]);
   callout(6, 'Resorte', springEx, [0, -12, Zb - 14]);
   callout(7, 'Puente', bridge, [14, 8, Zb + 9]);
-  callout(8, 'Soporte servo', mount, [20.9, -17.25, ZH + 4]);
+  callout(8, 'Soporte servo', mount, [20.9, -17.25, ZT + 4]);
   callout(9, 'Micro-servo', sb, [6.65, -26, Zs + 9]);
   callout(10, 'Brazo servo', horn, [-12, 0, -5]);
   callout(11, 'Separador M3', mg, [9, 0, Zp - 14]);
   callout(12, 'Electroimán', magG, [-16, 0, Zp - 34]);
   callout(13, 'Sensor', body, [0, 0, Zp - 42]);
   callout(14, 'Tuercas M12', nutHi, [12, 0, 3]);
+  callout(15, 'Separador de brida', PARTS.get('discSep').meshes[0], [0, -20, 2.25]);
 }
 // Capa 1 = lo que queda al aislar el cabezal: cabezal, brida y luces
 headDisc.traverse(o => o.layers.enable(1));
@@ -1143,7 +1152,7 @@ function ensureRod(){
 function updateHeadNote(){
   document.getElementById('headNote').innerHTML = H.key === 'disc'
     ? `Herramientas verticales en un disco bajo J3. Para cambiar de herramienta gira <b>J3</b> ±120° y el plumón tiene su micro-servo de levante. Varillas mínimas: ${rodMinOf(HEADS.disc)} mm.`
-    : `Prisma triangular 60 mm delante de J3, con su eje a lo largo del brazo 2. Un <b>servo de 270°</b> lo gira −120° / 0° / +120° y deja una cara (con su herramienta) hacia la hoja. J3 queda fijo y el plumón sube con Z. Necesita ${HEADS.rev.DAX + HEADS.rev.tools.pen.reach - G.PLATE - HEADS.disc.tools.pen.below} mm más de altura: varillas mínimas ${rodMinOf(HEADS.rev)} mm.`;
+    : `Prisma triangular 60 mm delante de J3, con su eje a lo largo del brazo 2. Un <b>servo de 270°</b> lo gira −120° / 0° / +120° y deja una cara (con su herramienta) hacia la hoja. J3 queda fijo y el plumón sube con Z. Necesita ${HEADS.rev.DAX + HEADS.rev.tools.pen.reach - G.SEP - G.PLATE - HEADS.disc.tools.pen.below} mm más de altura: varillas mínimas ${rodMinOf(HEADS.rev)} mm.`;
 }
 
 // ===================================================================================
@@ -1379,17 +1388,19 @@ const BOM = {
       ['Collar del plumón', 'PETG', 2, 0.2],
       ['Puente del resorte + 2 postes', 'PLA+', 3, 0.4],
       ['Soporte (cuna) del micro-servo', 'PLA+', 4, 0.4],
-      ['Separador hexagonal del electroimán (25 mm)', 'PLA+', 3, 0.3] ],
+      ['Separador hexagonal del electroimán (25 mm)', 'PLA+', 3, 0.3],
+      ['Separador de brida 14 mm (v3)', 'PETG, 4 perímetros, 40 %', 12, 1.1] ],
     buy: [
       ['Electroimán 12 V KK-P20/15', 1, '3–5', 32],
       ['Sensor inductivo LJ12A3-4-Z/BX (NPN NA), con 2 tuercas M12', 1, '3–6', 30],
       ['Micro servo SG90 (o MG90S de engranes metálicos)', 1, '2–4', 10],
       ['Plumón Sharpie fino (o lápiz)', 1, '1–2', 11],
-      ['Resorte de compresión Ø16 × 36 mm, hilo 0.8', 1, '<1', 1],
+      ['Resorte de compresión Ø16 × 30 mm, alambre 0.5–0.6 (sólido ≤ 6 mm)', 1, '<1', 1],
       ['4 M4×12 + 4 insertos térmicos M4, M3×35, prisionero M3', '—', '2', 9] ],
     notas: ['Cambiar de herramienta = girar J3 ±120°: no agrega actuadores, pero el plumón queda a 55 mm del eje y el juego de la correa de J3 (≈0.5°) mueve la punta ≈0.5 mm.',
             'El micro-servo de levante es obligatorio: sin él, el plumón (la herramienta más baja) raya la hoja mientras trabajan el sensor o el electroimán.',
-            'v2 (botón Despiece): placa trébol en vez del disco macizo, levante con collar y resorte, separador impreso para el electroimán y sensor ajustable entre tuercas. Electroimán y sensor pasan de 45 a 55 mm del eje J3 para no chocar con el J3 coupler.'] },
+            'v2 (botón Despiece): placa trébol en vez del disco macizo, levante con collar y resorte, separador impreso para el electroimán y sensor ajustable entre tuercas. Electroimán y sensor pasan de 45 a 55 mm del eje J3 para no chocar con el J3 coupler.',
+            'v3 (CAD imprimible en BRAZO SCARA/DISEÑO FINAL/Cabezal disco): la placa baja 14 mm con un separador de brida porque la cubierta del brazo 2 y el final de carrera de J3 quedan a 22.5 y 16.5 mm del connector; J3 trabaja entre −120° y +121° y su final de carrera dispara junto a la pose del electroimán. Aquí se dibuja el levante de la v2 a la altura de la v3.'] },
   rev: { masa: 240, print: [
       ['Soporte en L del revólver (brida → 60 mm adelante)', 'PETG, 4 perímetros, 40 %', 30, 3],
       ['Prisma triangular hueco (lado 62, largo 40 mm)', 'PLA+/PETG, 30 %', 32, 3],
@@ -1537,7 +1548,7 @@ const XSPEC = [
   [3, 'discHolder', 'Guía del plumón Ø19 × 30', 'PETG impreso (roza menos)', 4],
   [4, 'pen', 'Plumón Sharpie fino', 'Comprado', 11],
   [5, 'penCollar', 'Collar + prisionero M3', 'PETG impreso', 2],
-  [6, 'penSpring', 'Resorte Ø16 × 36, hilo 0.8', 'Acero para resortes', 1],
+  [6, 'penSpring', 'Resorte Ø16 × 30, alambre 0.5–0.6', 'Acero para resortes', 1],
   [7, 'penBridge', 'Puente + 2 postes', 'PLA+ impreso', 3],
   [8, 'servoMount', 'Soporte del servo', 'PLA+ impreso', 4],
   [9, 'sg90', 'Micro-servo SG90 / MG90S', 'Comprado (MG90S: engranes metálicos)', 10],
@@ -1546,6 +1557,7 @@ const XSPEC = [
   [12, 'magnet', 'Electroimán KK-P20/15', 'Núcleo de acero, bobina de cobre', 32],
   [13, 'sensor', 'Sensor LJ12A3-4-Z/BX', 'Cuerpo de latón niquelado', 30],
   [14, 'senNut', 'Tuercas M12×1 (×2)', 'Acero, vienen con el sensor', 0],
+  [15, 'discSep', 'Separador de brida 14 mm (v3)', 'PETG impreso', 12],
 ];
 { const tot = XSPEC.reduce((a, r) => a + r[4], 0);
   document.getElementById('xlist').innerHTML = `<tr><th>#</th><th>Pieza · material</th><th class="n">g</th></tr>` +
