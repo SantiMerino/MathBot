@@ -5,6 +5,8 @@
   SCARA de HowToMechatronics con el cabezal A · disco tri-herramienta:
     plumón (phi 0°, r 55 mm), electroimán (phi 120°, r 55 mm), sensor inductivo (phi 240°, r 55 mm).
     (v2: electroimán y sensor pasaron de 45 a 55 mm; a 45 mm la tuerca del sensor chocaba con el J3 coupler)
+    (v3: la placa cuelga 14 mm más abajo de la brida y J3 queda en −120°..+121°; ver
+     BRAZO SCARA/DISEÑO FINAL/Cabezal disco/README.md)
   J3 gira el disco para poner al frente la herramienta activa; un micro-servo SG90 sube/baja el plumón.
 
   La CNC Shield usa los mismos pines en el Mega que en el UNO (D2–D13, A0–A3), así que los motores y
@@ -68,8 +70,8 @@ const uint8_t PIN_12V = A8;       // divisor 10k / 3.3k desde los 12 V
 
 // ---- Geometría (python/scara_modelo.py) ----
 const float L1 = 228.0, L2 = 144.0;
-const float CAIDA_BRIDA = 78.5;  // base de la plataforma Z -> brida del cabezal
-const float ESPESOR_DISCO = 6.0;
+const float CAIDA_BRIDA = 80.5;  // base de la plataforma Z -> brida del cabezal (medido en el STEP de HTM)
+const float ESPESOR_DISCO = 20.0;  // cabezal A v3: separador de brida de 14 mm + placa de 6 mm
 const int CODO = -1;             // theta2 negativo
 
 struct Herramienta {
@@ -92,11 +94,16 @@ const float PASOS_UNIDAD[4] = { 44.4444, 35.5556, 10.0, 100.0 };  // pasos/grado
 const float VMAX[4] = { 3000, 3000, 1500, 3500 };                  // pasos/s
 const float ACEL[4] = { 2000, 2000, 1500, 3000 };                  // pasos/s²
 const bool INVERTIR_DIR[4] = { false, false, false, false };       // si un eje gira al revés
-const float LIM_MIN[4] = { -150, -150, -170, 103.5 };
-const float LIM_MAX[4] = { 150, 150, 170, 203.0 };                 // Z: varillas de 250 mm
+// J3: el plumón sube 71 mm sobre la placa y pasa a 2 mm del brazo 2 en ±121°: J3 no puede salir de ahí.
+// Z: con 140.5 el electroimán (40 mm bajo la placa) toca la mesa; con el plumón abajo, su resorte absorbe hasta 18 mm.
+const float LIM_MIN[4] = { -150, -150, -120, 140.5 };
+const float LIM_MAX[4] = { 150, 150, 121, 203.0 };                 // Z: varillas de 250 mm
 
 // ---- Homing: dónde queda cada final de carrera (valores del sketch de HTM, CALIBRAR) ----
-const float HOME_POS[4] = { -89.0, -152.4, -166.2, 203.0 };
+// J3: la placa del cabezal v3 va girada para que el pasador del J3 Coupler pise el final en φ ≈ −120°
+// (la pose del electroimán). Tras H, manda "T p": si el plumón no queda sobre la línea del brazo 2,
+// corrige este valor por la diferencia (BRAZO SCARA/DISEÑO FINAL/Cabezal disco/README.md).
+const float HOME_POS[4] = { -89.0, -152.4, -120.0, 203.0 };
 const int HOME_SENTIDO[4] = { -1, -1, -1, +1 };       // J1–J3 hacia negativo, Z hacia arriba
 const float HOME_VEL[4] = { 1200, 1300, 1100, 1500 };  // pasos/s
 const float HOME_RECORRIDO_MAX[4] = { 320, 320, 360, 120 };  // si no toca el final -> error
@@ -113,7 +120,7 @@ const Pieza PIEZAS[4] = {
   { "pieza 3", 240, -215, 7 },
   { "pieza 4", 325, -172, 12 },
 };
-const float BANDEJA_X = 95, BANDEJA_Y = 235, BANDEJA_H = 25;
+const float BANDEJA_X = 95, BANDEJA_Y = 265, BANDEJA_H = 25;   // en y = 235 el electroimán la rozaba al trazar la rosa
 const float Z_TIP_VIAJE = 60;  // altura de la punta en tránsito (mm sobre la mesa)
 
 // ---- Rosa de 3 pétalos ----

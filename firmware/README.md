@@ -35,8 +35,10 @@ Necesitan la biblioteca **AccelStepper** (Gestor de bibliotecas). Placa: *Arduin
 Monitor Serie a 115200 con fin de línea "Nueva línea".
 
 Orden recomendado: `prueba_servo` → `prueba_componentes` (ajusta `INVERTIR_DIR` si un eje gira al revés)
-→ `mathbot_mega` con `H` y luego `R`. Antes de la primera misión calibra `HOME_POS` (están los valores
-de HTM) y las alturas Z.
+→ `mathbot_mega` con `H` y luego `R`. Antes de la primera misión calibra `HOME_POS` (J1, J2 y Z traen
+los valores de HTM; J3 trae −120°, donde el cabezal A v3 pisa su final de carrera) y las alturas Z.
+Con el cabezal A v3, J3 queda limitado a −120°..+121° para que el plumón no toque el brazo 2
+(ver `BRAZO SCARA/DISEÑO FINAL/Cabezal disco/README.md`).
 
 ## Simular en Wokwi
 
