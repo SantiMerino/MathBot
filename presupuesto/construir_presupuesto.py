@@ -78,14 +78,14 @@ ITEMS = [
     ("MEC-01", "Estructura y eje Z", "Varilla lisa Ø10 mm", "Acero endurecido, 300 mm (cortar)", "4 guías de la columna Z",
      "HTM", 4, "Obligatorio", "Creativo 3D (repuestos de impresoras)", 8.00, 1, "Cotizar (estimado)",
      17.99, 4, 1.8, "Amazon", "B0D2312R72",
-     "HTM usa 400 mm. Con el cabezal de disco bastan 240 mm (NEMA estándar en J2) o 220 mm (NEMA corto): comprar 300 y cortar."),
+     "HTM usa 400 mm. Con el cabezal de disco v3 bastan 250 mm (NEMA estándar en J2) o 240 mm (NEMA corto): comprar 300 y cortar."),
     ("MEC-02", "Estructura y eje Z", "Rodamiento lineal LM10UU", "10 × 19 × 29 mm", "Plataforma Z (desliza en las varillas)",
      "HTM", 4, "Obligatorio", "Creativo 3D / CEROSA", 3.00, 1, "Cotizar (estimado)",
      7.49, 4, 0.25, "Amazon", "B0D5BHVY9W", ""),
     ("MEC-03", "Estructura y eje Z", "Husillo T8 con tuerca de latón", "Tr8×8, 300 mm (avance 8 mm/rev)", "Eje Z",
      "HTM", 1, "Obligatorio", "Creativo 3D", 15.00, 1, "Cotizar (estimado)",
      11.99, 2, 0.6, "Amazon", "B08JPPC1TZ",
-     "HTM lo corta a 380 mm para varillas de 400; con varillas de 240 mm cortar a ≈225 mm. El paquete trae 2."),
+     "HTM lo corta a 380 mm para varillas de 400; con varillas de 250 mm cortar a ≈230 mm. El paquete trae 2."),
     ("MEC-04", "Estructura y eje Z", "Acople flexible 5 → 8 mm", "Aluminio", "Motor Z → husillo",
      "HTM", 1, "Obligatorio", "Creativo 3D", 5.00, 1, "Cotizar (estimado)",
      9.99, 5, 0.25, "Amazon", "B07JL1QYLS", ""),
@@ -124,7 +124,7 @@ ITEMS = [
     ("ELE-01", "Motores y electrónica", "Motor paso a paso NEMA 17, 40 mm", "45 N·cm, 2 A, 1.8°, 4 cables (17HS4401)", "J1, J2 y Z",
      "HTM", 3, "Obligatorio", "Electrónica 2001 (código 04-355)", 12.00, 1, f"Verificado en línea {FECHA}",
      13.99, 1, 0.75, "Local", "B00PNEQI7W",
-     "Si usan el NEMA corto también en J2 (varillas de 220 mm), bajar a 2 y subir ELE-02 a 2. Confirmar que trae cable."),
+     "Si usan el NEMA corto también en J2 (varillas de 240 mm), bajar a 2 y subir ELE-02 a 2. Confirmar que trae cable."),
     ("ELE-02", "Motores y electrónica", "Motor NEMA 17 corto (pancake)", "≈ 23 mm, 17 N·cm, 1 A", "J3 (aligera el brazo 2)",
      "HTM", 1, "Obligatorio", "Electrónica 2001 (preguntar)", None, None, "",
      10.50, 1, 0.45, "Amazon", "B0B93PNYCP",
@@ -169,12 +169,17 @@ ITEMS = [
     ("CAB-04", "Cabezal de disco", "Plumón Sharpie punta fina", "Negro", "Trazar la curva paramétrica",
      "MathBot", 2, "Obligatorio", "Librería o supermercado", 1.50, 1, "Estimado",
      1.97, 2, 0.05, "Local", "B00144862U", ""),
-    ("CAB-05", "Cabezal de disco", "Resorte de compresión", "Ø10–12 × 20 mm", "Porta-plumón con amortiguación",
+    ("CAB-05", "Cabezal de disco", "Resorte de compresión", "Ø15–16 × 30 mm, alambre 0.5–0.6 (Ø int. ≥ 13.5, sólido ≤ 6 mm)",
+     "Porta-plumón con amortiguación",
      "MathBot", 1, "Obligatorio", "Vidrí / Freund", 0.50, 1, "Estimado",
-     6.58, 1, 0.5, "Local", "B0F47T44GH", "Amazon solo vende kits de 390 resortes."),
-    ("CAB-06", "Cabezal de disco", "Separador M4 × 25 mm + tuercas", "Varilla roscada o espaciador", "Colgar el electroimán del disco",
+     6.58, 1, 0.5, "Local", "B0F47T44GH",
+     "Va alrededor del plumón (Ø12): el de Ø10–12 × 20 no entra ni da 18 mm de levante. Ver Cabezal disco/README.md."),
+    ("CAB-06", "Cabezal de disco", "Tornillería del cabezal A v3",
+     "4 × M4×35 + tuerca + arandela + fijador de rosca; M3: 4×10, 1×12, 3×20, 1×35, 3×16 avellanados + 11 tuercas",
+     "Placa + separador al J3 Coupler y montaje de las herramientas",
      "MathBot", 1, "Obligatorio", "Vidrí", 0.60, 1, "Estimado",
-     None, None, None, "Local", "", "Las piezas impresas del cabezal están en la hoja Impresión 3D."),
+     None, None, None, "Local", "",
+     "El separador del electroimán ahora es impreso (hoja Impresión 3D). Lista por pieza en BRAZO SCARA/DISEÑO FINAL/Cabezal disco/README.md."),
     # Electrónica MathBot
     ("MB-01", "Electrónica MathBot", "MOSFET IRLZ44N + resistencias 220 Ω / 10 kΩ", "Nivel lógico", "Encender el electroimán desde A1",
      "MathBot", 1, "Obligatorio", "Casa Rivas", 1.50, 1, "Estimado (hay en el país)",
@@ -343,9 +348,14 @@ def main():
         "Arm 2": "Brazo 2", "Arm 2 Cover": "Brazo 2", "J3 Coupler": "Brazo 2", "Gripper to J3 connector": "Cabezal",
         "Arduino UNO case p1": "Electrónica", "Arduino UNO case p2": "Electrónica", "Wires holder": "Brazo 2",
     }
+    # Cabezal A v3: volumen y gramos de BRAZO SCARA/DISEÑO FINAL/Cabezal disco/piezas.json (mismo modelo de gramos)
+    stl = "STL en BRAZO SCARA/DISEÑO FINAL/Cabezal disco/STL/"
     cabezal = [
-        ("Placa-disco del cabezal Ø136 × 6 mm (aligerada)", 1, 30), ("Porta-plumón con camisa deslizante (PETG)", 1, 8),
-        ("Leva + soporte del micro-servo", 1, 5), ("Separador del electroimán", 1, 3), ("Abrazadera M12 del sensor", 1, 4),
+        ("Placa trébol del cabezal A v3 (6 mm, PETG)", 1, 31.5, 35.8, stl + "02_placa_trebol.stl · boca abajo, sin soportes"),
+        ("Separador de brida 14 mm (PETG)", 1, 12.4, 9.7, stl + "01_separador_brida.stl · baja la placa 14 mm para no chocar con la cubierta del brazo 2"),
+        ("Soporte plumón/servo + puente + collar (PETG, 3 piezas)", 1, 11.8, 9.7, stl + "03, 04 y 05 · gramos de las tres piezas"),
+        ("Separador del electroimán con copa (PLA+)", 1, 6.0, 6.5, stl + "06_separador_electroiman.stl · reemplaza el separador M4 × 25"),
+        ("Abrazadera M12 del sensor (PLA+)", 1, 6.1, 6.9, stl + "07_abrazadera_sensor_M12.stl"),
     ]
     ws_i["A1"] = "Impresión 3D"
     ws_i["A1"].font = f_title
@@ -384,12 +394,12 @@ def main():
             ws_i.cell(row=r, column=c, value=v)
         ws_i.cell(row=r, column=13, value=nota)
         r += 1
-    for k, (name, q, g) in enumerate(cabezal, start=len(piezas) + 1):
-        for c, v in enumerate([k, name, "Cabezal de disco", q, None, g], 1):
+    for k, (name, q, g, vol, nota) in enumerate(cabezal, start=len(piezas) + 1):
+        for c, v in enumerate([k, name, "Cabezal de disco", q, vol, g], 1):
             ws_i.cell(row=r, column=c, value=v)
         ws_i.cell(row=r, column=6).font = f_input
         ws_i.cell(row=r, column=6).fill = fill_input
-        ws_i.cell(row=r, column=13, value="Diseño propio MathBot: gramos estimados a mano")
+        ws_i.cell(row=r, column=13, value=nota)
         r += 1
     for rr in range(first, last + 1):
         ws_i.cell(row=rr, column=7, value=f"=D{rr}*F{rr}")
