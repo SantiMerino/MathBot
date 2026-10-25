@@ -229,6 +229,30 @@ def ensamble_scara(salida, phi=0.0):
     return dphi
 
 
+def exportar_mallas_ensamble():
+    """STL de cada pieza en el marco del cabezal (plumón abajo) + meta.json: los usa el panel de operario."""
+    carpeta = os.path.join(RAIZ, "ensamble", "stl")
+    os.makedirs(carpeta, exist_ok=True)
+    meta = dict(piezas=[], z_conector=C.DELTA, levante=C.LEVANTE,
+                horn=dict(eje=[C.PEN[0] + C.U_EJE_SERVO, C.Y_HORN, C.Z_EJE_SERVO], reposo=math.degrees(C.TH_REPOSO),
+                          arriba=[[d, math.degrees(C.angulo_horn(d))] for d in (0, 3, 6, 9, 12, 15, 18)]),
+                resorte=dict(z0=C.C_TRAZO + C.H_COLLAR - C.P_COLLAR, z1=C.Z_PUENTE + C.P_PUENTE))
+    impresas = {v["nombre"]: (k, v) for k, v in C.IMPRESAS.items()}
+    for k, (w, nombre, color) in list(C.impresas(0.0).items()) + list(C.compradas(0.0, helice=False).items()):
+        info = dict(clave=k, nombre=nombre, color=color, impresa=nombre in impresas)
+        if k == "resorte":                       # el panel lo dibuja como hélice (la del CAD pesa 4 MB)
+            info.update(helice=dict(d=C.RESORTE["d_ext"], alambre=C.RESORTE["alambre"], vueltas=8))
+            meta["piezas"].append(info)
+            continue
+        cq.exporters.export(w.val(), os.path.join(carpeta, k + ".stl"), tolerance=0.05, angularTolerance=0.3)
+        if nombre in impresas:
+            info.update(archivo=ARCHIVO[impresas[nombre][0]], material=IMPRESION[impresas[nombre][0]][0])
+        meta["piezas"].append(info)
+    with open(os.path.join(carpeta, "meta.json"), "w", encoding="utf-8") as f:
+        json.dump(meta, f, ensure_ascii=False, indent=1)
+    print("Mallas del ensamble: ensamble/stl/ (" + str(len(meta["piezas"])) + " piezas)")
+
+
 def main():
     print("Piezas impresas:")
     exportar_piezas()
@@ -236,6 +260,7 @@ def main():
     sub = subensamble(0.0)
     sub.export(os.path.join(RAIZ, "ensamble", "Cabezal A v3.step"))
     print("Subensamble: ensamble/Cabezal A v3.step")
+    exportar_mallas_ensamble()
     if "--sin-scara" not in sys.argv:
         dphi = ensamble_scara(os.path.join(RAIZ, "ensamble", "SCARA con cabezal de disco.step"), phi=0.0)
         print(f"SCARA completo: J3 girado {dphi:+.2f}° desde la pose del STEP (φ = 0, plumón sobre la línea del brazo 2)")

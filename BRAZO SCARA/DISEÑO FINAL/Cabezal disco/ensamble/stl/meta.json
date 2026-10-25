@@ -1,0 +1,207 @@
+{
+ "piezas": [
+  {
+   "clave": "separador",
+   "nombre": "Separador de brida",
+   "color": [
+    0.18,
+    0.42,
+    0.71
+   ],
+   "impresa": true,
+   "archivo": "01_separador_brida",
+   "material": "PETG"
+  },
+  {
+   "clave": "placa",
+   "nombre": "Placa trébol",
+   "color": [
+    0.93,
+    0.62,
+    0.2
+   ],
+   "impresa": true,
+   "archivo": "02_placa_trebol",
+   "material": "PETG"
+  },
+  {
+   "clave": "soporte",
+   "nombre": "Soporte del plumón y del servo",
+   "color": [
+    0.2,
+    0.55,
+    0.45
+   ],
+   "impresa": true,
+   "archivo": "03_soporte_plumon_servo",
+   "material": "PETG"
+  },
+  {
+   "clave": "puente",
+   "nombre": "Puente del plumón",
+   "color": [
+    0.2,
+    0.55,
+    0.45
+   ],
+   "impresa": true,
+   "archivo": "04_puente_plumon",
+   "material": "PETG"
+  },
+  {
+   "clave": "collar",
+   "nombre": "Collar del plumón",
+   "color": [
+    0.85,
+    0.3,
+    0.3
+   ],
+   "impresa": true,
+   "archivo": "05_collar_plumon",
+   "material": "PETG"
+  },
+  {
+   "clave": "porta_iman",
+   "nombre": "Separador del electroimán",
+   "color": [
+    0.55,
+    0.45,
+    0.75
+   ],
+   "impresa": true,
+   "archivo": "06_separador_electroiman",
+   "material": "PLA+"
+  },
+  {
+   "clave": "abrazadera",
+   "nombre": "Abrazadera M12 del sensor",
+   "color": [
+    0.55,
+    0.45,
+    0.75
+   ],
+   "impresa": true,
+   "archivo": "07_abrazadera_sensor_M12",
+   "material": "PLA+"
+  },
+  {
+   "clave": "plumon",
+   "nombre": "Plumón Sharpie fino",
+   "color": [
+    0.1,
+    0.1,
+    0.12
+   ],
+   "impresa": false
+  },
+  {
+   "clave": "servo",
+   "nombre": "Micro servo SG90 / MG90S",
+   "color": [
+    0.15,
+    0.35,
+    0.8
+   ],
+   "impresa": false
+  },
+  {
+   "clave": "horn",
+   "nombre": "Brazo simple del servo",
+   "color": [
+    0.95,
+    0.95,
+    0.95
+   ],
+   "impresa": false
+  },
+  {
+   "clave": "resorte",
+   "nombre": "Resorte Ø16 × 30",
+   "color": [
+    0.75,
+    0.75,
+    0.78
+   ],
+   "impresa": false,
+   "helice": {
+    "d": 16.0,
+    "alambre": 0.5,
+    "vueltas": 8
+   }
+  },
+  {
+   "clave": "electroiman",
+   "nombre": "Electroimán KK-P20/15",
+   "color": [
+    0.45,
+    0.47,
+    0.5
+   ],
+   "impresa": false
+  },
+  {
+   "clave": "sensor",
+   "nombre": "Sensor inductivo LJ12A3-4-Z/BX",
+   "color": [
+    0.8,
+    0.72,
+    0.4
+   ],
+   "impresa": false
+  },
+  {
+   "clave": "tornillos_m4",
+   "nombre": "Pernos M4 × 35 + tuercas + M3 × 35 del electroimán",
+   "color": [
+    0.3,
+    0.3,
+    0.32
+   ],
+   "impresa": false
+  }
+ ],
+ "z_conector": 14.0,
+ "levante": 18.0,
+ "horn": {
+  "eje": [
+   69.0,
+   12.0,
+   16.747137442171663
+  ],
+  "reposo": -56.73183266230044,
+  "arriba": [
+   [
+    0,
+    -56.73183266230044
+   ],
+   [
+    3,
+    -44.70283632013966
+   ],
+   [
+    6,
+    -33.758965769534115
+   ],
+   [
+    9,
+    -19.529478304340806
+   ],
+   [
+    12,
+    -3.128555947450702
+   ],
+   [
+    15,
+    9.202392659108321
+   ],
+   [
+    18,
+    19.35616570154468
+   ]
+  ]
+ },
+ "resorte": {
+  "z0": 5.1000000000000085,
+  "z1": 30.60000000000001
+ }
+}
