@@ -63,7 +63,8 @@ MathBot/
 ├── mathbot_investigacion_construccion.html # investigación: arquitecturas, presupuesto de error, BOM y costos
 ├── mathbot_compras_el_salvador.html        # abastecimiento 100% local: tiendas, sustituciones, BOM en El Salvador
 ├── matlab/                                # simulación y validación (Avance 1 y 2)
-└── firmware/                              # Arduino MEGA: firmware, pruebas, diagrama y Wokwi (ver firmware/README.md)
+├── firmware/                              # Arduino MEGA: firmware por etapas, protocolo, diagrama y Wokwi (ver firmware/README.md)
+└── panel/                                 # panel de operario + robot virtual (ver panel/README.md)
 ```
 
 ---
@@ -137,7 +138,12 @@ usa 136.5). J3 reduce 90/20 = 4.5:1. La pinza se reemplaza por uno de dos cabeza
 La rosa va centrada a 185 mm de J1, girada 180°: θ₂ ∈ [−140°, −96°], κ(J) ≤ 2.3, 0.19 mm por micropaso.
 Qué imprimir y qué comprar para cada cabezal: [simulador_scara/CABEZALES_compras.md](simulador_scara/CABEZALES_compras.md).
 
-- `simulador_scara/simulador_scara.html`: simulador 3D interactivo con las STL reales (abrir con doble
+- `panel/`: **panel de operario** para manejar el robot desde la PC (Chrome/Edge, USB con Web Serial): home con
+  finales o a mano, jog, puntos de escaneo guardados en el Mega, centro y giro de la rosa con vista previa de
+  alcance, misión completa y PARO. Trae un robot virtual con el mismo protocolo para probar sin hardware y el
+  despiece del cabezal. Ver [panel/README.md](panel/README.md).
+- `simulador_scara/simulador_scara.html`: simulador de diseño (comparar cabezales A/B, revisar piezas y electrónica); para
+  operar o ensayar misiones usa el panel. Simulador 3D interactivo con las STL reales (abrir con doble
   clic; necesita internet para Three.js). Misión completa: escaneo con sensor → recolección con
   electroimán → trazo de la rosa, con cambio de cabezal A/B. Electrónica del artículo ubicada dentro
   de las piezas (motores, poleas, correas, rodamientos, Arduino + CNC Shield + A4988, finales de carrera),

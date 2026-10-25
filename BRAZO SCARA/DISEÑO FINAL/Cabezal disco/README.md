@@ -11,6 +11,7 @@ Parte de la v2 de `anatomia/cabezal/` y la corrige con las medidas reales del en
 | `STEP/` | Las mismas piezas en el marco del cabezal: origen en el eje de J3, z = 0 en la cara superior de la placa, +x hacia el plumón |
 | `ensamble/Cabezal A v3.step` | Subensamble: piezas impresas, compradas y tornillería, plumón abajo |
 | `ensamble/SCARA con cabezal de disco.step` | `SCARA Robot 3D Model.STEP` sin la pinza, con el connector, el cabezal y J3 en φ = 0 |
+| `ensamble/stl/` | Mallas de cada pieza en posición de ensamble + `meta.json` (levante, horn, resorte), para el despiece del [panel](../../../panel/README.md) |
 | `img/` | Vistas PNG (piezas en la cama, ensamble, despiece, levante, J3 a ±120°, robot completo, holguras) |
 | `fuente/` | CAD paramétrico en CadQuery y los scripts que exportan, verifican y renderizan |
 | `piezas.json`, `verificacion.json` | Gramos y horas por pieza; resultados de las comprobaciones |

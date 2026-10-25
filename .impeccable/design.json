@@ -1,0 +1,808 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-24T23:54:22+00:00",
+  "title": "Design System: MathBot · Consola de operario",
+  "extensions": {
+    "colorMeta": {
+      "fondo": {
+        "role": "neutral",
+        "displayName": "Fondo",
+        "canonical": "#070808",
+        "oklch": "oklch(13.3% 0.002 196.9)",
+        "tonalRamp": [
+          "#0a0b0b",
+          "#242525",
+          "#414242",
+          "#606161",
+          "#818383",
+          "#a4a5a5",
+          "#c8c9c9",
+          "#edefef"
+        ]
+      },
+      "placa": {
+        "role": "neutral",
+        "displayName": "Placa",
+        "canonical": "#131416",
+        "oklch": "oklch(19.1% 0.004 264.5)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#414244",
+          "#606164",
+          "#818285",
+          "#a4a5a8",
+          "#c8c9cc",
+          "#edeef1"
+        ]
+      },
+      "placa-luz": {
+        "role": "neutral",
+        "displayName": "Placa (luz)",
+        "canonical": "#18191c",
+        "oklch": "oklch(21.4% 0.006 271.1)",
+        "tonalRamp": [
+          "#0a0b0e",
+          "#242528",
+          "#414245",
+          "#606165",
+          "#818286",
+          "#a3a5a9",
+          "#c7c9cd",
+          "#edeef3"
+        ]
+      },
+      "placa-sombra": {
+        "role": "neutral",
+        "displayName": "Placa (sombra)",
+        "canonical": "#121315",
+        "oklch": "oklch(18.6% 0.004 264.5)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#414244",
+          "#606164",
+          "#818285",
+          "#a4a5a8",
+          "#c8c9cc",
+          "#edeef1"
+        ]
+      },
+      "tecla-cara": {
+        "role": "neutral",
+        "displayName": "Cara de Tecla",
+        "canonical": "#2b2d31",
+        "oklch": "oklch(29.7% 0.008 264.4)",
+        "tonalRamp": [
+          "#090b0f",
+          "#232529",
+          "#404246",
+          "#5f6166",
+          "#808287",
+          "#a2a5aa",
+          "#c6c9ce",
+          "#eceef4"
+        ]
+      },
+      "ranura": {
+        "role": "neutral",
+        "displayName": "Ranura",
+        "canonical": "#040405",
+        "oklch": "oklch(10.8% 0.004 285.8)",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#252527",
+          "#424244",
+          "#616163",
+          "#828284",
+          "#a5a5a7",
+          "#c9c9cb",
+          "#eeeef1"
+        ]
+      },
+      "serigrafia": {
+        "role": "neutral",
+        "displayName": "Serigrafía",
+        "canonical": "#ebe7da",
+        "oklch": "oklch(92.8% 0.018 92.7)",
+        "tonalRamp": [
+          "#0e0b04",
+          "#28251b",
+          "#454237",
+          "#656156",
+          "#868277",
+          "#a9a599",
+          "#cdc9bc",
+          "#f2eee1"
+        ]
+      },
+      "serigrafia-2": {
+        "role": "neutral",
+        "displayName": "Serigrafía 2",
+        "canonical": "#aaa69a",
+        "oklch": "oklch(72.5% 0.018 91.6)",
+        "tonalRamp": [
+          "#0e0b04",
+          "#28251b",
+          "#454238",
+          "#656156",
+          "#868277",
+          "#a9a599",
+          "#cdc9bd",
+          "#f3eee2"
+        ]
+      },
+      "tenue": {
+        "role": "neutral",
+        "displayName": "Tenue",
+        "canonical": "#8f8b81",
+        "oklch": "oklch(63.7% 0.015 88.7)",
+        "tonalRamp": [
+          "#0e0b05",
+          "#28251d",
+          "#454239",
+          "#656158",
+          "#868278",
+          "#a9a59a",
+          "#cdc9be",
+          "#f3eee3"
+        ]
+      },
+      "apagado": {
+        "role": "neutral",
+        "displayName": "Apagado",
+        "canonical": "#858278",
+        "oklch": "oklch(60.6% 0.015 93.1)",
+        "tonalRamp": [
+          "#0d0b05",
+          "#27251d",
+          "#454239",
+          "#646158",
+          "#858278",
+          "#a8a59b",
+          "#ccc9be",
+          "#f2eee3"
+        ]
+      },
+      "filete": {
+        "role": "neutral",
+        "displayName": "Filete",
+        "canonical": "#6d6a62",
+        "oklch": "oklch(52.5% 0.013 89.8)",
+        "tonalRamp": [
+          "#0d0b06",
+          "#27251e",
+          "#45423a",
+          "#646159",
+          "#85827a",
+          "#a8a59c",
+          "#ccc9c0",
+          "#f2eee5"
+        ]
+      },
+      "rojo": {
+        "role": "primary",
+        "displayName": "Rojo Paro",
+        "canonical": "#ff3b30",
+        "oklch": "oklch(65.4% 0.232 28.7)",
+        "tonalRamp": [
+          "#1f0000",
+          "#4d0001",
+          "#800103",
+          "#b80709",
+          "#ed241e",
+          "#fe7565",
+          "#fdb4a9",
+          "#ffe9e5"
+        ]
+      },
+      "rojo-hondo": {
+        "role": "primary",
+        "displayName": "Rojo Hondo",
+        "canonical": "#9e130c",
+        "oklch": "oklch(44.7% 0.172 29.3)",
+        "tonalRamp": [
+          "#1f0000",
+          "#4d0000",
+          "#810000",
+          "#ae281d",
+          "#d64f40",
+          "#fe7463",
+          "#feb4a8",
+          "#ffe9e5"
+        ]
+      },
+      "rojo-texto": {
+        "role": "primary",
+        "displayName": "Rojo Texto",
+        "canonical": "#ff8a83",
+        "oklch": "oklch(76.0% 0.143 24.6)",
+        "tonalRamp": [
+          "#1e0001",
+          "#4c0107",
+          "#7d0e16",
+          "#a33736",
+          "#ca5a56",
+          "#f17e77",
+          "#ffb3ac",
+          "#fee9e7"
+        ]
+      },
+      "fosforo": {
+        "role": "primary",
+        "displayName": "Fósforo",
+        "canonical": "#8dff7a",
+        "oklch": "oklch(90.3% 0.201 140.9)",
+        "tonalRamp": [
+          "#011000",
+          "#072e01",
+          "#125004",
+          "#1f750b",
+          "#2d9c14",
+          "#4fc23b",
+          "#76e863",
+          "#cdffc4"
+        ]
+      },
+      "fosforo-2": {
+        "role": "primary",
+        "displayName": "Fósforo Tenue",
+        "canonical": "#4fbf47",
+        "oklch": "oklch(71.5% 0.189 142.2)",
+        "tonalRamp": [
+          "#001000",
+          "#022f01",
+          "#065103",
+          "#0e7608",
+          "#269c1e",
+          "#51c149",
+          "#78e76f",
+          "#cdfec8"
+        ]
+      },
+      "fosforo-bg": {
+        "role": "primary",
+        "displayName": "Fondo de Fósforo",
+        "canonical": "#051208",
+        "oklch": "oklch(16.6% 0.029 151.1)",
+        "tonalRamp": [
+          "#030f05",
+          "#1a291e",
+          "#37473a",
+          "#566659",
+          "#76887a",
+          "#98ab9c",
+          "#bccfc0",
+          "#e1f4e5"
+        ]
+      },
+      "ambar": {
+        "role": "secondary",
+        "displayName": "Ámbar Precaución",
+        "canonical": "#ffb21f",
+        "oklch": "oklch(81.7% 0.165 76.2)",
+        "tonalRamp": [
+          "#130900",
+          "#342102",
+          "#593b05",
+          "#81580c",
+          "#ab7715",
+          "#d9960c",
+          "#fdbb52",
+          "#ffebd0"
+        ]
+      },
+      "verde": {
+        "role": "secondary",
+        "displayName": "Verde Listo",
+        "canonical": "#5dff6e",
+        "oklch": "oklch(88.5% 0.232 145.0)",
+        "tonalRamp": [
+          "#001001",
+          "#002f06",
+          "#005111",
+          "#03761e",
+          "#089e2b",
+          "#1ac63d",
+          "#48ee5d",
+          "#caffcb"
+        ]
+      },
+      "cian": {
+        "role": "secondary",
+        "displayName": "Cian Actividad",
+        "canonical": "#42d3ff",
+        "oklch": "oklch(80.9% 0.134 222.8)",
+        "tonalRamp": [
+          "#000e14",
+          "#012a36",
+          "#044a5c",
+          "#0c6c86",
+          "#1590b1",
+          "#05b6e1",
+          "#70d9fd",
+          "#d9f4fe"
+        ]
+      },
+      "lila": {
+        "role": "secondary",
+        "displayName": "Lila Metal",
+        "canonical": "#c7a6ff",
+        "oklch": "oklch(78.7% 0.128 300.6)",
+        "tonalRamp": [
+          "#120027",
+          "#310858",
+          "#4e2c7a",
+          "#6e4d9e",
+          "#8f6fc3",
+          "#b291e9",
+          "#d3bbfe",
+          "#f1ebff"
+        ]
+      },
+      "aro-paro": {
+        "role": "tertiary",
+        "displayName": "Aro de Paro",
+        "canonical": "#f2c21b",
+        "oklch": "oklch(83.3% 0.166 90.0)",
+        "tonalRamp": [
+          "#100a00",
+          "#2f2300",
+          "#523f01",
+          "#775e04",
+          "#9f7e09",
+          "#c7a019",
+          "#f3c31d",
+          "#ffedbf"
+        ]
+      },
+      "st-lila": {
+        "role": "tertiary",
+        "displayName": "Sticker Lila",
+        "canonical": "#cdb0ff",
+        "oklch": "oklch(81.0% 0.113 300.8)",
+        "tonalRamp": [
+          "#120026",
+          "#2f0f52",
+          "#4d3074",
+          "#6c5097",
+          "#8e71bb",
+          "#b194e1",
+          "#d3bcfc",
+          "#f1ebfe"
+        ]
+      },
+      "st-lima": {
+        "role": "tertiary",
+        "displayName": "Sticker Lima",
+        "canonical": "#cff25a",
+        "oklch": "oklch(90.8% 0.179 121.1)",
+        "tonalRamp": [
+          "#090d00",
+          "#212902",
+          "#3b4905",
+          "#586a0d",
+          "#768e16",
+          "#96b40f",
+          "#b8da3d",
+          "#deff7b"
+        ]
+      },
+      "st-celeste": {
+        "role": "tertiary",
+        "displayName": "Sticker Celeste",
+        "canonical": "#94dbff",
+        "oklch": "oklch(85.7% 0.087 231.1)",
+        "tonalRamp": [
+          "#000d16",
+          "#01293a",
+          "#044862",
+          "#1f6a89",
+          "#458cad",
+          "#69afd2",
+          "#8dd4f8",
+          "#ddf2fe"
+        ]
+      },
+      "st-ambar": {
+        "role": "tertiary",
+        "displayName": "Sticker Ámbar",
+        "canonical": "#ffcb4d",
+        "oklch": "oklch(86.6% 0.150 85.8)",
+        "tonalRamp": [
+          "#110a00",
+          "#312300",
+          "#543e01",
+          "#7a5c03",
+          "#a37c08",
+          "#cd9d18",
+          "#f5c141",
+          "#ffedc6"
+        ]
+      },
+      "st-tinta": {
+        "role": "tertiary",
+        "displayName": "Tinta de Sticker",
+        "canonical": "#0d0d0f",
+        "oklch": "oklch(16.0% 0.004 285.9)",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#252527",
+          "#424244",
+          "#616163",
+          "#828285",
+          "#a5a5a8",
+          "#c9c9cc",
+          "#eeeef1"
+        ]
+      },
+      "st-borde": {
+        "role": "tertiary",
+        "displayName": "Borde Troquelado",
+        "canonical": "#f6f4ee",
+        "oklch": "oklch(96.7% 0.008 91.5)",
+        "tonalRamp": [
+          "#0c0b07",
+          "#262521",
+          "#43423d",
+          "#63615c",
+          "#84827d",
+          "#a7a59f",
+          "#cbc9c3",
+          "#f0eee8"
+        ]
+      },
+      "st-plata": {
+        "role": "tertiary",
+        "displayName": "Sticker Plata (holográfico)",
+        "canonical": "linear-gradient(115deg, #e9edf1, #c5ced7 32%, #efe6ff 50%, #d6f3ff 64%, #ccd3db)",
+        "note": "Degradado, no color plano: vive en --st-plata y solo en stickers de estado y memoria."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Placa de marca",
+        "purpose": "Solo el nombre MATHBOT en el riel."
+      },
+      "headline": {
+        "displayName": "Título serigrafiado",
+        "purpose": "Título de módulo, teletipo, cajón y paneles, centrado entre filetes."
+      },
+      "title": {
+        "displayName": "Rótulo de tecla",
+        "purpose": "Teclas: 11.5px mini, 13px normal, 16px grande."
+      },
+      "body": {
+        "displayName": "Texto de interfaz",
+        "purpose": "Notas y descripciones; notas a 13px, máximo 62ch."
+      },
+      "label": {
+        "displayName": "Etiqueta serigrafiada",
+        "purpose": "Ejes, campos, finales, nombres de control, encabezados de tabla."
+      },
+      "digitos": {
+        "displayName": "Dígitos de fósforo",
+        "purpose": "Ventana de estado (17px); mini 15px, grande 22px."
+      },
+      "digitos-lectura": {
+        "displayName": "Lectura de ejes",
+        "purpose": "J1, J2, J3, Z en el módulo POSICIÓN."
+      },
+      "terminal": {
+        "displayName": "Teletipo",
+        "purpose": "Registro de la terminal, tabla de puntos, menú de comandos."
+      },
+      "sticker": {
+        "displayName": "Frase de sticker",
+        "purpose": "La función del control escrita en el vinilo."
+      },
+      "chip-codigo": {
+        "displayName": "Chip de código",
+        "purpose": "El comando serie dentro del sticker. El build lo sirve a 9px; ese tamaño no se canoniza por estar bajo el piso de legibilidad (el ejemplo usa 11px)."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ranura",
+        "value": "inset 0 2px 6px rgb(0 0 0 / .9), 0 1px 0 rgb(255 255 255 / .06)",
+        "purpose": "Lo hundido: anunciador, selector de bahía, estado de la rosa."
+      },
+      {
+        "name": "ventana",
+        "value": "inset 0 2px 5px rgb(0 0 0 / .95), inset 0 0 0 1px rgb(141 255 122 / .07), 0 1px 0 rgb(255 255 255 / .06)",
+        "purpose": "Ventanas de dígitos y campos."
+      },
+      {
+        "name": "placa",
+        "value": "0 0 0 1px #000, inset 0 1px 0 rgb(255 255 255 / .06), 0 4px 12px rgb(0 0 0 / .5)",
+        "purpose": "Módulos y teletipo."
+      },
+      {
+        "name": "tecla",
+        "value": "inset 0 1px 0 rgb(255 255 255 / .11), inset 0 -2px 0 rgb(0 0 0 / .5), 0 3px 0 #050506, 0 5px 10px rgb(0 0 0 / .55)",
+        "purpose": "Tecla en reposo con faldón de 3px."
+      },
+      {
+        "name": "tecla-pulsada",
+        "value": "inset 0 1px 0 rgb(255 255 255 / .08), 0 1px 0 #050506, 0 2px 4px rgb(0 0 0 / .6)",
+        "purpose": "Tecla pulsada, con translateY(2px)."
+      },
+      {
+        "name": "tecla-luz",
+        "value": "inset 0 0 0 2px rgb(93 255 110 / .55), inset 0 0 14px rgb(93 255 110 / .22), 0 3px 0 #050506, 0 0 16px rgb(93 255 110 / .2)",
+        "purpose": "Aro verde de las teclas de marcha."
+      },
+      {
+        "name": "lampara-on",
+        "value": "0 0 16px color-mix(in oklab, var(--c) 55%, transparent), inset 0 0 8px color-mix(in oklab, var(--c) 40%, transparent)",
+        "purpose": "Halo de lámpara encendida."
+      },
+      {
+        "name": "sticker",
+        "value": "0 0 0 2px #f6f4ee, 0 2px 0 2px rgb(0 0 0 / .35), 0 4px 8px rgb(0 0 0 / .45)",
+        "purpose": "Borde troquelado y grosor de vinilo."
+      },
+      {
+        "name": "riel",
+        "value": "inset 0 -1px 0 rgb(255 255 255 / .05), 0 6px 18px rgb(0 0 0 / .55)",
+        "purpose": "Riel superior sobre la consola."
+      },
+      {
+        "name": "flotante",
+        "value": "0 20px 50px rgb(0 0 0 / .8), inset 0 1px 0 rgb(255 255 255 / .07)",
+        "purpose": "Paneles flotantes no modales."
+      },
+      {
+        "name": "cajon",
+        "value": "-14px 0 30px rgb(0 0 0 / .7)",
+        "purpose": "Cajón de comandos."
+      },
+      {
+        "name": "cristal",
+        "value": "inset 0 0 0 2px #000, inset 0 0 40px rgb(0 0 0 / .9), 0 0 0 3px #07080a, 0 0 0 4px #2a2b2f",
+        "purpose": "Cristal del CRT dentro del bisel."
+      },
+      {
+        "name": "paro",
+        "value": "0 5px 0 #4a0603, 0 8px 14px rgb(0 0 0 / .65), inset 0 2px 2px rgb(255 255 255 / .35)",
+        "purpose": "Hongo de PARO; al pulsar baja 4px."
+      }
+    ],
+    "textures": [
+      {
+        "name": "capas",
+        "value": "repeating-linear-gradient(0deg, rgb(255 255 255 / .014) 0 1px, transparent 1px 3px)",
+        "purpose": "Líneas de capa FDM sobre toda placa."
+      },
+      {
+        "name": "tornillo",
+        "value": "radial-gradient(circle, #4a4c51 0 1.6px, #26272a 2.2px 3.4px, #050505 3.9px, transparent 4.6px)",
+        "purpose": "Tornillo dibujado, 10×10px a 8px de cada esquina del módulo."
+      },
+      {
+        "name": "scanlines",
+        "value": "repeating-linear-gradient(0deg, rgb(0 0 0 / .14) 0 1px, transparent 1px 3px)",
+        "purpose": "Cristal del CRT."
+      },
+      {
+        "name": "moleteado",
+        "value": "repeating-conic-gradient(#0a0a0b 0 6deg, #2a2b2f 6deg 12deg)",
+        "purpose": "Canto de las perillas."
+      }
+    ],
+    "motion": [
+      {
+        "name": "tecla",
+        "value": "transform .08s, box-shadow .08s",
+        "purpose": "Hundimiento de tecla."
+      },
+      {
+        "name": "paro",
+        "value": "transform .06s",
+        "purpose": "Hundimiento del hongo."
+      },
+      {
+        "name": "palanca",
+        "value": "transform .16s cubic-bezier(.3, 1.3, .5, 1)",
+        "purpose": "Giro de 180° del bate con leve rebote."
+      },
+      {
+        "name": "perilla",
+        "value": "transform .26s cubic-bezier(.25, 1.5, .45, 1)",
+        "purpose": "La perilla gira al detente con rebote."
+      },
+      {
+        "name": "tapa",
+        "value": "transform .32s cubic-bezier(.2, .9, .25, 1.15)",
+        "purpose": "Apertura de la tapa transparente (rotateX(-118deg))."
+      },
+      {
+        "name": "lampara",
+        "value": "background .18s, color .18s, box-shadow .18s",
+        "purpose": "Encendido de lámpara."
+      },
+      {
+        "name": "latido",
+        "value": "1s steps(2) infinite; filter: brightness(.55) al 50%",
+        "purpose": "Parpadeo solo para rojo (lámpara PARO, ventana en paro)."
+      },
+      {
+        "name": "entra",
+        "value": ".22s cubic-bezier(.2, .8, .2, 1) desde translateX(30px) y opacity 0",
+        "purpose": "Entrada del cajón de comandos."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "transition: none; animation: none",
+        "purpose": "prefers-reduced-motion apaga todo."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compacto",
+        "value": "1280px",
+        "purpose": "Bahía a 440px, lámparas más estrechas."
+      },
+      {
+        "name": "apilado",
+        "value": "980px",
+        "purpose": "Una columna, scroll del documento, pantalla a 60vh."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Tecla",
+      "kind": "button",
+      "refersTo": "tecla",
+      "description": "Tecla de consola con faldón; se hunde 2px al pulsar. Variantes mini, pulsada (aria-pressed, cian) y deshabilitada.",
+      "html": "<div class=\"ds-fila\"><button class=\"ds-tecla\">HOMING</button><button class=\"ds-tecla\" aria-pressed=\"true\">ART.</button><button class=\"ds-tecla ds-mini\">IR</button><button class=\"ds-tecla\" disabled>A EEPROM</button></div>",
+      "css": ".ds-fila{display:flex;gap:14px;align-items:center;padding:16px;background:#131416}.ds-tecla{display:inline-grid;place-items:center;min-height:40px;padding:0 14px;font:600 13px/1.05 var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.1em;color:var(--serigrafia,#ebe7da);background:linear-gradient(#2b2d31,#17181b 60%,#121315);border:1px solid #000;border-radius:7px;box-shadow:inset 0 1px 0 rgb(255 255 255/.11),inset 0 -2px 0 rgb(0 0 0/.5),0 3px 0 #050506,0 5px 10px rgb(0 0 0/.55);transition:transform .08s,box-shadow .08s,color .15s;cursor:pointer}.ds-tecla:hover:not(:disabled){color:#fff;background:linear-gradient(#33353a,#1b1c1f 60%,#141517)}.ds-tecla:active:not(:disabled),.ds-tecla[aria-pressed=\"true\"]{transform:translateY(2px);box-shadow:inset 0 1px 0 rgb(255 255 255/.08),0 1px 0 #050506,0 2px 4px rgb(0 0 0/.6)}.ds-tecla[aria-pressed=\"true\"]{color:var(--cian,#42d3ff);box-shadow:inset 0 0 0 2px rgb(66 211 255/.6),0 1px 0 #050506}.ds-tecla:focus-visible{outline:2px solid var(--cian,#42d3ff);outline-offset:2px}.ds-tecla:disabled{cursor:not-allowed;color:var(--apagado,#858278);background:linear-gradient(#1d1e21,#141517);box-shadow:inset 0 1px 0 rgb(255 255 255/.04),0 3px 0 #050506}.ds-mini{min-height:28px;padding:0 9px;font-size:11.5px;border-radius:5px}"
+    },
+    {
+      "name": "Tecla de marcha",
+      "kind": "button",
+      "refersTo": "tecla-luz",
+      "description": "Aro verde iluminado: solo para lo que pone al robot a trabajar (CONECTAR, ESCANEAR, TRAZAR, MISIÓN).",
+      "html": "<div class=\"ds-fila\"><button class=\"ds-tecla ds-luz\">TRAZAR</button><button class=\"ds-tecla ds-luz ds-grande\">MISIÓN<br>COMPLETA</button></div>",
+      "css": ".ds-fila{display:flex;gap:18px;align-items:center;padding:16px;background:#131416}.ds-tecla{display:inline-grid;place-items:center;min-height:40px;padding:0 14px;font:600 13px/1.05 var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.1em;background:linear-gradient(#2b2d31,#17181b 60%,#121315);border:1px solid #000;border-radius:7px;cursor:pointer;transition:transform .08s,box-shadow .08s}.ds-luz{color:#eaffe6;text-shadow:0 0 8px rgb(93 255 110/.7);box-shadow:inset 0 0 0 2px rgb(93 255 110/.55),inset 0 0 14px rgb(93 255 110/.22),0 3px 0 #050506,0 0 16px rgb(93 255 110/.2)}.ds-luz:hover{background:linear-gradient(#33353a,#1b1c1f 60%,#141517)}.ds-luz:active{transform:translateY(2px)}.ds-luz:focus-visible{outline:2px solid var(--cian,#42d3ff);outline-offset:2px}.ds-grande{width:112px;height:112px;border-radius:14px;font-size:16px}"
+    },
+    {
+      "name": "Tecla de peligro bajo tapa",
+      "kind": "custom",
+      "refersTo": "tecla-peligro",
+      "description": "FÁBRICA: tecla roja cubierta por una tapa de acrílico que hay que levantar; se cierra sola a los 6 s.",
+      "html": "<div class=\"ds-fila\"><div class=\"ds-tapa-caja\"><button class=\"ds-peligro\" tabindex=\"-1\">FÁBRICA</button><button class=\"ds-tapa\">LEVANTAR</button></div><div class=\"ds-tapa-caja ds-abierta\"><button class=\"ds-peligro\">FÁBRICA</button><button class=\"ds-tapa\" tabindex=\"-1\">LEVANTAR</button></div></div>",
+      "css": ".ds-fila{display:flex;gap:40px;align-items:center;padding:30px 20px 20px;background:#131416}.ds-tapa-caja{position:relative;display:inline-grid;perspective:400px}.ds-peligro{min-width:104px;min-height:40px;padding:0 14px;font:600 13px/1 var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.1em;color:#fff;background:linear-gradient(#d22a20,#8e140d);border:1px solid #000;border-radius:7px;box-shadow:inset 0 1px 0 rgb(255 255 255/.25),0 3px 0 #3d0704,0 0 16px rgb(255 59 48/.35);cursor:pointer}.ds-peligro:active{transform:translateY(2px)}.ds-peligro:focus-visible{outline:2px solid var(--cian,#42d3ff);outline-offset:2px}.ds-tapa{position:absolute;inset:-5px;border-radius:10px;border:1px solid rgb(255 255 255/.28);background:linear-gradient(135deg,rgb(255 255 255/.16),rgb(255 255 255/.03) 45%,rgb(255 255 255/.1));box-shadow:inset 0 1px 0 rgb(255 255 255/.35),0 6px 14px rgb(0 0 0/.5);transform-origin:50% 0;transition:transform .32s cubic-bezier(.2,.9,.25,1.15);display:grid;align-items:end;justify-items:center;padding-bottom:2px;font:600 11px var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.16em;color:rgb(255 255 255/.85);cursor:pointer}.ds-tapa:hover{background:linear-gradient(135deg,rgb(255 255 255/.22),rgb(255 255 255/.05) 45%,rgb(255 255 255/.14))}.ds-tapa:focus-visible{outline:2px solid var(--cian,#42d3ff);outline-offset:2px}.ds-abierta .ds-tapa{transform:rotateX(-118deg);pointer-events:none}"
+    },
+    {
+      "name": "Lámparas anunciadoras",
+      "kind": "custom",
+      "refersTo": "lampara",
+      "description": "Rectángulos que se encienden con el color del semáforo; el rojo parpadea.",
+      "html": "<div class=\"ds-anun\"><i class=\"ds-lampara\" data-on=\"verde\">HOME</i><i class=\"ds-lampara\" data-on=\"ambar\">MOTORES</i><i class=\"ds-lampara\" data-on=\"cian\">MOVIENDO</i><i class=\"ds-lampara\" data-on=\"lila\">METAL</i><i class=\"ds-lampara\">PARO</i><i class=\"ds-lampara\" data-on=\"rojo\">PARO</i></div>",
+      "css": ".ds-anun{display:flex;gap:4px;padding:7px 10px;border-radius:8px;background:var(--ranura,#040405);box-shadow:inset 0 2px 6px rgb(0 0 0/.9),0 1px 0 rgb(255 255 255/.06)}.ds-lampara{--c:#5dff6e;display:inline-grid;place-items:center;font:600 11px/1 var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);font-style:normal;letter-spacing:.1em;padding:6px 8px;min-width:64px;border-radius:3px;color:var(--apagado,#858278);background:linear-gradient(#1c1d20,#141517);border:1px solid #000;box-shadow:inset 0 1px 0 rgb(255 255 255/.05);transition:background .18s,color .18s,box-shadow .18s}.ds-lampara[data-on]{color:color-mix(in oklab,var(--c) 45%,#fff);background:radial-gradient(circle at 50% 40%,color-mix(in oklab,var(--c) 42%,#0b0b0c),color-mix(in oklab,var(--c) 18%,#0b0b0c));box-shadow:0 0 16px color-mix(in oklab,var(--c) 55%,transparent),inset 0 0 8px color-mix(in oklab,var(--c) 40%,transparent);text-shadow:0 0 8px var(--c)}.ds-lampara[data-on=\"ambar\"]{--c:#ffb21f}.ds-lampara[data-on=\"cian\"]{--c:#42d3ff}.ds-lampara[data-on=\"lila\"]{--c:#c7a6ff}.ds-lampara[data-on=\"rojo\"]{--c:#ff3b30;animation:ds-latido 1s steps(2) infinite}@keyframes ds-latido{50%{filter:brightness(.55)}}@media (prefers-reduced-motion:reduce){.ds-lampara{animation:none!important;transition:none}}"
+    },
+    {
+      "name": "Ventana de dígitos",
+      "kind": "custom",
+      "refersTo": "ventana",
+      "description": "Ventana hundida de fósforo para todo valor que reporta el Mega; cambia de color con el estado.",
+      "html": "<div class=\"ds-col\"><div class=\"ds-ventana\">LISTO</div><div class=\"ds-ventana\" data-c=\"ambar\">SIN HOME</div><div class=\"ds-ventana\" data-c=\"cian\">MOVIENDO</div><div class=\"ds-ventana\" data-c=\"rojo\">PARO</div><div class=\"ds-eje\"><small>J1</small><b class=\"ds-dig\">53.22<i>°</i></b></div></div>",
+      "css": ".ds-col{display:grid;gap:8px;justify-items:start;padding:16px;background:#131416}.ds-ventana,.ds-dig{font-family:var(--f-dig, \"Share Tech Mono\", ui-monospace, Consolas, monospace);color:var(--fosforo,#8dff7a);background:var(--fosforo-bg,#051208);text-shadow:0 0 6px rgb(141 255 122/.55);border-radius:4px;box-shadow:inset 0 2px 5px rgb(0 0 0/.95),inset 0 0 0 1px rgb(141 255 122/.07),0 1px 0 rgb(255 255 255/.06)}.ds-ventana{font-size:17px;letter-spacing:.05em;padding:5px 12px;min-width:200px;text-align:center;text-transform:uppercase}.ds-ventana[data-c=\"ambar\"]{color:#ffb21f;background:#160d01;text-shadow:0 0 8px rgb(255 178 31/.6)}.ds-ventana[data-c=\"cian\"]{color:#42d3ff;background:#021117;text-shadow:0 0 8px rgb(66 211 255/.6)}.ds-ventana[data-c=\"rojo\"]{color:#fff;background:var(--rojo-hondo,#9e130c);text-shadow:0 0 10px rgb(255 59 48/.9)}.ds-eje{display:grid;gap:3px}.ds-eje small{font:600 11px var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.18em;color:var(--serigrafia-2,#aaa69a)}.ds-dig{display:block;font-size:21px;font-weight:400;padding:5px 8px;min-width:120px;text-align:right}.ds-dig i{font-style:normal;font-size:12px;color:var(--fosforo-2,#4fbf47);margin-left:3px;text-shadow:none}"
+    },
+    {
+      "name": "Campo numérico",
+      "kind": "input",
+      "refersTo": "campo",
+      "description": "Ventana de fósforo editable con la unidad dentro del campo.",
+      "html": "<div class=\"ds-fila\"><label class=\"ds-campo\">X <input type=\"number\" value=\"250\"><small>mm</small></label><label class=\"ds-campo\">Y <input type=\"number\" value=\"0\"><small>mm</small></label></div>",
+      "css": ".ds-fila{display:flex;gap:16px;padding:16px;background:#131416}.ds-campo{display:grid;gap:4px;font:600 11px var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.16em;color:var(--serigrafia-2,#aaa69a);position:relative}.ds-campo small{position:absolute;right:8px;bottom:8px;font:11px var(--f-dig, \"Share Tech Mono\", ui-monospace, Consolas, monospace);color:var(--fosforo-2,#4fbf47);letter-spacing:0}.ds-campo input{font:16px var(--f-dig, \"Share Tech Mono\", ui-monospace, Consolas, monospace);color:var(--fosforo,#8dff7a);background:var(--fosforo-bg,#051208);caret-color:var(--fosforo,#8dff7a);border:1px solid #000;border-radius:4px;padding:6px 30px 6px 8px;width:96px;box-shadow:inset 0 2px 5px rgb(0 0 0/.95),0 1px 0 rgb(255 255 255/.06)}.ds-campo input:hover{box-shadow:inset 0 2px 5px rgb(0 0 0/.95),inset 0 0 0 1px rgb(141 255 122/.2)}.ds-campo input:focus-visible{outline:2px solid var(--cian,#42d3ff);outline-offset:2px}"
+    },
+    {
+      "name": "Sticker con chip de código",
+      "kind": "chip",
+      "refersTo": "sticker-celeste",
+      "description": "Vinilo pastel girado con la función del control y el comando serie en un chip negro.",
+      "html": "<div class=\"ds-col\"><span class=\"ds-st ds-lila\">Busca los 4 finales Z·J3·J2·J1<code>H</code></span><span class=\"ds-st ds-celeste\" style=\"--r:1.4deg\">Gira el disco con J3<code>T p|i|s</code></span><span class=\"ds-st ds-lima\" style=\"--r:-.6deg\">Dibuja la rosa de 3 pétalos<code>D</code></span><span class=\"ds-st ds-plata\">Sobrevive al apagado<code>GUARDAR</code></span><span class=\"ds-st ds-ambar\" style=\"--r:1deg\">¡Z cae al soltar!<code>O 1 / O 0</code></span></div>",
+      "css": ".ds-col{display:grid;gap:14px;justify-items:start;padding:20px;background:#131416}.ds-st{--r:-1.6deg;--stc:#94dbff;display:inline-flex;align-items:center;gap:6px;width:max-content;padding:3px 4px 3px 8px;border-radius:8px;background:var(--stc);color:#0d0d0f;font:600 12.5px/1.15 var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.02em;box-shadow:0 0 0 2px #f6f4ee,0 2px 0 2px rgb(0 0 0/.35),0 4px 8px rgb(0 0 0/.45);transform:rotate(var(--r));transform-origin:left center}.ds-st code{font:800 11px/1 var(--f-st, \"Unbounded\", \"Barlow\", sans-serif);letter-spacing:.03em;background:#0d0d0f;color:#f6f4ee;padding:3px 5px;border-radius:5px;white-space:nowrap}.ds-lila{--stc:#cdb0ff}.ds-celeste{--stc:#94dbff}.ds-lima{--stc:#cff25a}.ds-ambar{--stc:#ffcb4d}.ds-plata{--stc:linear-gradient(115deg,#e9edf1,#c5ced7 32%,#efe6ff 50%,#d6f3ff 64%,#ccd3db)}.ds-ambar::before{content:\"\";width:11px;height:10px;background:#0d0d0f;clip-path:polygon(50% 0,100% 100%,0 100%)}"
+    },
+    {
+      "name": "Palanca y perilla selectora",
+      "kind": "custom",
+      "refersTo": "tecla",
+      "description": "Interruptor de bate (aria-checked = posición de arriba) y perilla moleteada que gira al detente elegido.",
+      "html": "<div class=\"ds-fila\"><button class=\"ds-palanca\" role=\"switch\" aria-checked=\"true\"><span class=\"ds-sup\">ON</span><span class=\"ds-cuerpo\"><i></i></span><span class=\"ds-inf\">OFF</span></button><button class=\"ds-palanca\" role=\"switch\" aria-checked=\"false\"><span class=\"ds-sup\">ABAJO</span><span class=\"ds-cuerpo\"><i></i></span><span class=\"ds-inf\">ARRIBA</span></button><div class=\"ds-selector\" role=\"radiogroup\"><button role=\"radio\" aria-checked=\"false\" style=\"left:26px;top:44px\">PLUMÓN</button><button role=\"radio\" aria-checked=\"true\" style=\"left:75px;top:16px\">IMÁN</button><button role=\"radio\" aria-checked=\"false\" style=\"left:124px;top:44px\">SENSOR</button><span class=\"ds-perilla\"><span class=\"ds-puntero\"></span></span></div></div>",
+      "css": ".ds-fila{display:flex;gap:28px;align-items:flex-end;padding:20px;background:#131416}.ds-palanca{display:inline-grid;justify-items:center;gap:9px;background:none;border:0;padding:0;cursor:pointer}.ds-sup,.ds-inf{font:600 11.5px/1 var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.1em;color:var(--tenue,#8f8b81);transition:color .15s}.ds-palanca[aria-checked=\"true\"] .ds-sup,.ds-palanca[aria-checked=\"false\"] .ds-inf{color:var(--serigrafia,#ebe7da);text-shadow:0 0 6px rgb(255 255 255/.25)}.ds-palanca:focus-visible{outline:2px solid var(--cian,#42d3ff);outline-offset:2px}.ds-cuerpo{position:relative;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#1b1c1f 0 9px,#5d6066 10px,#2a2c30 12px,#0e0f11 15px,#000 17px);box-shadow:0 2px 4px rgb(0 0 0/.7)}.ds-cuerpo i{position:absolute;left:50%;top:50%;width:9px;height:21px;margin-left:-4.5px;border-radius:4px 4px 3px 3px;background:linear-gradient(90deg,#4a4d52,#eef1f5 42%,#a5aab1 62%,#3e4146);transform-origin:50% 0;transition:transform .16s cubic-bezier(.3,1.3,.5,1);box-shadow:0 3px 4px rgb(0 0 0/.6)}.ds-cuerpo i::after{content:\"\";position:absolute;left:-2px;bottom:-4px;width:13px;height:9px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#b4b9c0 45%,#50535a)}.ds-palanca[aria-checked=\"true\"] .ds-cuerpo i{transform:rotate(180deg)}.ds-palanca:hover .ds-cuerpo i{filter:brightness(1.1)}.ds-selector{position:relative;width:150px;height:96px}.ds-selector button{position:absolute;transform:translate(-50%,-50%);background:none;border:0;padding:2px 3px;font:600 11.5px/1 var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.08em;color:var(--tenue,#8f8b81);cursor:pointer}.ds-selector button::before{content:\"\";position:absolute;left:50%;bottom:-4px;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:var(--apagado,#858278)}.ds-selector button:hover{color:var(--serigrafia,#ebe7da)}.ds-selector button:focus-visible{outline:2px solid var(--cian,#42d3ff);outline-offset:2px}.ds-selector button[aria-checked=\"true\"]{color:#fff;text-shadow:0 0 8px rgb(255 255 255/.35)}.ds-selector button[aria-checked=\"true\"]::before{background:var(--cian,#42d3ff);box-shadow:0 0 6px var(--cian,#42d3ff)}.ds-perilla{position:absolute;left:50%;bottom:2px;width:52px;height:52px;margin-left:-26px;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 50% 42%,#3a3c41,#17181b 62%),repeating-conic-gradient(#0a0a0b 0 6deg,#2a2b2f 6deg 12deg);box-shadow:0 0 0 3px #0b0b0c,0 0 0 4px #2a2b2f,0 5px 10px rgb(0 0 0/.8),inset 0 1px 0 rgb(255 255 255/.15);transition:transform .26s cubic-bezier(.25,1.5,.45,1)}.ds-perilla::before{content:\"\";position:absolute;inset:18%;border-radius:50%;background:radial-gradient(circle at 45% 35%,#44464c,#1b1c1f)}.ds-puntero{position:absolute;left:50%;top:4px;width:3px;height:40%;margin-left:-1.5px;border-radius:2px;background:var(--serigrafia,#ebe7da);box-shadow:0 0 4px rgb(255 255 255/.5)}"
+    },
+    {
+      "name": "Módulo atornillado y selector de bahía",
+      "kind": "nav",
+      "refersTo": "modulo",
+      "description": "Placa con líneas de capa, cuatro tornillos y título serigrafiado entre filetes; la bahía se navega con teclas hundidas en una ranura.",
+      "html": "<div class=\"ds-col\"><nav class=\"ds-bahia\"><button class=\"ds-on\">MOVER</button><button>PUNTOS</button><button>ROSA</button><button>MISIÓN</button></nav><article class=\"ds-mod\"><h2>POSICIÓN</h2><p>Contenido del módulo</p></article></div>",
+      "css": ".ds-col{display:grid;gap:10px;padding:12px;background:var(--fondo,#070808)}.ds-bahia{display:flex;border-radius:8px;padding:4px;background:var(--ranura,#040405);box-shadow:inset 0 2px 5px rgb(0 0 0/.9)}.ds-bahia button{flex:1;border:0;padding:8px 4px;border-radius:5px;background:none;color:var(--tenue,#8f8b81);font:600 12.5px/1 var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.14em;cursor:pointer}.ds-bahia button:hover{color:var(--serigrafia,#ebe7da)}.ds-bahia button:focus-visible{outline:2px solid var(--cian,#42d3ff);outline-offset:2px}.ds-bahia .ds-on{color:#fff;background:linear-gradient(#2b2d31,#18191c);box-shadow:inset 0 1px 0 rgb(255 255 255/.1),0 2px 0 #000}.ds-bahia .ds-on::after{content:\"\";display:block;width:18px;height:2px;margin:5px auto 0;background:var(--cian,#42d3ff);box-shadow:0 0 6px var(--cian,#42d3ff);border-radius:2px}.ds-mod{position:relative;padding:24px 20px 18px;border-radius:10px;color:var(--serigrafia,#ebe7da);font:500 14px/1.35 var(--f-ui, \"Barlow\", system-ui, sans-serif);background:radial-gradient(circle, #4a4c51 0 1.6px, #26272a 2.2px 3.4px, #050505 3.9px, transparent 4.6px) 8px 8px/10px 10px no-repeat,radial-gradient(circle, #4a4c51 0 1.6px, #26272a 2.2px 3.4px, #050505 3.9px, transparent 4.6px) calc(100% - 8px) 8px/10px 10px no-repeat,radial-gradient(circle, #4a4c51 0 1.6px, #26272a 2.2px 3.4px, #050505 3.9px, transparent 4.6px) 8px calc(100% - 8px)/10px 10px no-repeat,radial-gradient(circle, #4a4c51 0 1.6px, #26272a 2.2px 3.4px, #050505 3.9px, transparent 4.6px) calc(100% - 8px) calc(100% - 8px)/10px 10px no-repeat,repeating-linear-gradient(0deg, rgb(255 255 255 / .014) 0 1px, transparent 1px 3px),linear-gradient(#18191c,#121315);box-shadow:0 0 0 1px #000,inset 0 1px 0 rgb(255 255 255/.06),0 4px 12px rgb(0 0 0/.5)}.ds-mod h2{display:flex;align-items:center;gap:12px;font:600 12.5px/1 var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.32em;margin:-8px 0 14px}.ds-mod h2::before,.ds-mod h2::after{content:\"\";flex:1;height:1px;background:linear-gradient(90deg,transparent,#6d6a62 30%,#6d6a62 70%,transparent)}.ds-mod p{margin:0;color:var(--serigrafia-2,#aaa69a);font-size:13px}"
+    },
+    {
+      "name": "Paro de emergencia",
+      "kind": "button",
+      "refersTo": "paro",
+      "description": "Hongo rojo sobre aro amarillo, siempre visible en el riel; atajo Esc.",
+      "html": "<div class=\"ds-base\"><button class=\"ds-paro\"><span>PARO</span></button><span class=\"ds-txt\">ESC</span></div>",
+      "css": ".ds-base{display:inline-grid;justify-items:center;gap:3px;padding:16px;background:#131416}.ds-paro{width:74px;height:74px;border-radius:50%;border:0;padding:0;cursor:pointer;display:grid;place-items:center;background:radial-gradient(circle,transparent 0 30px,#f2c21b 31px 35px,#8a6a05 36px 37px)}.ds-paro span{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font:700 15px var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.14em;color:#fff;text-shadow:0 1px 2px rgb(60 0 0/.8);background:radial-gradient(circle at 42% 34%,#ff6a5f,#ff3b30 38%,#b3150c 72%,#6d0905);box-shadow:0 5px 0 #4a0603,0 8px 14px rgb(0 0 0/.65),inset 0 2px 2px rgb(255 255 255/.35);transition:transform .06s,box-shadow .06s}.ds-paro:hover span{filter:brightness(1.08)}.ds-paro:active span{transform:translateY(4px);box-shadow:0 1px 0 #4a0603,0 3px 6px rgb(0 0 0/.65),inset 0 2px 2px rgb(255 255 255/.3)}.ds-paro:focus-visible{outline:2px solid var(--cian,#42d3ff);outline-offset:2px}.ds-txt{font:600 11px var(--f-ser, \"Barlow Condensed\", \"Arial Narrow\", sans-serif);letter-spacing:.2em;color:var(--serigrafia-2,#aaa69a)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "La placa de PLA negro",
+    "overview": "El panel es el frente de un instrumento: una placa negra mate con líneas de capa de impresión FDM, módulos atornillados en las cuatro esquinas, serigrafía blanca condensada y controles físicos (palancas de bate, perillas selectoras con puntero, teclas con faldón, lámparas anunciadoras rectangulares, ventanas de dígitos en fósforo verde). Encima de esa placa viven los stickers Y2K pastel, ligeramente girados, que dicen qué hace cada control y qué código serie manda. El mundo es el de las consolas tradicionales (Soyuz, radar) con piezas modernas, hecho con el mismo material que el robot.\n\nLa densidad es de tablero, no de dashboard: muchas piezas pequeñas agrupadas por módulo, cada módulo con su título serigrafiado entre filetes. La jerarquía la dan la luz y el material, no el tamaño: lo encendido brilla (glow del color de la lámpara), lo apagado es serigrafía gris sobre placa. El color tiene un solo trabajo: decir el estado. Rojo, ámbar, verde y cian son un semáforo fijo y el lila marca metal; nada de eso se usa como decoración.\n\nLa pantalla del gemelo es un CRT de fósforo dentro de un bisel: rejilla verde, brazo verde translúcido, scanlines y viñeta. El resto del sistema rechaza el dashboard gris de pestañas y botones genéricos; las pestañas de la bahía son un selector de teclas hundido en una ranura.",
+    "keyCharacteristics": [
+      "Placa negra con líneas de capa (`--capas`) y tornillos en las esquinas de cada módulo.",
+      "Serigrafía condensada en mayúsculas con tracking amplio; dígitos en Share Tech Mono con glow de fósforo.",
+      "Semáforo fijo: rojo peligro, ámbar precaución, verde listo, cian actividad y selección, lila metal.",
+      "Stickers pastel girados con chip negro de código: función + orden del firmware.",
+      "Controles con física: las perillas giran al detente, las palancas rotan 180°, las teclas se hunden 2px, la tapa de las acciones destructivas se levanta.",
+      "El PARO rojo sobre aro amarillo siempre visible en el riel; ningún panel lo tapa."
+    ],
+    "rules": [
+      {
+        "name": "La Regla del Semáforo",
+        "body": "Rojo, ámbar, verde y cian significan peligro, precaución, listo y actividad en cada lugar donde aparecen; ningún color de estado se usa para decorar, y ningún estado peligroso comparte color con uno normal.",
+        "section": "colors"
+      },
+      {
+        "name": "La Regla del Pastel Aparte",
+        "body": "Los pasteles viven solo en los stickers. El ámbar pastel es el único que se cruza con el semáforo, y solo para advertencias.",
+        "section": "colors"
+      },
+      {
+        "name": "La Regla del Número Verde",
+        "body": "Todo valor que reporta el Mega se lee en fósforo sobre `fosforo-bg`; los textos de interfaz nunca van en fósforo.",
+        "section": "colors"
+      },
+      {
+        "name": "La Regla de la Serigrafía",
+        "body": "Todo rótulo de control y de módulo va en Barlow Condensed mayúsculas con tracking de 0.1em o más, hecho con `letter-spacing`; el texto de interfaz en minúsculas solo aparece en notas, stickers y el menú de comandos.",
+        "section": "typography"
+      },
+      {
+        "name": "La Regla del Glow",
+        "body": "Solo lo que está encendido brilla: dígitos de fósforo (`text-shadow 0 0 6px` del propio color al 50–55%), lámparas con `data-on` y la etiqueta activa de palancas y perillas. Una etiqueta apagada nunca lleva glow.",
+        "section": "typography"
+      },
+      {
+        "name": "La Regla del PARO a la Vista",
+        "body": "Ningún cajón, panel o diálogo cubre el riel superior; todo lo flotante empieza debajo de él y nada es modal.",
+        "section": "layout"
+      },
+      {
+        "name": "La Regla del Faldón",
+        "body": "Un control que se puede pulsar tiene un faldón sólido de 3px (`0 3px 0 #050506`) y baja 2px al pulsarlo. Las superficies que no se pulsan nunca llevan faldón.",
+        "section": "elevation"
+      },
+      {
+        "name": "La Regla de lo Hundido",
+        "body": "Lo que muestra datos está hundido en la placa (sombra interior); lo que se opera sobresale de ella.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** dar a cada control nuevo su sticker con la función y el chip del comando exacto que manda (`T p|i|s`, `CFG zmesa`).",
+      "**Do** usar el semáforo fijo: `rojo` solo peligro, `ambar` precaución, `verde` listo, `cian` actividad y selección, `lila` metal.",
+      "**Do** mostrar todo número que reporta el Mega en una ventana de fósforo hundida (`fosforo` sobre `fosforo-bg`), con la unidad en `fosforo-2`.",
+      "**Do** construir módulos como placas atornilladas con título serigrafiado entre filetes y espaciado con `letter-spacing`.",
+      "**Do** dar faldón de 3px y hundimiento de 2px a todo lo que se pulsa, y sombra interior a todo lo que muestra datos.",
+      "**Do** poner una tapa que haya que levantar sobre cualquier acción que borre datos, con tecla de peligro roja debajo.",
+      "**Do** elegir entre opciones discretas de máquina con una perilla selectora que gira al detente, no con un desplegable.",
+      "**Do** mantener el PARO visible y operable: todo lo flotante arranca bajo el riel y nada es modal.",
+      "**Do** respetar `prefers-reduced-motion`: sin transiciones ni parpadeos."
+    ],
+    "donts": [
+      "**Don't** usar rojo para nada que no sea peligro, ni como acento, ni en hover.",
+      "**Don't** usar los pasteles de sticker fuera de los stickers, ni el ámbar pastel salvo en advertencias.",
+      "**Don't** dibujar pestañas grises de dashboard ni botones planos genéricos; la sección activa es una tecla pulsada en una ranura.",
+      "**Don't** poner glow en etiquetas apagadas o deshabilitadas; la luz significa encendido.",
+      "**Don't** escribir textos de interfaz en fósforo; el verde fósforo es para valores del robot.",
+      "**Don't** usar superficies blancas o grises claras; la placa es negra como el robot."
+    ]
+  }
+}
