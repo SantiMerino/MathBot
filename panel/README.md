@@ -7,10 +7,11 @@ virtual** que responde el mismo protocolo, para practicar y probar todo sin hard
 ## Abrir
 
 ```bash
-python -m http.server 8770 --directory panel
+python panel/servir.py
 ```
 
-Luego <http://localhost:8770> en **Chrome o Edge** (Web Serial no existe en Firefox ni Safari, y solo
+`servir.py` es un `http.server` que manda `Cache-Control: no-store`, para que el navegador no siga usando
+los módulos JS viejos después de editar. Luego <http://localhost:8770> en **Chrome o Edge** (Web Serial no existe en Firefox ni Safari, y solo
 funciona desde `localhost` o https). En Claude Code está como la configuración `panel` de `.claude/launch.json`.
 Las vistas 3D cargan three.js desde un CDN: la primera vez hace falta internet.
 

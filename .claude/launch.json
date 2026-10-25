@@ -29,11 +29,8 @@
       "name": "panel",
       "runtimeExecutable": "python",
       "runtimeArgs": [
-        "-m",
-        "http.server",
-        "8770",
-        "--directory",
-        "panel"
+        "panel/servir.py",
+        "8770"
       ],
       "port": 8770
     }
