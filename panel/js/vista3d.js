@@ -9,18 +9,28 @@ const G = { H_BASE: 45, H_PINF: 10, H_PSUP: 26, H_PSUP_DISK: 8, H_TCOV: 23, H_PL
   H_J3C: 22, H_CON: 4.5, ZROD0: 72, ROD: 250, H_J3GAP: 2 };
 const rad = d => d * Math.PI / 180;
 
-function geometria(p) {
+// Mallas STL empaquetadas (uint16 en base64). Cada pieza se decodifica una sola vez y su texto base64 se
+// suelta después. Sin normales: son triángulos sueltos, así que el sombreado plano del material
+// (flatShading) da exactamente lo mismo que computeVertexNormals y la geometría pesa la mitad.
+const geometrias = new Map();
+function geometria(p, soloGPU = false) {
+  if (geometrias.has(p)) return geometrias.get(p);
   const bin = atob(p.q), n = bin.length / 2, f = new Float32Array(n);
   for (let i = 0; i < n; i++) { const u = bin.charCodeAt(2 * i) | (bin.charCodeAt(2 * i + 1) << 8), a = i % 3; f[i] = p.lo[a] + u / 65535 * p.span[a]; }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.BufferAttribute(f, 3));
-  g.computeVertexNormals();
+  delete p.q;
+  const g = new THREE.BufferGeometry(), pos = new THREE.BufferAttribute(f, 3);
+  g.setAttribute('position', pos);
+  g.computeBoundingSphere();
+  // las piezas del robot no se eligen con el ratón: tras subirlas a la GPU no hace falta la copia en JS
+  if (soloGPU) pos.onUpload(function () { this.array = null; });
+  geometrias.set(p, g);
   return g;
 }
-const mat = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.55, side: THREE.DoubleSide, ...o });
+const mat = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.55, side: THREE.DoubleSide, flatShading: true, ...o });
+const liso = { flatShading: false };   // para cilindros y la hélice, que sí traen normales
 const PLA = 0x1b1c1f;
 const colorDe = rgb => new THREE.Color(rgb[0], rgb[1], rgb[2]);
-function malla(g, m, x = 0, y = 0, z = 0, rz = 0) { const o = new THREE.Mesh(g, m); o.position.set(x, y, z); o.rotation.z = rz; o.castShadow = o.receiveShadow = true; return o; }
+function malla(g, m, x = 0, y = 0, z = 0, rz = 0) { const o = new THREE.Mesh(g, m); o.position.set(x, y, z); o.rotation.z = rz; return o; }
 function cilindro(r, h, m, x, y, z) { const g = new THREE.CylinderGeometry(r, r, h, 20); g.rotateX(Math.PI / 2); g.translate(0, 0, h / 2); return malla(g, m, x, y, z); }
 function caja(w, d, h, m, x, y, z) { const g = new THREE.BoxGeometry(w, d, h); g.translate(0, 0, h / 2); return malla(g, m, x, y, z); }
 
@@ -35,9 +45,12 @@ export class Vista3D {
   constructor(contenedor, app) {
     this.app = app;
     this.cont = contenedor;
-    this.ren = new THREE.WebGLRenderer({ antialias: true });
-    this.ren.setPixelRatio(Math.min(devicePixelRatio, 2));
-    this.ren.shadowMap.enabled = true;
+    // Memoria de la GPU: el MSAA ×4 cuadruplica el búfer de dibujo. En pantallas densas (DPR ≥ 1.25) los
+    // bordes ya se ven bien sin él; en DPR 1 se deja, a resolución 1. Sin sombras: ahorra un mapa de 4 MB
+    // y una pasada extra por cuadro.
+    const denso = devicePixelRatio >= 1.25;
+    this.ren = new THREE.WebGLRenderer({ antialias: !denso, powerPreference: 'low-power' });
+    this.ren.setPixelRatio(denso ? Math.min(devicePixelRatio, 1.5) : 1);
     this.ren.setClearColor(0x07100a);   // fondo del cristal de fósforo
     contenedor.appendChild(this.ren.domElement);
     this.escena = new THREE.Scene();
@@ -47,8 +60,7 @@ export class Vista3D {
     this.ctrl.enableDamping = true;
     this.escena.add(new THREE.HemisphereLight(0xffffff, 0x5a5650, 1.35));
     const sol = new THREE.DirectionalLight(0xffffff, 1.5);
-    sol.position.set(-300, -500, 900); sol.castShadow = true; sol.shadow.mapSize.set(2048, 2048);
-    Object.assign(sol.shadow.camera, { left: -600, right: 600, top: 600, bottom: -600, near: 100, far: 2500 });
+    sol.position.set(-300, -500, 900);
     this.escena.add(sol);
     const relleno = new THREE.DirectionalLight(0xffffff, 0.45); relleno.position.set(600, 400, 300); this.escena.add(relleno);
     // contraluz frío: separa el PLA negro del fondo oscuro
@@ -60,13 +72,26 @@ export class Vista3D {
     new ResizeObserver(() => this.redimensionar()).observe(contenedor);
     this.ray = new THREE.Raycaster();
     this.ren.domElement.addEventListener('click', e => this.elegir(e));
-    const bucle = () => { requestAnimationFrame(bucle); if (this.visible) { this.ctrl.update(); this.ren.render(this.escena, this.cam); } };
-    bucle();
+    // Render a pedido: solo cuando cambia la cámara (también mientras frena el damping) o la escena.
+    this.sucio = true;
+    this.bucle = () => {
+      if (!this._visible) { this.corriendo = false; return; }
+      requestAnimationFrame(this.bucle);
+      if (this.ctrl.update() || this.sucio) { this.sucio = false; this.ren.render(this.escena, this.cam); }
+    };
+  }
+
+  get visible() { return this._visible; }
+  set visible(v) {
+    this._visible = v;
+    this.sucio = true;
+    if (v && !this.corriendo) { this.corriendo = true; requestAnimationFrame(this.bucle); }
   }
 
   redimensionar() {
     const r = this.cont.getBoundingClientRect();
     if (!r.width) return;
+    this.sucio = true;
     this.ren.setSize(r.width, r.height);
     this.cam.aspect = r.width / r.height;
     this.cam.updateProjectionMatrix();
@@ -74,13 +99,13 @@ export class Vista3D {
 
   construirRobot() {
     // todo el PLA del MathBot es negro
-    const M = { azul: mat(PLA, { roughness: 0.62 }), azul2: mat(0x26272b, { roughness: 0.58 }), oscuro: mat(0x121315, { roughness: 0.6 }), acero: mat(0xc9ced4, { roughness: 0.3, metalness: 0.85 }),
+    const M = { azul: mat(PLA, { roughness: 0.62 }), azul2: mat(0x26272b, { roughness: 0.58 }), oscuro: mat(0x121315, { roughness: 0.6 }), acero: mat(0xc9ced4, { roughness: 0.3, metalness: 0.85, ...liso }),
       motor: mat(0x3a3d42, { roughness: 0.45, metalness: 0.55 }), caja: mat(PLA, { roughness: 0.62 }), mesa: mat(0x8f8b82, { roughness: 0.92 }), bin: mat(0x2b2c30, { roughness: 0.7 }) };
     const g = {};
-    for (const [k, v] of Object.entries(ROBOT)) g[k] = geometria(v);
+    for (const [k, v] of Object.entries(ROBOT)) g[k] = geometria(v, true);
     const raiz = this.robot = new THREE.Group();
     this.escena.add(raiz);
-    const mesa = malla(new THREE.PlaneGeometry(1400, 1100), M.mesa, 120, 0, -0.5); mesa.receiveShadow = true; raiz.add(mesa);
+    const mesa = malla(new THREE.PlaneGeometry(1400, 1100), M.mesa, 120, 0, -0.5); raiz.add(mesa);
     raiz.add(malla(g.base, M.oscuro));
     raiz.add(malla(g.caja_uno, M.caja, -188.5, 0, 0), malla(g.tapa_uno, M.caja, -188.5, 0, 5));
     raiz.add(caja(42, 42, 40, M.motor, -114, 34, G.H_BASE));
@@ -94,7 +119,7 @@ export class Vista3D {
     col.add(malla(g.j1_coupler, M.azul, 0, 0, G.H_BASE), malla(g.placa_inf, M.azul, 0, 0, G.ZROD0), malla(g.tapa_base, M.azul2, 0, 0, G.ZROD0 + G.H_PINF));
     const RODS = [[33.6, 33.6], [33.6, -33.6], [-33.6, 33.6], [-33.6, -33.6]];
     for (const [x, y] of RODS) col.add(cilindro(5, G.ROD, M.acero, x, y, G.ZROD0));
-    col.add(cilindro(4, G.ROD - 18, mat(0xb08d57, { metalness: 0.6, roughness: 0.4 }), 33, 0, G.ZROD0 + 2));
+    col.add(cilindro(4, G.ROD - 18, mat(0xb08d57, { metalness: 0.6, roughness: 0.4, ...liso }), 33, 0, G.ZROD0 + 2));
     const arriba = new THREE.Group(); arriba.position.z = G.ZROD0 + G.ROD - G.H_PSUP; col.add(arriba);
     arriba.add(malla(g.placa_sup, M.azul), malla(g.tapa_sup, M.azul2, 0, 0, G.H_PSUP - G.H_PSUP_DISK - G.H_TCOV), caja(42, 42, 40, M.motor, 33, 0, G.H_PSUP));
     for (const [x, y] of RODS) { col.add(malla(g.abrazadera, M.azul2, x, y, G.ZROD0 + G.H_PINF, Math.atan2(y, x) - Math.PI / 2)); arriba.add(malla(g.abrazadera, M.azul2, x, y, G.H_PSUP - G.H_PSUP_DISK - 14, Math.atan2(y, x) - Math.PI / 2)); }
@@ -120,10 +145,9 @@ export class Vista3D {
     const grupo = new THREE.Group(), piezas = {};
     for (const p of META.piezas) {
       let o;
-      if (p.helice) o = new THREE.Mesh(new THREE.BufferGeometry(), mat(0xbfc3c9, { metalness: 0.8, roughness: 0.3 }));
+      if (p.helice) o = new THREE.Mesh(new THREE.BufferGeometry(), mat(0xbfc3c9, { metalness: 0.8, roughness: 0.3, ...liso }));
       else if (CABEZAL[p.clave]) o = new THREE.Mesh(geometria(CABEZAL[p.clave]), p.impresa ? mat(PLA, { roughness: 0.6 }) : mat(colorDe(p.color), { roughness: 0.4 }));
       else continue;
-      o.castShadow = true;
       o.userData.pieza = p;
       const nodo = new THREE.Group(); nodo.add(o); grupo.add(nodo);
       piezas[p.clave] = { nodo, malla: o, info: p };
@@ -176,6 +200,7 @@ export class Vista3D {
 
   ponerDespiece(f) {
     this.fDespiece = f;
+    this.sucio = true;
     for (const p of Object.values(this.despiece.piezas)) if (p.dir) p.nodo.position.copy(p.dir).multiplyScalar(f);
   }
 
@@ -195,11 +220,18 @@ export class Vista3D {
     const hit = this.ray.intersectObjects(this.cabezalSolo.children, true).find(h => h.object.isMesh);
     for (const p of Object.values(this.despiece.piezas)) p.malla.material.emissive?.setHex(0);
     if (hit) { hit.object.material.emissive?.setHex(0x0b4a5c); this.app.piezaElegida?.(hit.object.userData.pieza); }
+    this.sucio = true;
   }
 
   actualizar(estado, cfg, mundo) {
-    if (!this.visible) return;
-    const q = estado.q;
+    if (!this._visible || this.modo !== 'robot') return;
+    const q = estado.q, obs = mundo?.objetos ?? [];
+    // solo toca la escena si algo cambió desde el último cuadro
+    const clave = `${q[0].toFixed(2)} ${q[1].toFixed(2)} ${q[2].toFixed(2)} ${q[3].toFixed(2)} ${estado.pluma} ${cfg.cabezal} ${cfg.binx} ${cfg.biny} ${cfg.binh} ` +
+      obs.map(o => `${o.x.toFixed(1)},${o.y.toFixed(1)},${o.z.toFixed(1)}`).join(' ');
+    if (clave === this.ultimaClave) return;
+    this.ultimaClave = clave;
+    this.sucio = true;
     this.col.rotation.z = rad(q[0]);
     this.plat.position.z = q[3];
     this.j2.rotation.z = rad(q[1]);
@@ -210,11 +242,10 @@ export class Vista3D {
     this.bandeja.position.set((b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2, 0);
     this.bandeja.scale.z = cfg.binh / 25;
     // piezas del mundo virtual
-    const obs = mundo?.objetos ?? [];
     while (this.piezas.children.length > obs.length) this.piezas.remove(this.piezas.children[0]);
     obs.forEach((o, i) => {
       let m = this.piezas.children[i];
-      if (!m) { m = cilindro(1, 1, mat(o.color)); this.piezas.add(m); }
+      if (!m) { m = cilindro(1, 1, mat(o.color, liso)); this.piezas.add(m); }
       m.scale.set(o.r, o.r, o.h); m.position.set(o.x, o.y, o.z);
     });
   }

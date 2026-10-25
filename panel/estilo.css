@@ -349,8 +349,7 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 28px; border-radius
   background: radial-gradient(ellipse at 50% 45%, #082010, var(--fosforo-bg) 70%, #020803);
   box-shadow: inset 0 0 0 2px #000, inset 0 0 40px rgb(0 0 0 / .9), 0 0 0 3px #07080a, 0 0 0 4px #2a2b2f;
 }
-.cristal::after { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; z-index: 3;
-  background: repeating-linear-gradient(0deg, rgb(0 0 0 / .14) 0 1px, transparent 1px 3px), radial-gradient(ellipse at 30% 10%, rgb(255 255 255 / .05), transparent 45%); }
+/* Las líneas del tubo se pintan dentro del lienzo 2D (vista2d.js): una capa encima del canvas costaba ≈75 MB de GPU. */
 .lienzo { position: absolute; inset: 0; }
 .lienzo canvas { display: block; touch-action: none; }
 .leyenda, .pista, .ficha, .despiece, .estimada { z-index: 4; }
@@ -377,6 +376,8 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 28px; border-radius
   font: 12.5px/1.45 var(--f-dig); color: var(--fosforo-2); background: var(--fosforo-bg); box-shadow: inset 0 2px 6px #000;
 }
 .lineas div { white-space: pre-wrap; }
+/* cada placa y la terminal repintan solo lo suyo */
+.mod, .teletipo, .lineas, .anunciador { contain: layout paint; }
 .lineas .tx { color: var(--serigrafia-2); }
 .lineas .ok { color: var(--fosforo); text-shadow: 0 0 6px rgb(141 255 122 / .4); }
 .lineas .err { color: #ff8a83; text-shadow: 0 0 6px rgb(255 59 48 / .5); }

@@ -51,7 +51,7 @@ export class MegaVirtual {
     this.salida = salida;
     this.buf = '';
     this.estadoT = setInterval(() => { if (!this.moviendo) this.enviarEstado(); }, 500);
-    this.caidaT = setInterval(() => this.caidaZ(), 50);
+    this.caidaT = setInterval(() => this.caidaZ(), 50);   // solo mientras los motores están sueltos (ver caidaZ)
     // como el Mega real al abrir el puerto: se reinicia (drivers sin energía unos instantes), energiza y se identifica
     this.motoresOn = false;
     this.conocido = [false, false, false, false];
@@ -63,7 +63,8 @@ export class MegaVirtual {
       this.decir('L sin home: H (finales) o S (manual)');
     }, 400);
   }
-  desconectar() { clearInterval(this.estadoT); clearInterval(this.caidaT); this.salida = null; }
+  desconectar() { clearInterval(this.estadoT); clearInterval(this.caidaT); this.caidaT = null; this.salida = null; }
+  vigilarCaida() { if (!this.caidaT) this.caidaT = setInterval(() => this.caidaZ(), 50); }
   decir(l) { this.salida?.(l); }
 
   recibir(texto) {
@@ -140,7 +141,8 @@ export class MegaVirtual {
 
   // Con los motores sueltos la plataforma Z baja por su peso (el husillo Tr8×8 no se frena solo).
   caidaZ() {
-    if (this.motoresOn || this.sostenerZ) return;
+    if (this.motoresOn) { clearInterval(this.caidaT); this.caidaT = null; return; }
+    if (this.sostenerZ) return;
     if (this.real[3] > GEO.ZMIN_MECANICO) {
       this.real[3] = Math.max(GEO.ZMIN_MECANICO, this.real[3] - 0.5);   // ≈10 mm/s
       this.revisarMundo();
@@ -237,7 +239,10 @@ export class MegaVirtual {
     const f = fk(this.real, this.cfg, this.pluma ? 0 : GEO.LEVANTE).puntas;
     for (const o of this.mundo.objetos) if (o.llevado) { o.x = f.i[0]; o.y = f.i[1]; o.z = f.i[2] - o.h; }
     const tinta = this.mundo.tinta, trazo = tinta[tinta.length - 1];
-    if (this.cfg.cabezal && this.pluma && f.p[2] <= 0.3) trazo.push([f.p[0], f.p[1]]);
+    if (this.cfg.cabezal && this.pluma && f.p[2] <= 0.3) {
+      const u = trazo[trazo.length - 1];
+      if (!u || Math.hypot(f.p[0] - u[0], f.p[1] - u[1]) > 0.3) trazo.push([f.p[0], f.p[1]]);   // sin puntos repetidos
+    }
     else if (trazo.length) tinta.push([]);
     if (!this.cfg.cabezal || !this.motoresOn) return;
     const b = bandeja(this.cfg);
@@ -407,6 +412,7 @@ export class MegaVirtual {
       case 'O':
         if (v[0]) { this.motoresOn = true; return; }
         this.motoresOn = false;
+        this.vigilarCaida();
         this.conocido = [false, false, false, false];
         this.homeManual = false;
         this.decir('L motores sueltos: Z puede bajar por su peso');

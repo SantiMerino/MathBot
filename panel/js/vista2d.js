@@ -4,7 +4,9 @@ import { GEO, HERR, fk, alcance, bandeja } from './geometria.js';
 export class Vista2D {
   constructor(canvas, app) {
     this.cv = canvas;
-    this.ctx = canvas.getContext('2d');
+    // Lienzo en CPU: acelerado en la GPU ocupaba ≈80 MB de búferes; como solo se redibuja cuando algo cambia,
+    // en CPU sale ≈30 MB más barato y igual de rápido.
+    this.ctx = canvas.getContext('2d', { willReadFrequently: true });
     this.app = app;
     this.esc = 1.2;
     this.centro = [130, 0];
@@ -17,7 +19,7 @@ export class Vista2D {
       this.esc = Math.min(6, Math.max(0.4, this.esc * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
       const m2 = this.aMundo(e.offsetX, e.offsetY);
       this.centro[0] += m[0] - m2[0]; this.centro[1] += m[1] - m2[1];
-      this.dibujar();
+      this.app.marcar();
     }, { passive: false });
     let arrastre = null;
     canvas.addEventListener('pointerdown', e => { arrastre = { x: e.offsetX, y: e.offsetY, c: [...this.centro], movio: false }; canvas.setPointerCapture(e.pointerId); });
@@ -29,14 +31,14 @@ export class Vista2D {
         if (Math.hypot(dx, dy) > 4) arrastre.movio = true;
         if (arrastre.movio) { this.centro = [arrastre.c[0] - dx / this.esc, arrastre.c[1] + dy / this.esc]; }
       }
-      this.dibujar();
+      this.app.marcar();
       this.app.cursorMesa?.(this.cursor);
     });
     canvas.addEventListener('pointerup', e => {
       if (arrastre && !arrastre.movio) this.app.clicMesa?.(this.aMundo(e.offsetX, e.offsetY));
       arrastre = null;
     });
-    canvas.addEventListener('pointerleave', () => { this.cursor = null; this.dibujar(); });
+    canvas.addEventListener('pointerleave', () => { this.cursor = null; this.app.marcar(); });
   }
 
   redimensionar() {
@@ -46,7 +48,7 @@ export class Vista2D {
     this.cv.style.width = r.width + 'px'; this.cv.style.height = r.height + 'px';
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     if (!this.ajustado && r.width > 0 && r.height > 0) { this.esc = Math.min(r.width / 620, r.height / 680); this.ajustado = true; }
-    this.dibujar();
+    this.app.marcar();
   }
 
   aPantalla([x, y]) { return [this.w / 2 + (x - this.centro[0]) * this.esc, this.h / 2 - (y - this.centro[1]) * this.esc]; }
@@ -110,9 +112,16 @@ export class Vista2D {
       c.textAlign = 'start'; c.textBaseline = 'alphabetic';
     });
     // brazo (posición estimada: la que reporta el Mega)
-    if (app.robot.estado.letra !== '-') this.brazo(est.q, cfg, est.herr, css, 1);
+    if (app.robot.estado.letra !== '-') this.brazo(app.q ?? est.q, cfg, est.herr, css, 1);
     if (app.fantasma) this.brazo(app.fantasma, cfg, est.herr, css, 0.35);
     if (app.mundo?.choque) { const p = this.aPantalla([app.mundo.choque.x, app.mundo.choque.y]); c.strokeStyle = css.rosaMal; c.lineWidth = 3; c.beginPath(); c.arc(p[0], p[1], 14, 0, Math.PI * 2); c.stroke(); }
+    // líneas del tubo de fósforo: un patrón de 3 px dentro del mismo lienzo (una capa CSS encima costaba ≈75 MB de GPU)
+    if (!this.lineas) {
+      const p = document.createElement('canvas'); p.width = 1; p.height = 3;
+      const pc = p.getContext('2d'); pc.fillStyle = 'rgba(0,0,0,.16)'; pc.fillRect(0, 0, 1, 1);
+      this.lineas = c.createPattern(p, 'repeat');
+    }
+    c.fillStyle = this.lineas; c.fillRect(0, 0, this.w, this.h);
     // cursor
     if (this.cursor) {
       c.fillStyle = css.texto; c.font = '12px "Share Tech Mono", monospace';

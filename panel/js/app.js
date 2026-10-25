@@ -15,6 +15,7 @@ const app = {
   rosa: { rosax: 185, rosay: 0, rosaa: 180, vel: 25 },
 };
 window.mathbot = app;                       // para depurar desde la consola
+app.marcar = () => { app.sucio = true; };    // la mesa 2D se redibuja solo cuando algo cambió
 
 // preferencias de esta pantalla (no del robot)
 const pref = (k, def) => { try { return localStorage.getItem('mathbot.' + k) ?? def; } catch { return def; } };
@@ -85,13 +86,25 @@ function selector(el, alElegir, local = true) {
 const ponerPalanca = (el, on) => el.setAttribute('aria-checked', String(!!on));
 
 // ---------------------------------------------------------------- terminal
+// Las líneas se juntan y se vuelcan una vez por cuadro: un solo layout aunque lleguen decenas por segundo.
+const colaLog = [];
+let logPendiente = false;
 function log(texto, tipo = 'rx') {
-  const d = document.createElement('div');
-  d.className = tipo;
-  d.textContent = (tipo === 'tx' ? '› ' : '') + texto;
-  const box = $('#log');
-  box.appendChild(d);
-  while (box.children.length > 300) box.firstChild.remove();
+  colaLog.push([texto, tipo]);
+  if (colaLog.length > 300) colaLog.splice(0, colaLog.length - 300);
+  if (!logPendiente) { logPendiente = true; requestAnimationFrame(volcarLog); }
+}
+function volcarLog() {
+  logPendiente = false;
+  const box = $('#log'), frag = document.createDocumentFragment();
+  for (const [texto, tipo] of colaLog.splice(0)) {
+    const d = document.createElement('div');
+    d.className = tipo;
+    d.textContent = (tipo === 'tx' ? '› ' : '') + texto;
+    frag.appendChild(d);
+  }
+  box.appendChild(frag);
+  for (let n = box.children.length - 300; n > 0; n--) box.firstChild.remove();
   box.scrollTop = box.scrollHeight;
 }
 robot.addEventListener('log', e => log(e.detail.texto, e.detail.tipo));
@@ -135,6 +148,7 @@ robot.addEventListener('conexion', e => {
   $('#conectar').classList.toggle('tecla-luz', !on);
   swFuente.disabled = on;
   app.mundo = on && esVirtual() ? mega.mundo : null;
+  app.marcar();
   if (on) { cargarRosaDeCfg(); llenarAjustes(); }
   refrescar();
 });
@@ -168,7 +182,20 @@ const COLOR_ESTADO = { R: 'verde', H: 'verde', N: 'ambar', M: 'cian', L: 'ambar'
 const lampara = (k, c) => { const l = $(`.lampara[data-l="${k}"]`); if (c) l.dataset.on = c; else delete l.dataset.on; };
 const selHerr = selector($('#selHerr'), v => orden('T ' + v), false);
 
-function refrescar() {
+// Lectura de posición: los nodos se crean una vez y luego solo cambia su texto.
+const lec = (() => {
+  const nom = ['J1', 'J2', 'J3', 'Z'], u = ['°', '°', '°', 'mm'];
+  $('#lectura').innerHTML = nom.map((n, i) => `<div class="eje"><small>${n}</small><div class="dig"><span></span><i>${u[i]}</i></div></div>`).join('') +
+    '<div class="punta">PUNTA <span></span> · <b></b> · <b></b> · <b></b> mm sobre la mesa</div>';
+  return { ejes: $$('#lectura .dig span'), herr: $('#lectura .punta span'), xyz: $$('#lectura .punta b') };
+})();
+let bloqueo = '';
+let refrescoPendiente = false;
+function pedirRefresco() {                   // varios eventos en el mismo cuadro → un solo refresco
+  if (!refrescoPendiente) { refrescoPendiente = true; requestAnimationFrame(() => { refrescoPendiente = false; refrescar(); }); }
+}
+
+function refrescar(forzar = false) {
   const e = robot.estado, con = robot.conectado, L = e.letra;
   const ven = $('#estado');
   ven.textContent = con ? robot.textoEstado : 'DESCONECTADO';
@@ -186,11 +213,14 @@ function refrescar() {
   if (con && e.metal) led.dataset.on = 'lila'; else delete led.dataset.on;
 
   const quieto = con && !robot.ocupado;
-  $$('.accion').forEach(b => { b.disabled = !quieto; });
-  $$('#irBtn, #ptActual, #ptNuevo, #rosaAplicar, #fijarPapel, #binAplicar, #cfgEnviar, #fijarHome').forEach(b => { b.disabled = !quieto; });
-  $$('#selHerr [role="radio"]').forEach(b => { b.disabled = !quieto; });
-  $$('[data-jog]').forEach(b => { b.disabled = !con; });   // un botón deshabilitado no recibe el "soltar"
-  $('#paro').disabled = !con;
+  if (forzar || bloqueo !== `${con}${quieto}`) {   // recorrer todos los botones solo cuando cambia
+    bloqueo = `${con}${quieto}`;
+    $$('.accion').forEach(b => { b.disabled = !quieto; });
+    $$('#irBtn, #ptActual, #ptNuevo, #rosaAplicar, #fijarPapel, #binAplicar, #cfgEnviar, #fijarHome').forEach(b => { b.disabled = !quieto; });
+    $$('#selHerr [role="radio"]').forEach(b => { b.disabled = !quieto; });
+    $$('[data-jog]').forEach(b => { b.disabled = !con; });   // un botón deshabilitado no recibe el "soltar"
+    $('#paro').disabled = !con;
+  }
   ponerPalanca($('#swMotores'), con && L !== 'L');
   ponerPalanca($('#swPluma'), con && e.pluma);
   ponerPalanca($('#swIman'), con && e.iman);
@@ -199,17 +229,17 @@ function refrescar() {
 
   // posición estimada (lo que el Mega contó)
   const cfg = robot.cfg, f = fk(e.q, cfg, e.pluma ? 0 : GEO.LEVANTE), t = f.puntas[e.herr] ?? f.puntas.p;
-  const nom = ['J1', 'J2', 'J3', 'Z'], u = ['°', '°', '°', 'mm'];
-  $('#lectura').innerHTML = e.q.map((v, i) => `<div class="eje"><small>${nom[i]}</small><div class="dig">${v.toFixed(i === 3 ? 1 : 2)}<i>${u[i]}</i></div></div>`).join('') +
-    `<div class="punta">PUNTA ${(HERR[e.herr]?.nombre ?? 'Plumón').toUpperCase()} · <b>x ${t[0].toFixed(1)}</b> · <b>y ${t[1].toFixed(1)}</b> · <b>z ${t[2].toFixed(1)}</b> mm sobre la mesa</div>`;
+  e.q.forEach((v, i) => { lec.ejes[i].textContent = v.toFixed(i === 3 ? 1 : 2); });
+  lec.herr.textContent = (HERR[e.herr]?.nombre ?? 'Plumón').toUpperCase();
+  ['x', 'y', 'z'].forEach((k, i) => { lec.xyz[i].textContent = `${k} ${t[i].toFixed(1)}`; });
   const vals = modoJog === 'art' ? e.q : t;
   $$('#jog .dig').forEach((d, i) => { d.textContent = (+vals[i]).toFixed(modoJog === 'art' && i < 3 ? 2 : 1); });
   $('#zmesaV').textContent = (+cfg.zmesa).toFixed(2) + ' mm';
 }
-robot.addEventListener('estado', refrescar);
+robot.addEventListener('estado', () => { pedirRefresco(); app.marcar(); });
 robot.addEventListener('ocupado', e => {
   $('#ocupado').textContent = e.detail ? 'EJECUTANDO › ' + e.detail : '';
-  refrescar();
+  pedirRefresco();
 });
 
 // ---------------------------------------------------------------- gemelo / solo mando, stickers
@@ -256,6 +286,7 @@ async function cambiarVista(v) {
     v3d.visible = true;
     v3d.ponerModo(v);
   } else if (v3d) v3d.visible = false;
+  app.marcar();
 }
 $('#vistas').addEventListener('click', e => { const b = e.target.closest('button'); if (b) cambiarVista(b.dataset.v); });
 $('#fDespiece').addEventListener('input', e => v3d?.ponerDespiece(+e.target.value));
@@ -268,9 +299,30 @@ app.piezaElegida = p => {
     : '<div class="tenue">Pieza comprada (modelo de referencia)</div>');
 };
 
-function bucle() {
-  if (app.vista === 'mesa') v2d.dibujar();
-  else v3d?.actualizar(robot.estado, robot.cfg, app.mundo);
+// Pose para dibujar: el Mega reporta su posición a 5 Hz; entre dos lecturas se interpola para que el brazo
+// se mueva fluido a 60 fps. Va una lectura atrás (≤ 0.2 s), igual que cualquier pantalla de telemetría.
+const pose = { prev: null, cur: null };
+robot.addEventListener('estado', e => { pose.prev = pose.cur; pose.cur = { t: performance.now(), q: [...e.detail.q] }; });
+function poseDibujo() {
+  const { prev, cur } = pose;
+  if (!cur) return robot.estado.q;
+  if (!prev || robot.estado.letra !== 'M') return cur.q;
+  const u = Math.min(1, (performance.now() - cur.t) / Math.max(cur.t - prev.t, 1));
+  return prev.q.map((v, i) => v + (cur.q[i] - v) * u);
+}
+
+// Un solo bucle: dibuja cada cuadro solo mientras el robot se mueve; quieto, solo cuando algo cambió.
+const vista3dEstado = { ...robot.estado };
+let tDibujo = 0;
+function bucle(t) {
+  // en movimiento, a lo más ~60 cuadros/s aunque la pantalla sea de 120–144 Hz
+  if ((robot.estado.letra === 'M' && t - tDibujo > 15) || app.sucio) {
+    tDibujo = t;
+    app.q = poseDibujo();
+    if (app.vista === 'mesa') v2d.dibujar();
+    else if (v3d) v3d.actualizar(Object.assign(vista3dEstado, robot.estado, { q: app.q }), robot.cfg, app.mundo);
+    app.sucio = false;
+  }
   requestAnimationFrame(bucle);
 }
 requestAnimationFrame(bucle);
@@ -303,7 +355,7 @@ const EJES = {
 function armarJog() {
   $('#jog').innerHTML = EJES[modoJog].map(([n, e]) =>
     `<b>${n}</b><button class="tecla" data-jog="${e}" data-s="-1" aria-label="${n} menos">−</button><span class="dig"></span><button class="tecla" data-jog="${e}" data-s="1" aria-label="${n} más">+</button>`).join('');
-  refrescar();
+  refrescar(true);
 }
 selector($('#selModoJog'), v => { modoJog = v; armarJog(); }).poner('art');
 selector($('#selPaso'), v => { pasoJog = +v; }).poner('1');
@@ -417,7 +469,8 @@ function tablaPuntos() {
       <td><button class="tecla mini accion" data-cmd="G ${i + 1}"><span>IR</span></button> <button class="tecla mini" data-edit="${i}"><span>EDITAR</span></button> <button class="tecla mini accion" data-cmd="PTB ${i + 1}"><span>BORRAR</span></button></td></tr>`;
   }).join('');
   $('#tablaPuntos').innerHTML = `<tr><th>#</th><th>X</th><th>Y</th><th>ALTO</th><th>SENSOR</th><th></th></tr>${filas || '<tr><td colspan="6" class="vacio">Sin puntos: lleva el sensor sobre una pieza y pulsa GUARDAR PUNTA, o elige PUNTO en la perilla de la pantalla y haz clic en la mesa.</td></tr>'}`;
-  refrescar();
+  refrescar(true);
+  app.marcar();
 }
 robot.addEventListener('puntos', tablaPuntos);
 tablaPuntos();
@@ -457,6 +510,7 @@ function actualizarRosa() {
   const cfg = { ...robot.cfg, ...app.rosa };
   const r = comprobarRosa(cfg);
   app.rosaPrevia = r;
+  app.marcar();
   const t = r.largo / app.rosa.vel;
   const enviada = ['rosax', 'rosay', 'rosaa', 'vel'].every(k => Math.abs(app.rosa[k] - robot.cfg[k]) < 1e-6);
   const box = $('#estadoRosa');
@@ -506,7 +560,7 @@ $('#binAplicar').addEventListener('click', async () => {
   orden('CFG');
 });
 selector($('#selVel'), v => { mega.vel = +v; }).poner('1');
-$('#reiniciarMesa').addEventListener('click', () => mega.reiniciarMesa());
+$('#reiniciarMesa').addEventListener('click', () => { mega.reiniciarMesa(); app.marcar(); });
 
 // ---------------------------------------------------------------- ajustes
 const ETIQUETAS = {
