@@ -24,6 +24,18 @@
         "anatomia"
       ],
       "port": 8767
+    },
+    {
+      "name": "panel",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8770",
+        "--directory",
+        "panel"
+      ],
+      "port": 8770
     }
   ]
 }

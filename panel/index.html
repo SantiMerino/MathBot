@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MathBot · Consola de operario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Share+Tech+Mono&family=Unbounded:wght@600;800&display=swap">
+<link rel="stylesheet" href="estilo.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body class="gemelo virtual">
+
+<!-- ============================================================ riel superior -->
+<header class="riel">
+  <div class="marca">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="9" cy="31" r="5"/><path d="M9 31 L24 15 L35 22"/><circle cx="24" cy="15" r="3.2"/><circle cx="35" cy="22" r="2.4"/></svg>
+    <div><b>MATHBOT</b><span>CONSOLA DE OPERARIO · MB-3</span></div>
+  </div>
+
+  <div class="grupo-riel">
+    <button class="palanca" id="swFuente" role="switch" aria-checked="true" aria-label="Fuente: robot virtual o robot real por USB">
+      <span class="pl-sup">VIRTUAL</span><span class="pl-cuerpo"><i></i></span><span class="pl-inf">USB</span>
+    </button>
+    <button class="tecla tecla-luz" id="conectar"><span>CONECTAR</span></button>
+    <span class="st st-celeste">Elige virtual o el Mega por USB<code>open</code></span>
+  </div>
+
+  <div class="anunciador" aria-live="polite">
+    <div class="ventana estado-v" id="estado">DESCONECTADO</div>
+    <div class="lamparas">
+      <i class="lampara" data-l="home">HOME</i>
+      <i class="lampara" data-l="motores">MOTORES</i>
+      <i class="lampara" data-l="mov">MOVIENDO</i>
+      <i class="lampara" data-l="metal">METAL</i>
+      <i class="lampara" data-l="paro">PARO</i>
+    </div>
+    <div class="medidores">
+      <div class="mini-v"><small>12 V</small><b id="v12">--.-</b></div>
+      <div class="finales" title="Finales de carrera (encendido = presionado)">
+        <small>FINALES</small>
+        <span><i data-f="0">J1</i><i data-f="1">J2</i><i data-f="2">J3</i><i data-f="3">Z</i></span>
+      </div>
+    </div>
+    <div class="ocupado" id="ocupado"></div>
+  </div>
+
+  <div class="grupo-riel">
+    <button class="palanca" id="swGemelo" role="switch" aria-checked="true" aria-label="Gemelo virtual">
+      <span class="pl-sup">GEMELO</span><span class="pl-cuerpo"><i></i></span><span class="pl-inf">SOLO MANDO</span>
+    </button>
+    <button class="palanca" id="swStickers" role="switch" aria-checked="true" aria-label="Stickers de ayuda">
+      <span class="pl-sup">STICKERS</span><span class="pl-cuerpo"><i></i></span><span class="pl-inf">OFF</span>
+    </button>
+    <button class="tecla" id="abrirComandos" title="Menú de comandos (F1)"><span>COMANDOS</span><kbd>F1</kbd></button>
+  </div>
+
+  <div class="paro-base">
+    <button id="paro" class="paro" title="Paro de emergencia (Esc)"><span>PARO</span></button>
+    <span class="paro-txt">ESC</span>
+  </div>
+</header>
+
+<main class="consola">
+  <!-- ============================================================ pantalla (gemelo) -->
+  <section class="pantalla" id="pantalla">
+    <div class="bisel">
+      <nav class="teclas-pantalla" id="vistas" aria-label="Vista">
+        <button data-v="mesa" class="on">MESA</button>
+        <button data-v="robot" class="solo-gemelo">ROBOT 3D</button>
+        <button data-v="cabezal" class="solo-gemelo">CABEZAL</button>
+      </nav>
+      <div class="clic-mesa">
+        <small>CLIC EN MESA</small>
+        <div class="selector selector-chico" id="selClic" role="radiogroup" aria-label="Clic en la mesa">
+          <button role="radio" data-v="no">—</button><button role="radio" data-v="ir">IR</button><button role="radio" data-v="punto">PUNTO</button><button role="radio" data-v="rosa">ROSA</button>
+          <span class="perilla"><span class="puntero"></span></span>
+        </div>
+      </div>
+      <div class="cristal">
+        <div class="lienzo" id="lienzo2d"><canvas id="mesa"></canvas>
+          <div class="leyenda">
+            <span><i style="--c:var(--fosforo)"></i>ALCANCE</span><span><i style="--c:var(--cian)"></i>PUNTO</span>
+            <span><i style="--c:var(--lila)"></i>METAL</span><span><i style="--c:var(--rojo)"></i>NO LLEGA</span>
+          </div>
+          <div class="pista" id="pista"></div>
+        </div>
+        <div class="lienzo" id="lienzo3d" hidden></div>
+        <div class="ficha" id="ficha" hidden></div>
+        <div class="despiece" id="ctlDespiece" hidden>
+          <label>DESPIECE <input type="range" id="fDespiece" min="0" max="1" step="0.01" value="0.6"></label>
+          <span>clic en una pieza: su ficha de impresión</span>
+        </div>
+        <div class="estimada">POSICIÓN ESTIMADA · PASOS CONTADOS</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ bahía de módulos -->
+  <section class="bahia" id="bahia">
+    <nav class="modo-bahia" id="tabs" aria-label="Sección">
+      <button data-t="mover" class="on">MOVER</button>
+      <button data-t="puntos">PUNTOS</button>
+      <button data-t="rosa">ROSA</button>
+      <button data-t="mision">MISIÓN</button>
+      <button data-t="ajustes">AJUSTES</button>
+    </nav>
+
+    <div class="modulos" id="modulos">
+      <!-- MOVER -->
+      <article class="mod" data-g="mover" style="--span:2">
+        <h2>POSICIÓN</h2>
+        <div class="lectura" id="lectura"></div>
+        <span class="st st-plata">Lo que el Mega contó, no medido<code>S</code></span>
+      </article>
+
+      <article class="mod" data-g="mover">
+        <h2>HOME</h2>
+        <div class="fila-ctl">
+          <div class="ctl"><button data-cmd="H" class="tecla accion"><span>HOMING</span></button>
+            <span class="st st-lila">Busca los 4 finales Z·J3·J2·J1<code>H</code></span></div>
+          <div class="ctl"><button id="abrirManual" class="tecla accion"><span>HOME A MANO</span></button>
+            <span class="st st-lila">Alinea con las marcas y fija<code>O 0 · S</code></span></div>
+          <div class="ctl"><button class="palanca accion" id="swMotores" role="switch" aria-checked="false" data-on="O 1" data-off="O 0" aria-label="Motores">
+              <span class="pl-sup">ENERG.</span><span class="pl-cuerpo"><i></i></span><span class="pl-inf">SUELTOS</span></button>
+            <span class="st st-ambar">¡Z cae al soltar!<code>O 1 / O 0</code></span></div>
+        </div>
+      </article>
+
+      <article class="mod" data-g="mover">
+        <h2>HERRAMIENTA</h2>
+        <div class="fila-ctl">
+          <div class="ctl">
+            <div class="selector" id="selHerr" role="radiogroup" aria-label="Herramienta activa">
+              <button role="radio" data-v="p" class="accion">PLUMÓN</button><button role="radio" data-v="i" class="accion">IMÁN</button><button role="radio" data-v="s" class="accion">SENSOR</button>
+              <span class="perilla"><span class="puntero"></span></span>
+            </div>
+            <span class="st st-celeste">Gira el disco con J3<code>T p|i|s</code></span>
+          </div>
+          <div class="ctl"><button class="palanca accion" id="swPluma" role="switch" aria-checked="false" data-on="P 1" data-off="P 0" aria-label="Plumón">
+              <span class="pl-sup">ABAJO</span><span class="pl-cuerpo"><i></i></span><span class="pl-inf">ARRIBA</span></button>
+            <small class="ctl-nom">PLUMÓN</small>
+            <span class="st st-celeste">Servo baja 18 mm<code>P 1 / P 0</code></span></div>
+          <div class="ctl"><button class="palanca accion" id="swIman" role="switch" aria-checked="false" data-on="E 1" data-off="E 0" aria-label="Electroimán">
+              <span class="pl-sup">ON</span><span class="pl-cuerpo"><i></i></span><span class="pl-inf">OFF</span></button>
+            <small class="ctl-nom">IMÁN</small>
+            <span class="st st-celeste">Agarra arandelas y tuercas<code>E 1 / E 0</code></span></div>
+          <div class="ctl"><i class="lampara redonda" id="ledSensor"></i><small class="ctl-nom">SENSOR</small>
+            <span class="st st-plata">Se enciende con metal<code>S…metal</code></span></div>
+        </div>
+      </article>
+
+      <article class="mod" data-g="mover" style="--span:2">
+        <h2>JOG</h2>
+        <div class="jog-caja">
+          <div class="jog-perillas">
+            <div class="ctl">
+              <div class="selector selector-chico" id="selModoJog" role="radiogroup" aria-label="Modo de jog">
+                <button role="radio" data-v="art">ART.</button><button role="radio" data-v="xy">X/Y/Z</button>
+                <span class="perilla"><span class="puntero"></span></span>
+              </div>
+              <small class="ctl-nom">MODO</small>
+            </div>
+            <div class="ctl">
+              <div class="selector selector-chico" id="selPaso" role="radiogroup" aria-label="Paso de jog">
+                <button role="radio" data-v="0.1">0.1</button><button role="radio" data-v="1">1</button><button role="radio" data-v="5">5</button><button role="radio" data-v="10">10</button>
+                <span class="perilla"><span class="puntero"></span></span>
+              </div>
+              <small class="ctl-nom">PASO ° / mm</small>
+            </div>
+          </div>
+          <div class="jog" id="jog"></div>
+        </div>
+        <span class="st st-lila">Mantén pulsado · ← → ↑ ↓ RePág AvPág<code>J eje d</code></span>
+      </article>
+
+      <article class="mod" data-g="mover">
+        <h2>IR A</h2>
+        <div class="fila-ctl">
+          <label class="campo">X <input type="number" id="irX" value="250" step="1"><small>mm</small></label>
+          <label class="campo">Y <input type="number" id="irY" value="0" step="1"><small>mm</small></label>
+          <button id="irBtn" class="tecla accion"><span>IR</span></button>
+        </div>
+        <span class="st st-lila">Herramienta activa a (x, y)<code>M x y</code></span>
+      </article>
+
+      <!-- PUNTOS -->
+      <article class="mod" data-g="puntos" style="--span:2">
+        <h2>PUNTOS DE ESCANEO</h2>
+        <p class="nota">El sensor los visita en orden y el imán recoge los metálicos. Guardados en el Mega, el botón START los corre sin PC.</p>
+        <table class="tabla" id="tablaPuntos"></table>
+        <div class="fila-ctl">
+          <div class="ctl"><button id="ptActual" class="tecla accion"><span>GUARDAR PUNTA</span></button>
+            <span class="st st-celeste">La posición actual de la herramienta<code>PT n</code></span></div>
+          <div class="ctl"><button id="ptNuevo" class="tecla accion"><span>AGREGAR…</span></button>
+            <span class="st st-celeste">Escribe x, y y alto<code>PT n x y h</code></span></div>
+          <div class="ctl"><button data-cmd="X" class="tecla accion tecla-luz"><span>ESCANEAR</span></button>
+            <span class="st st-lima">Sensor sobre cada punto<code>X</code></span></div>
+          <div class="ctl"><button data-cmd="GUARDAR" class="tecla accion"><span>A EEPROM</span></button>
+            <span class="st st-plata">Sobrevive al apagado<code>GUARDAR</code></span></div>
+        </div>
+      </article>
+
+      <!-- ROSA -->
+      <article class="mod" data-g="rosa" style="--span:2">
+        <h2>ROSA</h2>
+        <div class="rosa-caja">
+          <div class="rosa-campos">
+            <label class="campo">CENTRO X <input type="number" id="rx" step="1"><small>mm</small></label>
+            <label class="campo">CENTRO Y <input type="number" id="ry" step="1"><small>mm</small></label>
+            <span class="st st-celeste">O clic en la mesa (ROSA)<code>CFG rosax</code></span>
+          </div>
+          <div class="fader">
+            <small>GIRO</small>
+            <input type="range" id="ra" min="-180" max="180" step="5" aria-label="Giro de la rosa">
+            <b id="raV" class="mini-v"></b>
+          </div>
+          <div class="fader">
+            <small>TRAZO</small>
+            <input type="range" id="vel" min="2" max="80" step="1" aria-label="Velocidad de trazo">
+            <b id="velV" class="mini-v"></b>
+          </div>
+        </div>
+        <div class="estadoRosa" id="estadoRosa"></div>
+        <div class="fila-ctl">
+          <div class="ctl"><button id="rosaAplicar" class="tecla accion"><span>ENVIAR</span></button>
+            <span class="st st-celeste">Centro, giro y velocidad<code>CFG · V</code></span></div>
+          <div class="ctl"><button data-cmd="D?" class="tecla accion"><span>COMPROBAR</span></button>
+            <span class="st st-celeste">El Mega revisa cada tramo<code>D?</code></span></div>
+          <div class="ctl"><button data-cmd="D" class="tecla accion tecla-luz"><span>TRAZAR</span></button>
+            <span class="st st-lima">Dibuja la rosa de 3 pétalos<code>D</code></span></div>
+        </div>
+      </article>
+
+      <article class="mod" data-g="rosa">
+        <h2>PAPEL</h2>
+        <p class="nota">Plumón abajo, baja Z con el jog hasta que la punta apenas toque la hoja.</p>
+        <div class="fila-ctl">
+          <div class="mini-v grande"><small>ZMESA</small><b id="zmesaV"></b></div>
+          <div class="ctl"><button id="fijarPapel" class="tecla accion"><span>FIJAR AQUÍ</span></button>
+            <span class="st st-celeste">Mide la altura de la hoja<code>CFG zmesa</code></span></div>
+        </div>
+      </article>
+
+      <!-- MISIÓN -->
+      <article class="mod" data-g="mision" style="--span:2">
+        <h2>MISIÓN</h2>
+        <div class="mision-caja">
+          <ol class="pasos" id="pasos">
+            <li data-f="escaneo"><i class="lampara"></i><span>ESCANEO</span><button data-cmd="X" class="tecla mini accion"><span>X</span></button></li>
+            <li data-f="recoleccion"><i class="lampara"></i><span>RECOLECCIÓN</span><button data-cmd="K" class="tecla mini accion"><span>K</span></button></li>
+            <li data-f="rosa"><i class="lampara"></i><span>ROSA</span><button data-cmd="D" class="tecla mini accion"><span>D</span></button></li>
+            <li data-f="regreso"><i class="lampara"></i><span>REGRESO</span></li>
+          </ol>
+          <div class="ctl ctl-mision">
+            <button data-cmd="R" class="tecla accion tecla-luz tecla-grande"><span>MISIÓN<br>COMPLETA</span></button>
+            <span class="st st-lima">Escaneo → recolección → rosa → home<code>R</code></span>
+            <div id="resumenMision" class="mini-v"></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="mod" data-g="mision">
+        <h2>BANDEJA</h2>
+        <div class="fila-ctl">
+          <label class="campo">X <input type="number" id="bx" step="1"></label>
+          <label class="campo">Y <input type="number" id="by" step="1"></label>
+          <label class="campo">ALTO <input type="number" id="bh" step="1"></label>
+          <button id="binAplicar" class="tecla accion"><span>ENVIAR</span></button>
+        </div>
+        <span class="st st-celeste">Donde suelta lo metálico<code>CFG binx</code></span>
+      </article>
+
+      <article class="mod solovirtual" data-g="mision">
+        <h2>GEMELO</h2>
+        <div class="fila-ctl">
+          <div class="ctl">
+            <div class="selector selector-chico" id="selVel" role="radiogroup" aria-label="Velocidad del robot virtual">
+              <button role="radio" data-v="1">×1</button><button role="radio" data-v="3">×3</button><button role="radio" data-v="10">×10</button>
+              <span class="perilla"><span class="puntero"></span></span>
+            </div>
+            <small class="ctl-nom">TIEMPO</small>
+          </div>
+          <div class="ctl"><button id="reiniciarMesa" class="tecla"><span>REPONER PIEZAS</span></button>
+            <span class="st st-plata">Solo en el robot virtual<code>sim</code></span></div>
+        </div>
+      </article>
+
+      <!-- AJUSTES -->
+      <article class="mod" data-g="ajustes" style="--span:2">
+        <h2>CONFIGURACIÓN</h2>
+        <div class="ajustes" id="ajustes"></div>
+        <div class="fila-ctl">
+          <div class="ctl"><button id="cfgEnviar" class="tecla accion"><span>ENVIAR</span></button>
+            <span class="st st-celeste">Cambia la RAM del Mega<code>CFG k v</code></span></div>
+          <div class="ctl"><button data-cmd="GUARDAR" class="tecla accion"><span>A EEPROM</span></button>
+            <span class="st st-plata">Queda al encender<code>GUARDAR</code></span></div>
+          <div class="ctl"><button data-cmd="CARGAR" class="tecla accion"><span>RECARGAR</span></button>
+            <span class="st st-plata">Vuelve a lo guardado<code>CARGAR</code></span></div>
+          <div class="ctl">
+            <div class="tapa-caja">
+              <button data-cmd="FABRICA" class="tecla accion tecla-peligro" id="btnFabrica" tabindex="-1"><span>FÁBRICA</span></button>
+              <button class="tapa" id="tapaFabrica" aria-label="Levantar la tapa de Valores de fábrica" aria-expanded="false"><span>LEVANTAR</span></button>
+            </div>
+            <span class="st st-ambar">Borra calibración y puntos<code>FABRICA</code></span>
+          </div>
+        </div>
+        <div class="nota" id="infoFirmware"></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================================================ teletipo -->
+  <section class="teletipo">
+    <div class="tt-cab"><h2>TERMINAL</h2><button class="tecla mini" id="abrirComandos2"><span>VER COMANDOS</span></button></div>
+    <div class="lineas" id="log"></div>
+    <form id="manual"><span class="prompt">›</span><input id="manualTxt" placeholder="orden (p. ej. ?, M 250 0, CFG)" autocomplete="off" spellcheck="false" list="sugerencias"><button class="tecla mini"><span>ENVIAR</span></button></form>
+    <datalist id="sugerencias"></datalist>
+  </section>
+</main>
+
+<!-- ============================================================ menú de comandos -->
+<aside class="cajon" id="cajonComandos" hidden aria-label="Comandos del firmware">
+  <div class="cajon-cab">
+    <h2>COMANDOS</h2>
+    <input id="filtroCmd" placeholder="buscar…" autocomplete="off" spellcheck="false">
+    <button class="tecla mini" id="cerrarComandos"><span>CERRAR</span></button>
+  </div>
+  <p class="nota">Clic en un comando: queda escrito en la terminal para completarlo. <kbd>F1</kbd> abre y cierra este menú.</p>
+  <div id="listaCmd"></div>
+</aside>
+
+<!-- ============================================================ home a mano -->
+<dialog id="dlgManual" class="panel-flot">
+  <h2>HOME A MANO</h2>
+  <ol class="guia">
+    <li><b>Z arriba.</b> Al soltar los motores la plataforma baja por su peso. Con finales: <button data-cmd="H z" class="tecla mini accion"><span>HOME Z</span></button> Sin finales, sostenla o bájala a su tope.</li>
+    <li><b>Soltar</b> <button data-cmd="O 0" class="tecla mini accion"><span>SOLTAR</span></button> y lleva J1, J2 y J3 a sus marcas: brazos en línea sobre +x y el plumón alineado con el brazo 2.</li>
+    <li class="solovirtual"><b>Robot virtual:</b> estas barras son tus manos.<div id="manos"></div></li>
+    <li><b>Fijar.</b> <button id="fijarHome" class="tecla mini accion tecla-luz"><span>ESTA POSE ES EL HOME</span></button> Precisión = la de tu alineación: 1° en J1 son ≈7 mm a 400 mm.</li>
+  </ol>
+  <form method="dialog"><button class="tecla mini"><span>CERRAR</span></button></form>
+</dialog>
+
+<dialog id="dlgPunto" class="panel-flot">
+  <h2 id="dlgPuntoTit">PUNTO</h2>
+  <div class="fila-ctl"><label class="campo">X <input type="number" id="ptx" step="0.5"></label><label class="campo">Y <input type="number" id="pty" step="0.5"></label><label class="campo">ALTO <input type="number" id="pth" step="0.5" min="0"></label></div>
+  <form method="dialog" class="fila-ctl"><button id="ptOk" value="ok" class="tecla tecla-luz"><span>GUARDAR</span></button><button value="no" class="tecla"><span>CANCELAR</span></button></form>
+</dialog>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
