@@ -1,0 +1,65 @@
+{
+ "allen.jpg": {
+  "title": "M4 Inbusschraube focusstacked.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:M4_Inbusschraube_focusstacked.jpg",
+  "license": "CC BY-SA 3.0",
+  "artist": "Afrank99",
+  "recorte": false
+ },
+ "avellanado.jpg": {
+  "title": "M3x8 countersunk screws.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:M3x8_countersunk_screws.jpg",
+  "license": "CC BY 4.0",
+  "artist": "4300streetcar",
+  "recorte": true
+ },
+ "tuerca.jpg": {
+  "title": "M3 Nut.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:M3_Nut.jpg",
+  "license": "CC BY-SA 2.0",
+  "artist": "oomlout",
+  "recorte": true
+ },
+ "tuerca_seguridad.jpg": {
+  "title": "1990s zinc plated M10 Nyloc nuts DIN 982 showing different angles.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:1990s_zinc_plated_M10_Nyloc_nuts_DIN_982_showing_different_angles.jpg",
+  "license": "CC BY 4.0",
+  "artist": "R. Henrik Nilsson",
+  "recorte": false
+ },
+ "arandela.jpg": {
+  "title": "ARFISA 15.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:ARFISA_15.jpg",
+  "license": "CC BY-SA 3.0",
+  "artist": "ARFISA Representaciones, SCP",
+  "recorte": true
+ },
+ "perno_hexagonal.jpg": {
+  "title": "Late 1900s zinc plated M12 8 G hex head machine bolt and nut by ESKA GmbH Automotive Germany view 1.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Late_1900s_zinc_plated_M12_8_G_hex_head_machine_bolt_and_nut_by_ESKA_GmbH_Automotive_Germany_view_1.jpg",
+  "license": "CC BY 4.0",
+  "artist": "R. Henrik Nilsson",
+  "recorte": false
+ },
+ "cabeza_redonda.jpg": {
+  "title": "M3 x 20 mm Metal Screw.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:M3_x_20_mm_Metal_Screw.jpg",
+  "license": "CC BY-SA 2.0",
+  "artist": "oomlout",
+  "recorte": true
+ },
+ "fijador.jpg": {
+  "title": "Thread locking fluid Loctite 243.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Thread_locking_fluid_Loctite_243.jpg",
+  "license": "CC BY-SA 4.0",
+  "artist": "Hugo LUC",
+  "recorte": true
+ },
+ "surtido.jpg": {
+  "title": "Dornbirn-A4 Screws assortment-01ASD.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Dornbirn-A4_Screws_assortment-01ASD.jpg",
+  "license": "CC BY-SA 4.0",
+  "artist": "Asurnipal",
+  "recorte": false
+ }
+}
