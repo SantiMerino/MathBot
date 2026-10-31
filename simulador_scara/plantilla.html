@@ -746,16 +746,16 @@ part('buck','Convertidor DC-DC buck 12 V → 6 V','mb','Alimenta el servo del ca
 part('opto','Optoacoplador PC817','mb','Aísla la salida de 12 V del sensor inductivo NPN y la entrega al Arduino en A2.','mb');
 part('discPlate','Placa trébol del cabezal (impresa)','cab','v2: tres brazos de 6 mm (más una oreja para el servo) en lugar del disco macizo Ø136. Las tres herramientas quedan a 55 mm del eje J3, fuera del J3 coupler y de la brida (r ≤ 39 mm). Pesa la mitad y tiene un paso central Ø14 para los cables.','mb','disc');
 part('discSep','Separador de brida 14 mm (impreso)','cab','v3: baja la placa 14 mm bajo el Gripper to J3 connector. En el robot real la cubierta del brazo 2 queda a 22.5 mm de la brida y el final de carrera de J3 a 16.5 mm; sin el separador el sensor y el levante del plumón chocaban al girar J3. CAD en BRAZO SCARA/DISEÑO FINAL/Cabezal disco.','mb','disc');
-part('discBolt','Pernos M4×12 + insertos térmicos (×4)','cab','Unen la placa al Gripper to J3 connector en un cuadro de 4 agujeros a 16 mm del eje.','mb','disc');
+part('discBolt','Pernos M4×35 + arandela + tuerca (×4)','cab','Pasan placa, separador y Gripper to J3 connector hasta la brida del J3 Coupler; tuercas arriba con fijador de rosca.','mb','disc');
 part('discHolder','Guía del plumón (impresa)','cab','Tubo de PETG Ø19 × 30 mm con pestaña. El plumón desliza adentro con 0.6 mm de holgura.','mb','disc');
-part('penCollar','Collar del plumón + prisionero M3','cab','Se aprieta al cuerpo del plumón. El resorte empuja el collar hacia abajo y el brazo del servo lo levanta.','mb','disc');
+part('penCollar','Collar del plumón + M3×12 de apriete','cab','Se aprieta al cuerpo del plumón. El resorte empuja el collar hacia abajo y el brazo del servo lo levanta.','mb','disc');
 part('penSpring','Resorte de compresión Ø16 × 30 mm, alambre 0.5–0.6','cab','Va alrededor del plumón (Ø int. ≥ 13.5, sólido ≤ 6 mm). Da ≈0.2 N de trazo (≈0.33 N con el peso del plumón) y absorbe errores de Z.','mb','disc');
 part('penBridge','Puente del resorte con 2 postes (impreso)','cab','Tope superior del resorte, 52 mm sobre la cara inferior de la placa. Los postes se atornillan a la placa.','mb','disc');
 part('servoMount','Soporte del micro-servo (impreso)','cab','Cuna de dos paredes que deja el eje del servo horizontal, 25 mm sobre la placa.','mb','disc');
 part('sg90','Micro servo SG90 / MG90S (levante del plumón)','cab','Va con el eje horizontal y su brazo de 12 mm sube el collar 18 mm cuando trabajan el sensor o el electroimán. Señal en D44 del Mega.','mb','disc');
 part('sg90Horn','Brazo del servo (horn) 12 mm','cab','Empuja el collar desde abajo. Con el plumón abajo queda 2 mm por debajo del collar para no frenar el resorte.','mb','disc');
-part('magStand','Separador hexagonal 25 mm + perno M3×35','cab','Baja la cara del electroimán a 40 mm bajo la placa (antes era una varilla de acero).','mb','disc');
-part('senNut','Tuercas M12×1 del sensor (×2)','cab','Sujetan el sensor a la placa; si se aflojan se puede ajustar su altura ±5 mm.','mb','disc');
+part('magStand','Copa del electroimán (25 mm) + perno M3×35','cab','Copa impresa que baja la cara del electroimán a 40 mm bajo la placa; el M3×35 entra desde arriba hasta la rosca del electroimán.','mb','disc');
+part('senNut','Abrazadera M12 del sensor + 3 M3×20','cab','Abrazadera impresa bajo la placa: 2 M3×20 la fijan y 1 la aprieta. La cara del sensor queda 38 mm bajo la placa; las tuercas M12 del sensor no se usan.','mb','disc');
 part('revYoke','Soporte en L del revólver (impreso)','cab','Va de la brida hasta 60 mm delante de J3 y lleva el servo y el rodamiento 625. Por encima del prisma no hay nada: las herramientas pueden girar sin chocar con el brazo 2.','mb','rev');
 part('revPrism','Prisma triangular del revólver (impreso)','cab','Lado 62 mm, largo 40 mm, hueco. Una cara por herramienta; la cara activa queda paralela a la hoja.','mb','rev');
 part('revServo','Servo 270° metálico DS3218MG','cab','Gira el revólver a −120°, 0° y +120°. Reemplaza al MG996R de la pinza original; señal en D44.','mb','rev');
@@ -1382,21 +1382,19 @@ function select(id, focus=false){
 }
 
 const BOM = {
-  disc: { masa: 130, print: [
-      ['Placa trébol 6 mm (3 brazos, paso central Ø14)', 'PETG, 3 perímetros, 25 % giroide', 15, 1.4],
-      ['Guía del plumón Ø19 × 30 mm', 'PETG (roza menos)', 4, 0.5],
-      ['Collar del plumón', 'PETG', 2, 0.2],
-      ['Puente del resorte + 2 postes', 'PLA+', 3, 0.4],
-      ['Soporte (cuna) del micro-servo', 'PLA+', 4, 0.4],
-      ['Separador hexagonal del electroimán (25 mm)', 'PLA+', 3, 0.3],
-      ['Separador de brida 14 mm (v3)', 'PETG, 4 perímetros, 40 %', 12, 1.1] ],
+  disc: { masa: 190, print: [
+      ['Separador de brida 14 mm (va bajo el Gripper to J3 connector)', 'PETG, 4 perímetros, 40 %', 12, 1.1],
+      ['Placa trébol 6 mm con la guía del plumón', 'PETG, 3 perímetros, 30 %', 32, 2.7],
+      ['Soporte del plumón y del servo + puente + collar', 'PETG', 12, 1.0],
+      ['Separador del electroimán con copa (25 mm)', 'PLA+', 6, 0.5],
+      ['Abrazadera M12 del sensor', 'PLA+', 6, 0.5] ],
     buy: [
       ['Electroimán 12 V KK-P20/15', 1, '3–5', 32],
-      ['Sensor inductivo LJ12A3-4-Z/BX (NPN NA), con 2 tuercas M12', 1, '3–6', 30],
+      ['Sensor inductivo LJ12A3-4-Z/BX (NPN NA)', 1, '3–6', 30],
       ['Micro servo SG90 (o MG90S de engranes metálicos)', 1, '2–4', 10],
       ['Plumón Sharpie fino (o lápiz)', 1, '1–2', 11],
-      ['Resorte de compresión Ø16 × 30 mm, alambre 0.5–0.6 (sólido ≤ 6 mm)', 1, '<1', 1],
-      ['4 M4×12 + 4 insertos térmicos M4, M3×35, prisionero M3', '—', '2', 9] ],
+      ['Resorte de compresión Ø15–16 × 30 mm, alambre 0.5–0.6 (sólido ≤ 6 mm)', 1, '<1', 1],
+      ['Tornillería: 4 M4×35 + tuercas y arandelas, M3 (lista en el README del CAD)', '—', '2', 35] ],
     notas: ['Cambiar de herramienta = girar J3 ±120°: no agrega actuadores, pero el plumón queda a 55 mm del eje y el juego de la correa de J3 (≈0.5°) mueve la punta ≈0.5 mm.',
             'El micro-servo de levante es obligatorio: sin él, el plumón (la herramienta más baja) raya la hoja mientras trabajan el sensor o el electroimán.',
             'v2 (botón Despiece): placa trébol en vez del disco macizo, levante con collar y resorte, separador impreso para el electroimán y sensor ajustable entre tuercas. Electroimán y sensor pasan de 45 a 55 mm del eje J3 para no chocar con el J3 coupler.',
@@ -1544,19 +1542,19 @@ document.getElementById('t_theme').onclick = () => {
 // despiece del cabezal A: pose fija, piezas separadas a lo largo de su eje de montaje y, opcionalmente, aislado
 const XSPEC = [
   [1, 'discPlate', 'Placa trébol 6 mm', 'PETG impreso · 3 perímetros, 25 % giroide', 15],
-  [2, 'discBolt', 'Pernos M4×12 + insertos (×4)', 'Acero 8.8 y latón', 6],
+  [2, 'discBolt', 'Pernos M4×35 + tuercas (×4)', 'Acero 8.8', 22],
   [3, 'discHolder', 'Guía del plumón Ø19 × 30', 'PETG impreso (roza menos)', 4],
   [4, 'pen', 'Plumón Sharpie fino', 'Comprado', 11],
-  [5, 'penCollar', 'Collar + prisionero M3', 'PETG impreso', 2],
+  [5, 'penCollar', 'Collar + M3×12 de apriete', 'PETG impreso', 2],
   [6, 'penSpring', 'Resorte Ø16 × 30, alambre 0.5–0.6', 'Acero para resortes', 1],
   [7, 'penBridge', 'Puente + 2 postes', 'PLA+ impreso', 3],
   [8, 'servoMount', 'Soporte del servo', 'PLA+ impreso', 4],
   [9, 'sg90', 'Micro-servo SG90 / MG90S', 'Comprado (MG90S: engranes metálicos)', 10],
   [10, 'sg90Horn', 'Brazo del servo 12 mm', 'POM, viene con el servo', 1],
-  [11, 'magStand', 'Separador hex 25 mm + M3×35', 'PLA+ impreso y acero', 4],
+  [11, 'magStand', 'Copa 25 mm + M3×35', 'PLA+ impreso y acero', 8],
   [12, 'magnet', 'Electroimán KK-P20/15', 'Núcleo de acero, bobina de cobre', 32],
   [13, 'sensor', 'Sensor LJ12A3-4-Z/BX', 'Cuerpo de latón niquelado', 30],
-  [14, 'senNut', 'Tuercas M12×1 (×2)', 'Acero, vienen con el sensor', 0],
+  [14, 'senNut', 'Abrazadera M12 + 3 M3×20', 'PLA+ impreso y acero', 9],
   [15, 'discSep', 'Separador de brida 14 mm (v3)', 'PETG impreso', 12],
 ];
 { const tot = XSPEC.reduce((a, r) => a + r[4], 0);
