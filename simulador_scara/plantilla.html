@@ -245,7 +245,7 @@ code{font-size:11px}
               <li><b>Electroimán y sensor a 55 mm</b> (antes 45): a 45 mm la tuerca superior del sensor chocaba con el J3 coupler y la brida, que ocupan hasta r = 39 mm sobre la placa. Las tres herramientas quedan ahora en un círculo Ø110.</li>
               <li><b>Levante real del plumón</b>: el servo va de costado, con el eje horizontal, y su brazo empuja el collar 18 mm. Al bajar, el resorte da la fuerza de trazo y absorbe ±3 mm de error en Z. El servo queda bajo el brazo 2 y fuera del coupler.</li>
               <li><b>Electroimán</b> sobre un separador impreso con un M3 pasante en vez de una varilla de acero: pesa menos y queda aislado.</li>
-              <li><b>Sensor M12</b> entre dos tuercas, para ajustar su altura y la distancia de detección.</li>
+              <li><b>Sensor LJ18A3 (M18)</b> en una abrazadera impresa bajo la placa: se ajusta su altura antes de apretarla.</li>
               <li><b>Cables</b>: paso central Ø14 y un agujero junto al electroimán.</li>
             </ul>
           </div>
@@ -369,7 +369,7 @@ const HEADS = {
   disc: { key:'disc', name:'A · Disco tri-herramienta', tools: {
     pen: { key:'pen', name:'Plumón', phi:0,   r:55, below:50, color:'#d1495b' },
     mag: { key:'mag', name:'Electroimán', phi:120, r:55, below:40, color:'#6c757d' },
-    sen: { key:'sen', name:'Sensor inductivo', phi:240, r:55, below:38, color:'#2a9d8f' } } },
+    sen: { key:'sen', name:'Sensor inductivo', phi:240, r:55, below:40, color:'#2a9d8f' } } },
   // Revólver en voladizo: eje a lo largo del brazo 2, 60 mm por delante de J3, 38 mm bajo la brida.
   // ρ = 0 plumón abajo, ρ = −120 electroimán abajo, ρ = +120 sensor abajo (servo de 270°).
   // El plumón queda en el centro del recorrido del servo: nunca apunta hacia arriba.
@@ -755,7 +755,7 @@ part('servoMount','Soporte del micro-servo (impreso)','cab','Cuna de dos paredes
 part('sg90','Micro servo SG90 / MG90S (levante del plumón)','cab','Va con el eje horizontal y su brazo de 12 mm sube el collar 18 mm cuando trabajan el sensor o el electroimán. Señal en D44 del Mega.','mb','disc');
 part('sg90Horn','Brazo del servo (horn) 12 mm','cab','Empuja el collar desde abajo. Con el plumón abajo queda 2 mm por debajo del collar para no frenar el resorte.','mb','disc');
 part('magStand','Copa del electroimán (25 mm) + perno M3×35','cab','Copa impresa que baja la cara del electroimán a 40 mm bajo la placa; el M3×35 entra desde arriba hasta la rosca del electroimán.','mb','disc');
-part('senNut','Abrazadera M12 del sensor + 3 M3×20','cab','Abrazadera impresa bajo la placa: 2 M3×20 la fijan y 1 la aprieta. La cara del sensor queda 38 mm bajo la placa; las tuercas M12 del sensor no se usan.','mb','disc');
+part('senNut','Abrazadera M18 del sensor + M3×20 (×2) y M3×25','cab','Abrazadera impresa bajo la placa: 2 M3×20 la fijan y 1 M3×25 la aprieta. La cara del sensor queda 40 mm bajo la placa; las tuercas M18 del sensor no se usan.','mb','disc');
 part('revYoke','Soporte en L del revólver (impreso)','cab','Va de la brida hasta 60 mm delante de J3 y lleva el servo y el rodamiento 625. Por encima del prisma no hay nada: las herramientas pueden girar sin chocar con el brazo 2.','mb','rev');
 part('revPrism','Prisma triangular del revólver (impreso)','cab','Lado 62 mm, largo 40 mm, hueco. Una cara por herramienta; la cara activa queda paralela a la hoja.','mb','rev');
 part('revServo','Servo 270° metálico DS3218MG','cab','Gira el revólver a −120°, 0° y +120°. Reemplaza al MG996R de la pinza original; señal en D44.','mb','rev');
@@ -763,7 +763,7 @@ part('revBear','Rodamiento 625ZZ + eje M5','cab','Apoyo del eje del prisma junto
 part('revDet','Leva de 3 muescas + émbolo de bola','cab','Enclavamiento mecánico cada 120°: corrige la zona muerta del servo (≈1° → 1.5 mm en la punta del plumón).','mb','rev');
 part('pen','Plumón Sharpie (o lápiz)','cab','Herramienta de trazo de la curva paramétrica. Disco: Sharpie fino; revólver: Sharpie Mini (≈70 mm sin tapa).','mb');
 part('magnet','Electroimán 12 V KK-P20/15','cab','Ø20 × 15 mm, ≈2.5 kgf, ≈0.25 A. Recoge las piezas metálicas.','mb');
-part('sensor','Sensor inductivo LJ12A3-4-Z/BX','cab','M12, NPN NA, 6–36 V, detecta metal a ≤4 mm. LED de estado en la parte trasera.','mb');
+part('sensor','Sensor inductivo LJ18A3-8-Z/BX','cab','M18, NPN NA, 6–36 V, detecta metal a ≤8 mm (6.4 mm de ajuste). 68 mm de largo; LED de estado en la parte trasera.','mb');
 
 // ---- base (fija)
 scene.add(reg(stlMesh('base', M.dark), 'base'));
@@ -971,7 +971,7 @@ const TREFOIL = trefoil([{ a:0, d:55, r:20, w:40 }, { a:-13.5, d:73, r:9, w:0 },
 
   // módulo del electroimán
   const mg = exp(at(new THREE.Group(), mx, my, 0), [...radial(H.tools.mag, 28), -20]); headDisc.add(mg);
-  mg.add(reg(at(cylZ(6.5, 25, M.head2, 6), 0, 0, Zp - 25), 'magStand'));
+  mg.add(reg(at(cylZ(11.5, 25, M.head2, 32), 0, 0, Zp - 25), 'magStand'));   // copa impresa (pieza 06)
   const screw = exp(new THREE.Group(), [0, 0, 30]); mg.add(screw);
   screw.add(at(cylZ(2.8, 3, M.blk, 16), 0, 0, ZT)); screw.add(at(cylZ(1.5, 35, M.steel, 12), 0, 0, ZT - 35));
   reg(screw, 'magStand');
@@ -980,15 +980,14 @@ const TREFOIL = trefoil([{ a:0, d:55, r:20, w:40 }, { a:-13.5, d:73, r:9, w:0 },
   for (const [y, m] of [[-1.4, M.red], [1.4, M.blk]]) magG.add(at(cylZ(0.6, 33, m, 8), 7.5, y, Zp - 25));
   reg(magG, 'magnet');
 
-  // módulo del sensor inductivo
+  // módulo del sensor inductivo LJ18A3-8-Z/BX: cara 40 mm bajo la placa; cabeza de ABS 8 mm, rosca M18 44 mm, tapa con LED y prensaestopa (68 mm)
   const sg = exp(at(new THREE.Group(), sx, sy, 0), [...radial(H.tools.sen, 28), -20]); headDisc.add(sg);
   const body = exp(new THREE.Group(), [0, 0, -30]); sg.add(body);
-  body.add(at(cylZ(6, 52, M.sen, 24), 0, 0, Zp - 35)); body.add(at(cylZ(6.1, 3, M.senFace, 24), 0, 0, Zp - 38));
-  body.add(at(cylZ(5, 6, M.blk, 20), 0, 0, Zp + 17)); body.add(at(cylZ(2.2, 4, M.blk, 12), 0, 0, Zp + 23));
-  body.add(at(new THREE.Mesh(new THREE.SphereGeometry(2, 14, 10), M.led), 4.4, 0, Zp + 20));
+  body.add(at(cylZ(9, 44, M.sen, 28), 0, 0, Zp - 32)); body.add(at(cylZ(8.75, 8, M.senFace, 28), 0, 0, Zp - 40));
+  body.add(at(cylZ(8.5, 10, M.blk, 24), 0, 0, Zp + 12)); body.add(at(cylZ(3.5, 6, M.blk, 12), 0, 0, Zp + 22));
+  body.add(at(new THREE.Mesh(new THREE.SphereGeometry(2, 14, 10), M.led), 8, 0, Zp + 17));
   reg(body, 'sensor');
-  const nutLo = exp(at(cylZ(9.5, 5, M.steel, 6), 0, 0, Zp - 5), [0, 0, -12]); sg.add(reg(nutLo, 'senNut'));
-  const nutHi = exp(at(cylZ(9.5, 5, M.steel, 6), 0, 0, ZT), [0, 0, 18]); sg.add(reg(nutHi, 'senNut'));
+  const clamp = exp(at(cylZ(13, 14, M.head2, 32), 0, 0, Zp - 14), [0, 0, -12]); sg.add(reg(clamp, 'senNut'));   // abrazadera M18 (pieza 07)
 
   label('Plumón', pb, [0, 0, ZT - 70], 'disc'); label('Electroimán', mg, [0, 0, ZT - 60], 'disc'); label('Sensor', sg, [0, 0, ZT - 60], 'disc');
 
@@ -1005,7 +1004,7 @@ const TREFOIL = trefoil([{ a:0, d:55, r:20, w:40 }, { a:-13.5, d:73, r:9, w:0 },
   callout(11, 'Separador M3', mg, [9, 0, Zp - 14]);
   callout(12, 'Electroimán', magG, [-16, 0, Zp - 34]);
   callout(13, 'Sensor', body, [0, 0, Zp - 42]);
-  callout(14, 'Tuercas M12', nutHi, [12, 0, 3]);
+  callout(14, 'Abrazadera M18', clamp, [14, 0, -7]);
   callout(15, 'Separador de brida', PARTS.get('discSep').meshes[0], [0, -20, 2.25]);
 }
 // Capa 1 = lo que queda al aislar el cabezal: cabezal, brida y luces
@@ -1382,15 +1381,15 @@ function select(id, focus=false){
 }
 
 const BOM = {
-  disc: { masa: 190, print: [
+  disc: { masa: 215, print: [
       ['Separador de brida 14 mm (va bajo el Gripper to J3 connector)', 'PETG, 4 perímetros, 40 %', 12, 1.1],
-      ['Placa trébol 6 mm con la guía del plumón', 'PETG, 3 perímetros, 30 %', 32, 2.7],
+      ['Placa trébol 6 mm con la guía del plumón', 'PETG, 3 perímetros, 30 %', 33, 2.8],
       ['Soporte del plumón y del servo + puente + collar', 'PETG', 12, 1.0],
       ['Separador del electroimán con copa (25 mm)', 'PLA+', 6, 0.5],
-      ['Abrazadera M12 del sensor', 'PLA+', 6, 0.5] ],
+      ['Abrazadera M18 del sensor', 'PLA+', 9, 0.7] ],
     buy: [
       ['Electroimán 12 V KK-P20/15', 1, '3–5', 32],
-      ['Sensor inductivo LJ12A3-4-Z/BX (NPN NA)', 1, '3–6', 30],
+      ['Sensor inductivo LJ18A3-8-Z/BX (NPN NA, 8 mm; Casa Rivas)', 1, 'cotizar', 50],
       ['Micro servo SG90 (o MG90S de engranes metálicos)', 1, '2–4', 10],
       ['Plumón Sharpie fino (o lápiz)', 1, '1–2', 11],
       ['Resorte de compresión Ø15–16 × 30 mm, alambre 0.5–0.6 (sólido ≤ 6 mm)', 1, '<1', 1],
@@ -1399,11 +1398,11 @@ const BOM = {
             'El micro-servo de levante es obligatorio: sin él, el plumón (la herramienta más baja) raya la hoja mientras trabajan el sensor o el electroimán.',
             'v2 (botón Despiece): placa trébol en vez del disco macizo, levante con collar y resorte, separador impreso para el electroimán y sensor ajustable entre tuercas. Electroimán y sensor pasan de 45 a 55 mm del eje J3 para no chocar con el J3 coupler.',
             'v3 (CAD imprimible en BRAZO SCARA/DISEÑO FINAL/Cabezal disco): la placa baja 14 mm con un separador de brida porque la cubierta del brazo 2 y el final de carrera de J3 quedan a 22.5 y 16.5 mm del connector; J3 trabaja entre −120° y +121° y su final de carrera dispara junto a la pose del electroimán. Aquí se dibuja el levante de la v2 a la altura de la v3.'] },
-  rev: { masa: 240, print: [
+  rev: { masa: 260, print: [
       ['Soporte en L del revólver (brida → 60 mm adelante)', 'PETG, 4 perímetros, 40 %', 30, 3],
       ['Prisma triangular hueco (lado 62, largo 40 mm)', 'PLA+/PETG, 30 %', 32, 3],
       ['Porta-plumón con resorte (cara 0°)', 'PETG', 8, 0.8],
-      ['Base del electroimán (cara −120°) y boss M12 del sensor (cara +120°)', 'PLA+', 7, 0.7],
+      ['Base del electroimán (cara −120°) y boss M18 del sensor (cara +120°)', 'PLA+', 8, 0.8],
       ['Acople horn del servo → prisma', 'PETG', 3, 0.3],
       ['Leva de 3 muescas (enclavamiento)', 'PETG', 3, 0.3] ],
     buy: [
@@ -1411,7 +1410,7 @@ const BOM = {
       ['Rodamiento 625ZZ (5×16×5) + perno M5×50', 1, '1–2', 8],
       ['Émbolo de bola con resorte M6/M8 (o bola Ø5 + resorte)', 1, '2–4', 5],
       ['Electroimán 12 V KK-P20/15', 1, '3–5', 32],
-      ['Sensor inductivo LJ12A3-4-Z/BX (NPN NA)', 1, '3–6', 30],
+      ['Sensor inductivo LJ18A3-8-Z/BX (NPN NA, 8 mm)', 1, 'cotizar', 50],
       ['Sharpie Mini (o lápiz recortado ≈70 mm)', 1, '1–2', 7],
       ['Resorte de compresión Ø10–12 × 20 mm', 1, '<1', 1],
       ['Tornillería M3/M4/M5', '—', '2', 12] ],
@@ -1553,8 +1552,8 @@ const XSPEC = [
   [10, 'sg90Horn', 'Brazo del servo 12 mm', 'POM, viene con el servo', 1],
   [11, 'magStand', 'Copa 25 mm + M3×35', 'PLA+ impreso y acero', 8],
   [12, 'magnet', 'Electroimán KK-P20/15', 'Núcleo de acero, bobina de cobre', 32],
-  [13, 'sensor', 'Sensor LJ12A3-4-Z/BX', 'Cuerpo de latón niquelado', 30],
-  [14, 'senNut', 'Abrazadera M12 + 3 M3×20', 'PLA+ impreso y acero', 9],
+  [13, 'sensor', 'Sensor LJ18A3-8-Z/BX', 'Cuerpo de latón niquelado', 50],
+  [14, 'senNut', 'Abrazadera M18 + 2 M3×20 y M3×25', 'PLA+ impreso y acero', 12],
   [15, 'discSep', 'Separador de brida 14 mm (v3)', 'PETG impreso', 12],
 ];
 { const tot = XSPEC.reduce((a, r) => a + r[4], 0);

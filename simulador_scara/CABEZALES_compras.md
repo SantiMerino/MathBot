@@ -11,38 +11,38 @@ Precios de referencia en USD (AliExpress / tiendas de electrónica); hay que con
 | Cómo cambia de herramienta | J3 gira ±120° | Servo de 270° gira el prisma −120° / 0° / +120° |
 | Dónde queda la punta activa | 55 mm del eje J3 (las tres herramientas) | 60 mm delante de J3, en la línea del brazo 2 |
 | Levante del plumón | Micro-servo SG90 (obligatorio) | No hace falta: el plumón sube con Z |
-| Masa estimada | ≈ 190 g (v3, medida en el CAD) | ≈ 240 g |
+| Masa estimada | ≈ 215 g (v3 con LJ18A3, medida en el CAD) | ≈ 260 g |
 | Varillas Z mínimas (NEMA de J2 estándar / corto 24 mm) | 250 / 240 mm | 320 / 300 mm |
 | Principal fuente de error propia | Juego de la correa de J3 (≈0.5°) × 55 mm ≈ 0.5 mm | Zona muerta del servo (≈1°) × 85 mm ≈ 1.5 mm; con enclavamiento ≈ 0.2–0.3 mm |
 | Tiempo de la misión simulada | 86 s | 101 s |
 
-Ambos cumplen los tres requisitos (sensor de metales, electroimán y plumón/lápiz). La pinza original (servo MG996R + piezas) pesa unos 130–150 g: A suma unos 40 g y B unos 100 g.
+Ambos cumplen los tres requisitos (sensor de metales, electroimán y plumón/lápiz). La pinza original (servo MG996R + piezas) pesa unos 130–150 g: A suma unos 70 g y B unos 120 g.
 Las varillas mínimas usan la caída real plataforma → brida medida en el STEP de HTM (80.5 mm) y, en A, el separador de brida de 14 mm de la v3.
 
 ## A · Disco tri-herramienta
 
 CAD imprimible (v3), montaje y verificación: [`BRAZO SCARA/DISEÑO FINAL/Cabezal disco/`](../BRAZO%20SCARA/DISE%C3%91O%20FINAL/Cabezal%20disco/README.md).
 
-**Imprimir** (≈ 68 g, ≈ 6 h)
+**Imprimir** (≈ 72 g, ≈ 6 h)
 
 | Pieza | Material | g | h |
 |---|---|---:|---:|
 | Separador de brida 14 mm (va bajo el *Gripper to J3 connector*) | PETG, 4 perímetros, 40 % | 12 | 1.1 |
-| Placa trébol 6 mm con la guía del plumón | PETG, 3 perímetros, 30 % | 32 | 2.7 |
+| Placa trébol 6 mm con la guía del plumón | PETG, 3 perímetros, 30 % | 33 | 2.8 |
 | Soporte del plumón y del servo + puente + collar | PETG | 12 | 1.0 |
 | Separador del electroimán con copa (25 mm) | PLA+ | 6 | 0.5 |
-| Abrazadera M12 del sensor | PLA+ | 6 | 0.5 |
+| Abrazadera M18 del sensor | PLA+ | 9 | 0.7 |
 
 **Comprar**
 
 | Componente | Cant. | USD | g |
 |---|---:|---:|---:|
 | Electroimán 12 V KK-P20/15 (Ø20 × 15, ≈2.5 kgf) | 1 | 3–5 | 32 |
-| Sensor inductivo LJ12A3-4-Z/BX (M12, NPN NA, 4 mm) | 1 | 3–6 | 30 |
+| Sensor inductivo LJ18A3-8-Z/BX (M18, NPN NA, 8 mm; Casa Rivas) | 1 | cotizar | 50 |
 | Micro servo SG90 (o MG90S metálico) | 1 | 2–4 | 10 |
 | Plumón Sharpie fino (o lápiz) | 1 | 1–2 | 11 |
 | Resorte de compresión Ø15–16 × 30 mm, alambre 0.5–0.6 (va alrededor del plumón) | 1 | <1 | 1 |
-| Tornillería: 4 M4 × 35 + tuercas, M3 (lista en el README del CAD) | — | 2 | 35 |
+| Tornillería: 4 M4 × 35 + tuercas, M3 (lista en el README del CAD y en `presupuesto/Lista_compras_tornillos_MathBot.pdf`) | — | 2 | 35 |
 
 ## B · Revólver triangular
 
@@ -56,7 +56,7 @@ El voladizo no es un capricho: con 3 herramientas a 120° y un giro de 240°, do
 | Soporte en L (brida → 60 mm adelante) con mejilla para servo y rodamiento | PETG, 4 perímetros, 40 % | 30 | 3 |
 | Prisma triangular hueco (lado 62 mm, largo 40 mm, eje Ø5) | PLA+/PETG, 30 % | 32 | 3 |
 | Porta-plumón con resorte (cara 0°) | PETG | 8 | 0.8 |
-| Base del electroimán (cara −120°) y boss M12 del sensor (cara +120°) | PLA+ | 7 | 0.7 |
+| Base del electroimán (cara −120°) y boss M18 del sensor (cara +120°) | PLA+ | 8 | 0.8 |
 | Acople horn del servo → prisma | PETG | 3 | 0.3 |
 | Leva de 3 muescas (enclavamiento) | PETG | 3 | 0.3 |
 
@@ -68,7 +68,7 @@ El voladizo no es un capricho: con 3 herramientas a 120° y un giro de 240°, do
 | Rodamiento 625ZZ (5 × 16 × 5) + perno M5 × 50 | 1 | 1–2 | 8 |
 | Émbolo de bola con resorte M6/M8 (o bola Ø5 + resorte) | 1 | 2–4 | 5 |
 | Electroimán 12 V KK-P20/15 | 1 | 3–5 | 32 |
-| Sensor inductivo LJ12A3-4-Z/BX | 1 | 3–6 | 30 |
+| Sensor inductivo LJ18A3-8-Z/BX (M18, NPN NA, 8 mm) | 1 | cotizar | 50 |
 | Sharpie Mini (o lápiz recortado ≈70 mm) | 1 | 1–2 | 7 |
 | Resorte de compresión Ø10–12 × 20 mm | 1 | <1 | 1 |
 | Tornillería M3/M4/M5 | — | 2 | 12 |
