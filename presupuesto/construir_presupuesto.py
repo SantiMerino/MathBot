@@ -160,10 +160,11 @@ ITEMS = [
     ("CAB-01", "Cabezal de disco", "Electroimán 12 V P20/15", "Ø20 × 15 mm, 2.5 kgf, ≈0.25 A", "Recoger las piezas metálicas",
      "MathBot", 1, "Obligatorio", "No se encontró en el país", None, None, "",
      6.59, 1, 0.15, "Amazon", "B078KBJNFC", ""),
-    ("CAB-02", "Cabezal de disco", "Sensor inductivo LJ12A3-4-Z/BX", "M12, NPN NA, 6–36 V, detecta a 4 mm", "Detectar metal",
-     "MathBot", 1, "Obligatorio", "Prestelectro / Intek (industrial)", 35.00, 1, "Estimado (USD 25–60)",
-     9.99, 3, 0.35, "Amazon", "https://www.amazon.com/s?k=LJ12A3-4-Z%2FBX",
-     "Paquete de 3: quedan 2 de repuesto. Uno individual (DEVMO, B07TMKTZ9L) cuesta USD 12.99."),
+    ("CAB-02", "Cabezal de disco", "Sensor de proximidad inductivo LJ18A3-8-Z/BX", "M18 × 1, NPN NA, 6–36 V, detecta a 8 mm, 68 mm de largo",
+     "Detectar metal",
+     "MathBot", 1, "Obligatorio", "Casa Rivas", None, None, "Cotizar",
+     None, None, 0.25, "Local", "https://www.amazon.com/s?k=LJ18A3-8-Z%2FBX",
+     "Va en la abrazadera M18 impresa (pieza 07 del cabezal). Reemplaza al LJ12A3-4-Z/BX de la versión anterior."),
     ("CAB-03", "Cabezal de disco", "Micro servo SG90 / MG90S", "", "Levantar el plumón 18 mm",
      "MathBot", 1, "Obligatorio", "Casa Rivas", 4.00, 1, "Estimado (hay en el país)",
      8.88, 2, 0.15, "Local", "https://www.amazon.com/s?k=MG90S+metal+gear+2+pack", ""),
@@ -176,7 +177,7 @@ ITEMS = [
      6.58, 1, 0.5, "Local", "B0F47T44GH",
      "Va alrededor del plumón (Ø12): el de Ø10–12 × 20 no entra ni da 18 mm de levante. Ver Cabezal disco/README.md."),
     ("CAB-06", "Cabezal de disco", "Tornillería del cabezal A v3",
-     "4 × M4×35 + tuerca + arandela + fijador de rosca; M3: 4×10, 1×12, 3×20, 1×35, 3×16 avellanados + 11 tuercas",
+     "4 × M4×35 + tuerca + arandela + fijador de rosca; M3: 4×10, 1×12, 2×20, 1×25, 1×35, 3×16 avellanados + 11 tuercas",
      "Placa + separador al J3 Coupler y montaje de las herramientas",
      "MathBot", 1, "Obligatorio", "Vidrí", 0.60, 1, "Estimado",
      None, None, None, "Local", "",
@@ -276,7 +277,7 @@ TIENDAS = [
      "Calle Arce y 11 Av. Sur #635, San Salvador", "2133-2001", "electronica2001es.com", "Catálogo en línea con precios."),
     ("Steren El Salvador", "Electrónica", "Placa ARD-010, fuente 12 V 5 A, micro switches, Dupont, cinchos",
      "Paseo Gral. Escalón y 87 Av. Norte, Col. Escalón", "7876-4626 (WhatsApp)", "steren.com.sv", "Precios en línea; parte de la línea de motores aparece agotada."),
-    ("Casa Rivas Electrónica", "Componentes sueltos", "MOSFET, diodos, PC817, buck, placa perforada, jack DC, servos hobby",
+    ("Casa Rivas Electrónica", "Componentes sueltos", "MOSFET, diodos, PC817, buck, placa perforada, jack DC, servos hobby, sensor inductivo LJ18A3",
      "2ª Av. Norte #312 (frente a Lotería Nacional) + 3 sucursales", "2222-1718 · WhatsApp 6836-5980", "—",
      "25 % de descuento a estudiantes con carné (aplicado en la hoja)."),
     ("ArduStore SV", "Módulos Arduino", "CNC Shield, drivers A4988, LM2596", "En línea (redes sociales)", "6967-8072",
@@ -288,9 +289,9 @@ TIENDAS = [
     ("Almacenes Vidrí", "Ferretería", "Tornillería M3–M8, madera/MDF, resortes, cable multiconductor", "Varias sucursales", "—", "vidri.com.sv",
      "Catálogo en línea; retiro en 2 h."),
     ("Prestelectro / Intek", "Sensores industriales", "Sensor inductivo (USD 25–60)", "San Salvador", "2222-1212 / 2260-8888",
-     "prestelectro.com", "Solo si no quieren importar el LJ12A3."),
+     "prestelectro.com", "Alternativa si Casa Rivas no tiene el LJ18A3."),
     ("El Changarro", "Tienda en línea", "Filamento PLA 1 kg (USD 27.99 en oferta)", "En línea", "—", "elchangarro.com.sv", "Precio indexado; confirmar."),
-    ("Amazon + casillero", "Importación", "Lo que no hay en el país: electroimán, sensor, CNC Shield, rodamientos, varillas, correas",
+    ("Amazon + casillero", "Importación", "Lo que no hay en el país: electroimán, CNC Shield, rodamientos, varillas, correas",
      "Casillero en Miami (p. ej. QuickBox)", "—", "amazon.com", "≈ USD 2.50 + IVA por libra; compras < USD 300 solo pagan 13 % de IVA."),
 ]
 
@@ -376,11 +377,11 @@ def main():
     # Cabezal A v3: volumen y gramos de BRAZO SCARA/DISEÑO FINAL/Cabezal disco/piezas.json (mismo modelo de gramos)
     stl = "STL en BRAZO SCARA/DISEÑO FINAL/Cabezal disco/STL/"
     cabezal = [
-        ("Placa trébol del cabezal A v3 (6 mm, PETG)", 1, 31.5, 35.8, stl + "02_placa_trebol.stl · boca abajo, sin soportes"),
+        ("Placa trébol del cabezal A v3 (6 mm, PETG)", 1, 32.7, 37.3, stl + "02_placa_trebol.stl · boca abajo, sin soportes"),
         ("Separador de brida 14 mm (PETG)", 1, 12.4, 9.7, stl + "01_separador_brida.stl · baja la placa 14 mm para no chocar con la cubierta del brazo 2"),
         ("Soporte plumón/servo + puente + collar (PETG, 3 piezas)", 1, 11.8, 9.7, stl + "03, 04 y 05 · gramos de las tres piezas"),
         ("Separador del electroimán con copa (PLA+)", 1, 6.0, 6.5, stl + "06_separador_electroiman.stl · reemplaza el separador M4 × 25"),
-        ("Abrazadera M12 del sensor (PLA+)", 1, 6.1, 6.9, stl + "07_abrazadera_sensor_M12.stl"),
+        ("Abrazadera M18 del sensor (PLA+)", 1, 8.8, 11.1, stl + "07_abrazadera_sensor_M18.stl"),
     ]
     ws_i["A1"] = "Impresión 3D"
     ws_i["A1"].font = f_title
