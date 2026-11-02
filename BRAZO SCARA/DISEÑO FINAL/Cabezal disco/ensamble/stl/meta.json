@@ -74,14 +74,14 @@
   },
   {
    "clave": "abrazadera",
-   "nombre": "Abrazadera M12 del sensor",
+   "nombre": "Abrazadera M18 del sensor",
    "color": [
     0.55,
     0.45,
     0.75
    ],
    "impresa": true,
-   "archivo": "07_abrazadera_sensor_M12",
+   "archivo": "07_abrazadera_sensor_M18",
    "material": "PLA+"
   },
   {
@@ -141,7 +141,7 @@
   },
   {
    "clave": "sensor",
-   "nombre": "Sensor inductivo LJ12A3-4-Z/BX",
+   "nombre": "Sensor inductivo LJ18A3-8-Z/BX",
    "color": [
     0.8,
     0.72,

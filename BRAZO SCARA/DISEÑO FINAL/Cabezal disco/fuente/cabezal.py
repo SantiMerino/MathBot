@@ -8,7 +8,7 @@ Piezas impresas (funciones que devuelven un cq.Workplane en el marco del cabezal
     puente()             puente superior: guía alta del plumón y asiento del resorte
     collar()             collar que se aprieta al plumón; el brazo del servo lo levanta
     porta_iman()         separador de 25 mm con copa para el KK-P20/15
-    abrazadera_sensor()  abrazadera partida M12 para el LJ12A3-4-Z/BX
+    abrazadera_sensor()  abrazadera partida M18 para el LJ18A3-8-Z/BX
 
 Marco del cabezal: origen en el eje de J3, z = 0 en la cara SUPERIOR de la placa, +x hacia el
 plumón y z hacia el brazo 2. Herramientas a 55 mm del eje en 0° / 120° / 240° como en
@@ -38,7 +38,8 @@ from shapely import affinity
 R_HERR = 55.0                                   # radio de las tres herramientas (mm)
 PHI = {"plumon": 0.0, "iman": 120.0, "sensor": 240.0}
 T_PLACA = 6.0                                   # espesor de la placa trébol
-BAJO = {"plumon": 50.0, "iman": 40.0, "sensor": 38.0}   # punta bajo la cara inferior de la placa
+BAJO = {"plumon": 50.0, "iman": 40.0, "sensor": 40.0}   # punta bajo la cara inferior de la placa (el LJ18A3 de 68 mm
+                                                         # baja a 40 para que su cable libre el final de carrera de J3)
 LEVANTE = 18.0                                  # levante del plumón
 
 # ---- Montaje a J3 (medido en el STEP del ensamble)
@@ -68,7 +69,8 @@ SERVO = dict(L=22.6, W=12.2, H=22.7, oreja_span=32.5, oreja_t=2.5, oreja_z=15.9,
              agujeros=27.7, eje_off=5.9, d_boss=11.8, h_boss=4.0, spline=1.6)
 HORN = dict(largo=18.0, a_cubo=6.0, a_punta=4.0, d_cubo=7.0, h_cubo=4.0, t_brazo=1.6)   # brazo simple
 IMAN = dict(d=20.0, h=15.0)                               # KK-P20/15
-SENSOR = dict(d=12.0, frente=3.0, rosca=43.0, d_tapa=11.0, tapa=9.0, d_prensa=6.5, prensa=5.0, d_cable=4.2)
+# LJ18A3-8-Z/BX (Casa Rivas): M18 × 1, 68 mm en total, cabeza no enrasada (non-flush) de ABS, detecta a 8 mm
+SENSOR = dict(d=18.0, d_frente=17.5, frente=8.0, rosca=44.0, d_tapa=17.0, tapa=10.0, d_prensa=7.0, prensa=6.0, d_cable=5.0)
 RESORTE = dict(d_ext=16.0, alambre=0.5, libre=30.0, solido=5.0)   # Ø16 × 30, alambre 0.5 (ver README)
 
 # ---- Módulo del plumón (z sobre la cara superior de la placa; u = x − 55 relativo al plumón)
@@ -133,7 +135,7 @@ Z_PUENTE = max(C_ARRIBA + H_COLLAR + 0.5,                       # el collar leva
 # ---- Separador del electroimán y abrazadera del sensor (z bajo la placa)
 Z_INF = -T_PLACA                            # cara inferior de la placa
 Z_IMAN_DORSO = Z_INF - BAJO["iman"] + IMAN["h"]        # −31: dorso del electroimán
-Z_SENSOR_CARA = Z_INF - BAJO["sensor"]                  # −44
+Z_SENSOR_CARA = Z_INF - BAJO["sensor"]                  # −46
 H_ABRAZ = 14.0
 
 
@@ -284,7 +286,7 @@ def separador():
 # Huella del soporte del plumón en (u, y) relativo al plumón
 SOP_PIE = [box(-13.0, -20.0, 23.5, -11.0), box(18.0, -20.0, 23.5, 25.5), box(-14.0, 16.5, 31.0, 25.5)]
 SOP_TORNILLOS = [(-9.5, -15.5), (20.75, -15.5), (-11.0, 21.0), (28.0, 21.0)]
-ABR_TORNILLOS = [(-4.0, 11.0), (-4.0, -11.0)]           # (r, t) del sensor
+ABR_TORNILLOS = [(-4.0, 14.0), (-4.0, -14.0)]           # (r, t) del sensor
 # (x, y, dirección del cable): brazo del sensor, brazo del electroimán y lado del servo
 RANURAS_CINCHO = [(*herr_local("sensor", -11.0, 0.0), PHI["sensor"]), (*herr_local("iman", -24.0, 0.0), PHI["iman"]),
                   (44.0, 12.5, 0.0)]
@@ -300,9 +302,9 @@ def contorno_placa():
     piezas += [affinity.translate(b.buffer(2.0, join_style=2), *PEN) for b in SOP_PIE]
     # brazos del electroimán y del sensor (este con la huella de la abrazadera)
     piezas += [tira((0, 0), MAG, 15.0), Point(*MAG).buffer(14.0)]
-    piezas += [tira((0, 0), SEN, 15.0), Point(*SEN).buffer(10.0)]
+    piezas += [tira((0, 0), SEN, 20.0), Point(*SEN).buffer(14.0)]
     a = PHI["sensor"]
-    pie_abr = affinity.rotate(box(-8.0, -14.5, 6.0, 14.5), a, origin=(0, 0))
+    pie_abr = affinity.rotate(box(-11.0, -20.0, 8.0, 20.0), a, origin=(0, 0))
     piezas.append(affinity.translate(pie_abr, *SEN))
     return suavizar(unary_union(piezas), r_conc=8.0, r_conv=2.0)
 
@@ -341,7 +343,7 @@ def placa():
     cuerpo = cuerpo.cut(cil(*MAG, Z_INF - 1, 1, M4_PASO + 0.1))
     cuerpo = cuerpo.union(cil(*herr_local("iman", 9.0, 0), Z_INF - 2.5, Z_INF + 0.1, 2.8))
     cuerpo = cuerpo.cut(cil(*herr_local("iman", -15.5, 0), Z_INF - 1, 1, 5.5))
-    # sensor: paso del cuerpo M12 y dos M3 de la abrazadera
+    # sensor: paso del cuerpo M18 y dos M3 de la abrazadera
     cuerpo = cuerpo.cut(cil(*SEN, Z_INF - 1, 1, SENSOR["d"] + 0.8))
     for r, t in ABR_TORNILLOS:
         cuerpo = cuerpo.cut(cil(*herr_local("sensor", r, t), Z_INF - 1, 1, M3_PASO))
@@ -457,16 +459,16 @@ def porta_iman():
 
 
 def abrazadera_sensor():
-    """Abrazadera partida bajo la placa: el LJ12A3 se desliza y se aprieta con un M3 tangencial."""
+    """Abrazadera partida bajo la placa: el LJ18A3 se desliza y se aprieta con un M3 tangencial."""
     z0, z1 = Z_INF - H_ABRAZ, Z_INF
-    huella = unary_union([box(-10.0, -15.0, 6.0, 15.0), box(0.0, -10.0, 16.0, 10.0)])
+    huella = unary_union([box(-13.0, -19.5, 8.0, 19.5), box(0.0, -13.0, 20.0, 13.0)])
     k = solido(suavizar(huella, 2.0, 2.5), z0, z1)
     k = k.cut(cil(0, 0, z0 - 1, z1 + 1, SENSOR["d"] + 0.3))
-    k = k.cut(caja(5.0, 17.0, -0.75, 0.75, z0 - 1, z1 + 1))                   # ranura de apriete
+    k = k.cut(caja(8.0, 21.0, -0.75, 0.75, z0 - 1, z1 + 1))                   # ranura de apriete
     zc = (z0 + z1) / 2
-    k = k.cut(cil_eje((11.0, 0, zc), "y", M3_PASO, 24))
-    k = k.cut(hexa(0, 0, -TUERCA_M3[1] - 0.1, 0.1, TUERCA_M3[0], 0).rotate((0, 0, 0), (1, 0, 0), 90).translate((11.0, -10.0, zc)))
-    k = k.cut(cil_eje((11.0, 10.0 + 1.0, zc), "y", CABEZA_M3, 4.0))
+    k = k.cut(cil_eje((14.0, 0, zc), "y", M3_PASO, 30))
+    k = k.cut(hexa(0, 0, -TUERCA_M3[1] - 0.1, 0.1, TUERCA_M3[0], 0).rotate((0, 0, 0), (1, 0, 0), 90).translate((14.0, -13.0, zc)))
+    k = k.cut(cil_eje((14.0, 13.0 + 1.0, zc), "y", CABEZA_M3, 4.0))
     for r, t in ABR_TORNILLOS:
         k = k.cut(cil(r, t, z0 - 1, z1 + 1, M3_PASO))
         k = k.cut(hexa(r, t, z0 - 1, z0 + TUERCA_M3[1] + 0.3, TUERCA_M3[0], 90))
@@ -550,10 +552,10 @@ def electroiman():
     return m.translate((MAG[0], MAG[1], 0))
 
 
-def sensor_lj12(cable=True):
-    """LJ12A3-4-Z/BX de 60 mm (cara, rosca 43, tapa con LED, prensaestopa) y curva del cable."""
+def sensor_lj18(cable=True):
+    """LJ18A3-8-Z/BX de 68 mm (cabeza de ABS, rosca 44, tapa con LED, prensaestopa) y curva del cable."""
     z = Z_SENSOR_CARA
-    s = cil(0, 0, z, z + SENSOR["frente"], 11.8)
+    s = cil(0, 0, z, z + SENSOR["frente"], SENSOR["d_frente"])
     z += SENSOR["frente"]
     s = s.union(cil(0, 0, z - 0.01, z + SENSOR["rosca"], SENSOR["d"]))
     z += SENSOR["rosca"]
@@ -561,13 +563,11 @@ def sensor_lj12(cable=True):
     z += SENSOR["tapa"]
     s = s.union(cil(0, 0, z - 0.01, z + SENSOR["prensa"], SENSOR["d_prensa"]))
     z += SENSOR["prensa"]
-    if cable:   # curva de radio 6 hacia el eje de J3 y 6 mm horizontales (cadena de cilindros)
+    if cable:   # curva de radio 6 hacia AFUERA (lejos del final de carrera de J3) y 6 mm horizontales
         rb, dc = 6.0, SENSOR["d_cable"]
-        pts = [(-rb + rb * math.cos(math.radians(a)), z + rb * math.sin(math.radians(a))) for a in range(0, 91, 15)]
-        pts.append((-rb - 6.0, z + rb))
-        for (x0, z0), (x1, z1) in zip(pts[:-1], pts[1:]):
-            seg = cq.Solid.makeCylinder(dc / 2, math.hypot(x1 - x0, z1 - z0), cq.Vector(x0, 0, z0), cq.Vector(x1 - x0, 0, z1 - z0))
-            s = s.union(cq.Workplane(obj=seg)).union(cq.Workplane(obj=cq.Solid.makeSphere(dc / 2, cq.Vector(x1, 0, z1))))
+        c45, s45 = math.cos(math.radians(45)), math.sin(math.radians(45))
+        ruta = cq.Workplane("XZ").moveTo(0, z).threePointArc((rb - rb * c45, z + rb * s45), (rb, z + rb)).lineTo(rb + 6.0, z + rb)
+        s = s.union(cq.Workplane("XY", origin=(0, 0, z)).circle(dc / 2).sweep(ruta))
     return s.rotate((0, 0, 0), (0, 0, 1), PHI["sensor"]).translate((SEN[0], SEN[1], 0))
 
 
@@ -594,7 +594,7 @@ IMPRESAS = {
     "puente": dict(fn=puente, nombre="Puente del plumón", material="PETG", color=(0.20, 0.55, 0.45)),
     "collar": dict(fn=collar, nombre="Collar del plumón", material="PETG", color=(0.85, 0.30, 0.30)),
     "porta_iman": dict(fn=porta_iman, nombre="Separador del electroimán", material="PLA+", color=(0.55, 0.45, 0.75)),
-    "abrazadera": dict(fn=abrazadera_sensor, nombre="Abrazadera M12 del sensor", material="PLA+", color=(0.55, 0.45, 0.75)),
+    "abrazadera": dict(fn=abrazadera_sensor, nombre="Abrazadera M18 del sensor", material="PLA+", color=(0.55, 0.45, 0.75)),
 }
 
 # Orientación de impresión: (eje, ángulo) aplicados antes de apoyar la pieza en z = 0
@@ -628,7 +628,7 @@ def compradas(desp=0.0, helice=False):
         "horn": (horn(desp), "Brazo simple del servo", (0.95, 0.95, 0.95)),
         "resorte": (resorte(c, helice), "Resorte Ø16 × 30", (0.75, 0.75, 0.78)),
         "electroiman": (electroiman(), "Electroimán KK-P20/15", (0.45, 0.47, 0.50)),
-        "sensor": (sensor_lj12(), "Sensor inductivo LJ12A3-4-Z/BX", (0.80, 0.72, 0.40)),
+        "sensor": (sensor_lj18(), "Sensor inductivo LJ18A3-8-Z/BX", (0.80, 0.72, 0.40)),
     }
     torn = None
     for x, y in PERNOS:

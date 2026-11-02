@@ -146,7 +146,7 @@ DESPIECE = {   # desplazamiento (mm, marco del cabezal) de cada pieza en el desp
     "Collar del plumón": (0, 0, 46), "Resorte Ø16 × 30": (0, 0, 62), "Puente del plumón": (0, 0, 84),
     "Plumón Sharpie fino": (0, 0, -80), "Micro servo SG90 / MG90S": (0, 40, 22), "Brazo simple del servo": (0, 18, 22),
     "Separador del electroimán": ("iman", 28, -22), "Electroimán KK-P20/15": ("iman", 28, -48),
-    "Abrazadera M12 del sensor": ("sensor", 28, -22), "Sensor inductivo LJ12A3-4-Z/BX": ("sensor", 28, -60),
+    "Abrazadera M18 del sensor": ("sensor", 28, -22), "Sensor inductivo LJ18A3-8-Z/BX": ("sensor", 28, -60),
 }
 
 

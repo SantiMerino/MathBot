@@ -460,10 +460,10 @@ def chequeo_mision(cab0, cab18, F, drop):
 
 MASA_COMPRADAS = {     # g (CABEZALES_compras.md y hojas de datos; sin cables)
     "Plumón Sharpie fino": 11.0, "Micro servo SG90 / MG90S": 13.4, "Brazo simple del servo": 0.6,
-    "Resorte Ø16 × 30": 0.7, "Electroimán KK-P20/15": 32.0, "Sensor inductivo LJ12A3-4-Z/BX": 30.0,
+    "Resorte Ø16 × 30": 0.7, "Electroimán KK-P20/15": 32.0, "Sensor inductivo LJ18A3-8-Z/BX": 50.0,
     C.NOMBRE_TORNILLOS: 4 * (4.4 + 1.1 + 0.4) + 2.3,     # M4×35 + tuerca + arandela, M3×35
 }
-TORNILLERIA_M3 = 9.5   # 4 M3×10 + 2 M3×20 + M3×20 + M3×12 + M3×16 + 2 M3×16 avellanados + tuercas
+TORNILLERIA_M3 = 9.7   # 4 M3×10 + 2 M3×20 + M3×25 + M3×12 + M3×16 + 2 M3×16 avellanados + tuercas
 
 
 def masas(cab0):

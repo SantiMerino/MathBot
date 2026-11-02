@@ -1,6 +1,6 @@
 # Cabezal A v3 · disco tri-herramienta (CAD imprimible)
 
-Cabezal del SCARA de MathBot con plumón, electroimán KK-P20/15 y sensor LJ12A3-4-Z/BX a 55 mm del eje de J3 (0° / 120° / 240°), montado en el *Gripper to J3 connector* original en lugar de la pinza de HowToMechatronics.
+Cabezal del SCARA de MathBot con plumón, electroimán KK-P20/15 y sensor LJ18A3-8-Z/BX (M18, Casa Rivas) a 55 mm del eje de J3 (0° / 120° / 240°), montado en el *Gripper to J3 connector* original en lugar de la pinza de HowToMechatronics.
 Parte de la v2 de `anatomia/cabezal/` y la corrige con las medidas reales del ensamble de HTM (ver [Por qué v3](#por-qué-v3)).
 
 ![Cabezal A v3](img/cabezal_ensamble.png)
@@ -21,13 +21,13 @@ Parte de la v2 de `anatomia/cabezal/` y la corrige con las medidas reales del en
 | # | Pieza | Material | Perím. / relleno | g | h | Orientación |
 |---|---|---|---|---:|---:|---|
 | 01 | Separador de brida (14 mm) | PETG | 4 / 40 % | 12.4 | 1.1 | Cejas hacia arriba |
-| 02 | Placa trébol 6 mm + guía del plumón | PETG | 3 / 30 % | 31.5 | 2.7 | Boca abajo (cara superior en la cama) |
+| 02 | Placa trébol 6 mm + guía del plumón | PETG | 3 / 30 % | 32.7 | 2.8 | Boca abajo (cara superior en la cama) |
 | 03 | Soporte del plumón y del servo | PETG | 4 / 40 % | 8.1 | 0.7 | Pie en la cama; la ventana del servo es un puente de 23 mm |
 | 04 | Puente del plumón | PETG | 4 / 40 % | 1.9 | 0.2 | Boca abajo |
 | 05 | Collar del plumón | PETG | 4 / 50 % | 1.8 | 0.2 | Boca abajo (oreja en la cama) |
 | 06 | Separador del electroimán (copa) | PLA+ | 3 / 30 % | 6.0 | 0.5 | Brida en la cama; chaflán de 42° |
-| 07 | Abrazadera M12 del sensor | PLA+ | 4 / 40 % | 6.1 | 0.5 | Cara de la placa en la cama |
-| | **Total** | | | **67.8** | **5.8** | |
+| 07 | Abrazadera M18 del sensor | PLA+ | 4 / 40 % | 8.8 | 0.8 | Cara de la placa en la cama |
+| | **Total** | | | **71.7** | **6.1** | |
 
 Gramos y horas con el mismo modelo de la hoja *Impresión 3D* del presupuesto (paredes y techos de 1.1 mm + 25 % de relleno, 11.7 g/h); el slicer dará algo menos.
 El *Gripper to J3 connector* se sigue imprimiendo de `SCARA Robot Arm - STL Files - updated/`.
@@ -45,7 +45,7 @@ Activen la compensación de pata de elefante (0.2 mm): 01, 02, 04 y 05 tienen al
 | Collar del plumón (se aprieta) | Ø12.2, partido, M3 | |
 | Asientos del resorte | Ø16.8 | Resorte Ø16 |
 | Copa del electroimán | Ø20.4 × 6 | KK-P20/15 Ø20 × 15 |
-| Abrazadera del sensor (se aprieta) / paso en la placa | Ø12.3 / Ø12.8 | LJ12A3 M12 × 1 |
+| Abrazadera del sensor (se aprieta) / paso en la placa | Ø18.3 / Ø18.8 | LJ18A3 M18 × 1 |
 | Ventana de la cuna del servo | 23.0 × 12.6 | SG90 22.5 × 12.2 / MG90S 22.8 × 12.2 |
 | Pasantes M3 / M4, guía de las M2 del servo | Ø3.4 / Ø4.5 / Ø1.8 | |
 | Alojamientos de tuerca M3 | 5.85 entre caras × 2.8 | DIN 934 M3 (5.5 × 2.4) |
@@ -60,7 +60,7 @@ Activen la compensación de pata de elefante (0.2 mm): 01, 02, 04 y 05 tienen al
 | Soporte → placa | M3 × 10 DIN 912 + tuerca (alojamiento bajo la placa) | 4 |
 | Puente → poste | M3 × 16 avellanado + tuerca (trampa lateral del poste) | 1 |
 | Collar (apriete) | M3 × 12 + tuerca | 1 |
-| Abrazadera → placa / apriete | M3 × 20 + tuerca | 2 + 1 |
+| Abrazadera → placa / apriete (tangencial) | M3 × 20 + tuerca / M3 × 25 + tuerca | 2 + 1 |
 | Electroimán → placa | M3 × 35 (M4 × 35 si su electroimán trae rosca M4: el paso es Ø4.6) | 1 |
 | Servo | Los 2 tornillos M2 y el brazo simple que trae el servo | — |
 | Resorte del plumón | **Ø15–16 × 30 mm, alambre 0.5–0.6, Ø int. ≥ 13.5, sólido ≤ 6 mm** | 1 |
@@ -76,13 +76,13 @@ Con el de Ø16 × 30 × 0.6 (≈0.04 N/mm) el plumón traza con ≈0.33 N (resor
 2. **Servo.** Pasen el servo por la ventana de la cuna desde +y hasta que las orejas apoyen en la pared; atorníllenlo con sus dos M2. Todavía sin brazo.
 3. **Soporte** sobre la placa: 4 × M3 × 10 desde arriba.
 4. **Electroimán.** Electroimán en la copa (cables por la ranura del fondo o de la pared y por el canal de la columna); copa bajo la placa con el pasador en su agujero; M3 × 35 desde arriba hasta la rosca del electroimán. Los cables suben por el agujero de Ø5.5.
-5. **Sensor.** Abrazadera bajo la placa (2 × M3 × 20 desde arriba). Metan el sensor desde abajo y dejen su cara **38 mm** bajo la cara inferior de la placa (un taco de 38 mm ayuda); aprieten el M3 × 20 lateral. Las dos tuercas M12 que trae el sensor no se usan.
+5. **Sensor.** Abrazadera bajo la placa (2 × M3 × 20 desde arriba). Metan el LJ18A3 desde abajo y dejen su cara **40 mm** bajo la cara inferior de la placa (un taco de 40 mm ayuda); aprieten el M3 × 25 lateral. Las dos tuercas M18 que trae el sensor no se usan.
 6. **Plumón.** Collar suelto sobre la guía, resorte encima, puente sobre el poste (M3 × 16 avellanado). Metan el Sharpie sin tapa desde arriba: puente, resorte, collar y guía.
 7. **Brazo del servo.** Con `firmware/prueba_servo` pongan el servo en ABAJO y monten el brazo simple apuntando al plumón, ≈57° bajo la horizontal: su punta queda 0.6 mm sobre la placa y bajo la oreja del collar. En ARRIBA el brazo sube a ≈+19° (76° de recorrido).
 8. **Brida.** Quiten la pinza y separen el connector del J3 Coupler. Atornillen el separador bajo el connector con los 2 M3 × 16 avellanados (las cabezas quedan a ras en el connector). La muesca en V del separador debe apuntar al pasador del J3 Coupler (el que pisa el final de carrera).
 9. **Al robot.** Presenten connector + separador + placa bajo el J3 Coupler y pasen los 4 M4 × 35 desde abajo (arandela bajo la cabeza). Tuercas sobre la brida del coupler con fijador de rosca y sin arandela: el final de carrera de J3 queda 1.8 mm por encima de ellas. Aprieten a mano (~1 N·m): son bosses de plástico.
 10. **Altura del plumón.** Lleven Z a la altura de trazo con el servo ABAJO, aflojen el collar, dejen que la punta toque el papel y suban el collar hasta que su oreja quede 2 mm sobre la punta del brazo; aprieten. Así el plumón absorbe ±2 mm de error en Z.
-11. **Cables.** Del eje hueco de J3 salen por la ranura de 6 × 2 mm del connector (solo hilos sueltos: quiten la funda del multiconductor unos 40 mm) y bajan por el canal del separador. Amarren con cinchos en las ranuras de los brazos. El cable del sensor sale doblado hacia el centro: déjenlo por debajo de 25 mm sobre la placa.
+11. **Cables.** Del eje hueco de J3 salen por la ranura de 6 × 2 mm del connector (solo hilos sueltos: quiten la funda del multiconductor unos 40 mm) y bajan por el canal del separador. Amarren con cinchos en las ranuras de los brazos. El cable del LJ18A3 sale doblado **hacia afuera** (lejos del eje de J3) con una curva cerrada y no debe subir más de 30 mm sobre la placa: pasa 1.5 mm bajo el final de carrera de J3. Amárrenlo al brazo del sensor con la ranura de cincho.
 
 ## Calibración y cambios de firmware
 
@@ -120,18 +120,18 @@ Se midió `SCARA Robot 3D Model.STEP` (cara inferior del connector = referencia)
 
 | Par | Holgura | φ |
 |---|---:|---:|
+| Sensor LJ18A3 (con la curva del cable) ↔ final de carrera J3 | 1.5 mm | −50° |
 | Tuercas M4 sobre la brida ↔ final de carrera J3 | 1.8 mm | −58° |
 | Plumón ↔ costado del brazo 2 y su cubierta | 2.1 mm | ±121° |
 | Plumón ↔ extremo redondo del brazo 2 (llega a 46.5 mm de J3) | 2.5 mm | 0° |
 | Puente del plumón ↔ cubierta del brazo 2 | 3.4 mm | −44° |
-| Sensor (con la curva del cable) ↔ final de carrera J3 | 6.4 mm | −42° |
 | Soporte del servo ↔ cubierta del brazo 2 | 8.4 mm | −117° |
 
   Del propio diseño de HTM: el pasador del coupler pasa a 0.5 mm de la cubierta y la polea de 90 a 0.6 mm del brazo 2.
-  El sensor se modeló de 60 mm (cara a prensaestopa); si el suyo mide 64 mm la holgura con el final de carrera baja a ≈2.4 mm.
+  El LJ18A3-8-Z/BX se modeló de 68 mm (cabeza de ABS 8 + rosca 44 + tapa 10 + prensaestopa 6). Su cuerpo libra el final de carrera por 6.5 mm, pero el cable sube hasta 30 mm sobre la placa: con la cara a 38 mm (como el LJ12A3 de la versión anterior) y el cable doblado hacia J3 chocaba 0.65 mm. Por eso la cara baja a **40 mm** (como el electroimán) y el cable sale doblado **hacia afuera** con una curva de ≈6 mm de radio. Midan el suyo: si pasa de 68 mm, bajen la cara lo que sobre (y `BAJO` del sensor en el firmware, el panel y el simulador).
   El plumón es lo más justo: sube 71 mm sobre la placa (89 levantado) y pasa a 2.1–2.5 mm del brazo 2 en todo el giro. Con el juego de la correa de J3 (≈0.5 mm a 55 mm) queda ≈1.5 mm; si roza, usen un plumón más corto (≤ 100 mm sin tapa) o recorten `LIM` de J3.
 * **Homing:** el pasador del J3 Coupler toca el final de carrera en **φ = −119.5°**.
-* **Misión del simulador** (`buildTimeline`, 5175 cuadros, 86.2 s, con la caída real de 80.5 mm y el separador): Z de tránsito 200.5 mm con tope 203 mm (varillas de 250 mm), sin avisos. Ninguna pieza pasa sobre la base del robot ni la caja del Arduino (el cabezal queda a ≥ 99.9 mm del eje de J1). El sensor baja a 3 mm de cada pieza y el electroimán a 0.5 mm, como en el simulador.
+* **Misión del simulador** (`buildTimeline`, 5141 cuadros, 85.7 s, con la caída real de 80.5 mm y el separador): Z de tránsito 200.5 mm con tope 203 mm (varillas de 250 mm), sin avisos. Ninguna pieza pasa sobre la base del robot ni la caja del Arduino (el cabezal queda a ≥ 94.9 mm del eje de J1: la abrazadera M18 es 5 mm más grande). El sensor baja a 3 mm de cada pieza (el LJ18A3 detecta hasta 8 mm, 6.4 mm de ajuste) y el electroimán a 0.5 mm, como en el simulador.
   **Choque con la bandeja:** con la bandeja en y = 235, mientras se dibuja la rosa el electroimán (10 mm sobre la mesa) pasaba por su esquina, hasta 15 mm dentro, en (135, 196). Las piezas bajas del cabezal llegan hasta y = 218 durante la rosa, así que la bandeja se movió a y = 265 en el simulador y en el firmware. Con eso, fuera de la herramienta que trabaja, ninguna pieza del cabezal baja a menos de 9.5 mm de la mesa, las piezas o la bandeja.
 
 ![Holguras](img/holguras_j3.png)
@@ -139,9 +139,9 @@ Se midió `SCARA Robot 3D Model.STEP` (cara inferior del connector = referencia)
 
 ## Masa y centro de masa
 
-**190.9 g** sin cables; centro de masa a **6.4 mm** del eje de J3 (5.0, 4.0, −6.0 mm en el marco del cabezal), casi centrado.
-Impreso 67.8 g, electroimán 32, sensor 30, MG90S 13.4 (SG90: 9), plumón 11, pernos M4 × 35 con tuercas y M3 × 35 25.9, tornillería M3 9.5, brazo y resorte 1.3.
-`CABEZALES_compras.md` estimaba ≈150 g: la diferencia es el separador (12 g), la placa más grande (31.5 g frente a 15 g del trébol v2, por la huella del soporte y los cuatro rayos a los pernos) y los M4 largos que ahora pasan hasta la brida (+≈15 g frente a los M4 cortos de HTM). Para el eje Z y J3 no cambia nada práctico; la pinza original con MG996R pesaba 130–150 g.
+**215 g** sin cables; centro de masa a **2.3 mm** del eje de J3 (1.4, −1.9, −7.0 mm en el marco del cabezal), casi centrado.
+Impreso 71.7 g, electroimán 32, sensor LJ18A3 50 (estimado: midan el suyo), MG90S 13.4 (SG90: 9), plumón 11, pernos M4 × 35 con tuercas y M3 × 35 25.9, tornillería M3 9.7, brazo y resorte 1.3.
+`CABEZALES_compras.md` estimaba ≈150 g: la diferencia es el separador (12 g), el sensor M18 (≈20 g más que el LJ12A3), la placa más grande (32.7 g frente a 15 g del trébol v2, por la huella del soporte y los cuatro rayos a los pernos) y los M4 largos que ahora pasan hasta la brida (+≈15 g frente a los M4 cortos de HTM). Para el eje Z y J3 no cambia nada práctico; la pinza original con MG996R pesaba 130–150 g.
 
 ## Reconstruir el ensamble en SolidWorks
 

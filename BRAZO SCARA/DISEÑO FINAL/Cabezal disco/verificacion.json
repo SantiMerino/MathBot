@@ -22,6 +22,11 @@
     "phi": 62.0,
     "plumon": "arriba"
    },
+   "Sensor inductivo LJ18A3-8-Z/BX ↔ Final de carrera J3": {
+    "holgura_mm": 1.48,
+    "phi": -50.0,
+    "plumon": "abajo"
+   },
    "Pernos M4 × 35 + tuercas + M3 × 35 del electroimán ↔ Final de carrera J3": {
     "holgura_mm": 1.8,
     "phi": -58.0,
@@ -52,10 +57,10 @@
     "phi": 121.0,
     "plumon": "abajo"
    },
-   "Sensor inductivo LJ12A3-4-Z/BX ↔ Final de carrera J3": {
-    "holgura_mm": 6.4,
-    "phi": -42.0,
-    "plumon": "arriba"
+   "Sensor inductivo LJ18A3-8-Z/BX ↔ Arm 2 Cover": {
+    "holgura_mm": 6.0,
+    "phi": -21.0,
+    "plumon": "abajo"
    },
    "Pernos M4 × 35 + tuercas + M3 × 35 del electroimán ↔ Arm 2 Cover": {
     "holgura_mm": 7.8,
@@ -92,11 +97,6 @@
     "phi": 117.0,
     "plumon": "arriba"
    },
-   "Sensor inductivo LJ12A3-4-Z/BX ↔ Arm 2 Cover": {
-    "holgura_mm": 12.4,
-    "phi": 71.0,
-    "plumon": "arriba"
-   },
    "Micro servo SG90 / MG90S ↔ Arm 2 Cover": {
     "holgura_mm": 13.65,
     "phi": 121.0,
@@ -105,6 +105,11 @@
    "Resorte Ø16 × 30 ↔ Arm 2": {
     "holgura_mm": 13.9,
     "phi": 121.0,
+    "plumon": "abajo"
+   },
+   "Sensor inductivo LJ18A3-8-Z/BX ↔ Arm 2": {
+    "holgura_mm": 14.0,
+    "phi": -21.0,
     "plumon": "abajo"
    },
    "Puente del plumón ↔ Final de carrera J3": {
@@ -161,8 +166,8 @@
   ]
  },
  "mision": {
-  "cuadros": 5170,
-  "duracion_s": 86.2,
+  "cuadros": 5141,
+  "duracion_s": 85.7,
   "zmin": 103.5,
   "zmax": 203,
   "z_transito": 200.5035,
@@ -195,15 +200,15 @@
     "th1": -22.1,
     "th2": -117.4
    },
-   "Sensor inductivo LJ12A3-4-Z/BX": {
+   "Sensor inductivo LJ18A3-8-Z/BX": {
     "mm": 3.0,
     "fase": "escaneo",
     "herramienta": "sensor",
-    "zp": 144.5,
+    "zp": 146.5,
     "sobre": "Arandela de acero",
     "xy": [
-     56.0,
-     -219.0
+     53.0,
+     -221.0
     ],
     "th1": -22.1,
     "th2": -117.4
@@ -234,15 +239,15 @@
     "th1": -22.1,
     "th2": -117.4
    },
-   "Abrazadera M12 del sensor": {
-    "mm": 27.0,
+   "Abrazadera M18 del sensor": {
+    "mm": 29.0,
     "fase": "escaneo",
     "herramienta": "sensor",
-    "zp": 144.5,
+    "zp": 146.5,
     "sobre": "Arandela de acero",
     "xy": [
-     65.0,
-     -229.0
+     47.0,
+     -217.0
     ],
     "th1": -22.1,
     "th2": -117.4
@@ -353,7 +358,7 @@
    }
   },
   "radio_min_al_eje_J1": {
-   "mm": 99.9,
+   "mm": 94.9,
    "fase": "rosa",
    "th2": -139.6
   },
@@ -361,13 +366,13 @@
   "drop_simulador_mm": 78.5
  },
  "masa": {
-  "total_g": 190.9,
+  "total_g": 215.0,
   "centro_de_masa_mm": [
-   5.0,
-   4.0,
-   -6.0
+   1.4,
+   -1.9,
+   -7.0
   ],
-  "radio_cm_mm": 6.4,
+  "radio_cm_mm": 2.3,
   "piezas": [
    [
     "Separador de brida",
@@ -380,10 +385,10 @@
    ],
    [
     "Placa trébol",
-    31.5,
+    32.7,
     [
-     17.0,
-     3.6,
+     15.3,
+     1.6,
      -3.6
     ]
    ],
@@ -424,11 +429,11 @@
     ]
    ],
    [
-    "Abrazadera M12 del sensor",
-    6.1,
+    "Abrazadera M18 del sensor",
+    8.8,
     [
-     -28.4,
-     -49.4,
+     -28.6,
+     -49.7,
      -12.9
     ]
    ],
@@ -478,12 +483,12 @@
     ]
    ],
    [
-    "Sensor inductivo LJ12A3-4-Z/BX",
-    30.0,
+    "Sensor inductivo LJ18A3-8-Z/BX",
+    50.0,
     [
-     -27.3,
-     -47.2,
-     -12.2
+     -27.5,
+     -47.7,
+     -14.0
     ]
    ],
    [
@@ -497,7 +502,7 @@
    ],
    [
     "Tornillería M3 (estimada)",
-    9.5,
+    9.7,
     [
      30.0,
      0.0,

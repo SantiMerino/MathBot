@@ -32,7 +32,7 @@ ARCHIVO = {
     "puente": "04_puente_plumon",
     "collar": "05_collar_plumon",
     "porta_iman": "06_separador_electroiman",
-    "abrazadera": "07_abrazadera_sensor_M12",
+    "abrazadera": "07_abrazadera_sensor_M18",
 }
 
 # Ajustes de impresión por pieza (perímetros, relleno, notas)

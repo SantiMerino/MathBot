@@ -24,13 +24,13 @@
   "material": "PETG",
   "perimetros": 3,
   "relleno": 30,
-  "volumen_cm3": 35.79,
-  "area_cm2": 191.8,
-  "gramos": 31.5,
-  "horas": 2.69,
+  "volumen_cm3": 37.29,
+  "area_cm2": 198.9,
+  "gramos": 32.7,
+  "horas": 2.79,
   "caja_mm": [
-   130.3,
-   121.0,
+   136.1,
+   125.4,
    20.0
   ],
   "nota": "Boca abajo (cara superior en la cama). Sin soportes."
@@ -109,18 +109,18 @@
  },
  {
   "clave": "abrazadera",
-  "archivo": "07_abrazadera_sensor_M12",
-  "nombre": "Abrazadera M12 del sensor",
+  "archivo": "07_abrazadera_sensor_M18",
+  "nombre": "Abrazadera M18 del sensor",
   "material": "PLA+",
   "perimetros": 4,
   "relleno": 40,
-  "volumen_cm3": 6.92,
-  "area_cm2": 38.2,
-  "gramos": 6.1,
-  "horas": 0.52,
+  "volumen_cm3": 11.13,
+  "area_cm2": 52.4,
+  "gramos": 8.8,
+  "horas": 0.75,
   "caja_mm": [
-   32.8,
-   33.2,
+   42.8,
+   43.0,
    14.0
   ],
   "nota": "Cara de la placa en la cama. Tuercas M3 por abajo."
