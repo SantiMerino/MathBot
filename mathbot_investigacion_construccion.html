@@ -844,10 +844,10 @@ El torque solo vence inercia y fricción:<br>
   mundo.</p>
 
   <h3>Por qué un sensor solo no sirve</h3>
-  <p>El <strong>sensor inductivo</strong> (LJ12A3-4-Z/BX) detecta únicamente conductores: genera un
+  <p>El <strong>sensor inductivo</strong> (LJ18A3-8-Z/BX) detecta únicamente conductores: genera un
   campo magnético alterno, induce corrientes de Foucault en el metal cercano, y la pérdida de
   energía resultante amortigua su oscilador. Si no se activa, la conclusión es ambigua: puede ser
-  que el objeto sea plástico, o que esté a más de 4 mm.</p>
+  que el objeto sea plástico, o que esté a más de 8 mm.</p>
   <p>El <strong>sensor capacitivo</strong> (LJC18A3-B-Z/BX) detecta <em>cualquier</em> material que
   altere la capacitancia de su placa sensora, incluidos plásticos, vidrio y líquidos. Se activa con
   ambos objetos, así que por sí solo tampoco discrimina.</p>
@@ -874,7 +874,7 @@ El torque solo vence inercia y fricción:<br>
 <strong>Inductivo · corrientes de Foucault</strong><br>
 ε = −dΦ<sub>B</sub>/dt      <span class="c">(Faraday)</span>   ·   sentido opuesto  <span class="c">(Lenz)</span><br>
 La disipación P = I²R en el conductor amortigua el tanque LC del sensor → cae la amplitud → dispara.<br>
-<span class="c">Selectivo a conductores. Alcance nominal 4 mm; menor en acero inoxidable y aluminio.</span><br><br>
+<span class="c">Selectivo a conductores. Alcance nominal 8 mm (LJ18A3); menor en acero inoxidable y aluminio.</span><br><br>
 <strong>Capacitivo · permitividad del medio</strong><br>
 C = ε₀·ε<sub>r</sub>·A / d<br>
 <span class="c">Aire ε_r ≈ 1 · PLA ≈ 3 · vidrio ≈ 5 · agua ≈ 80.</span><br>
@@ -893,7 +893,7 @@ Un objeto en el campo aumenta C y desplaza la frecuencia del oscilador RC → di
   </div>
 
   <h4>Detalle eléctrico que no se puede omitir</h4>
-  <p>Los sensores industriales LJ12A3 y LJC18A3 funcionan a 6–36 V y su salida entrega la misma
+  <p>Los sensores industriales LJ18A3 y LJC18A3 funcionan a 6–36 V y su salida entrega la misma
   tensión de alimentación. <strong>Conectarlos directamente a un pin de Arduino lo destruye.</strong>
   Se requiere un divisor resistivo (10 kΩ / 20 kΩ para pasar de 12 V a 4 V) o un optoacoplador,
   que además aísla galvánicamente la parte de potencia. La versión NPN, con resistencia de pull-up
@@ -1041,7 +1041,7 @@ F = B²·A / (2·μ₀)      <span class="c">μ₀ = 4π × 10⁻⁷ T·m/A</spa
       <tr><td>Tablero MDF 15 mm, 60×50 cm + tornillería M3/M4</td><td class="num">1</td><td class="num">24</td><td class="num">24</td><td class="num">96 000</td></tr>
       <tr><td rowspan="2">Eje Z</td><td>Husillo T8 300 mm + tuerca antibacklash + acople</td><td class="num">1</td><td class="num">14</td><td class="num">14</td><td class="num">56 000</td></tr>
       <tr><td>Varilla lisa 8 mm + rodamiento lineal LM8UU</td><td class="num">2</td><td class="num">6</td><td class="num">12</td><td class="num">48 000</td></tr>
-      <tr><td rowspan="3">Sensado</td><td>Sensor inductivo LJ12A3-4-Z/BX NPN</td><td class="num">1</td><td class="num">5</td><td class="num">5</td><td class="num">20 000</td></tr>
+      <tr><td rowspan="3">Sensado</td><td>Sensor inductivo LJ18A3-8-Z/BX NPN</td><td class="num">1</td><td class="num">5</td><td class="num">5</td><td class="num">20 000</td></tr>
       <tr><td>Sensor capacitivo LJC18A3-B-Z/BX NPN</td><td class="num">1</td><td class="num">7</td><td class="num">7</td><td class="num">28 000</td></tr>
       <tr><td>Lámina de cobre + resistencias (sensor capacitivo propio)</td><td class="num">1</td><td class="num">6</td><td class="num">6</td><td class="num">24 000</td></tr>
       <tr><td rowspan="2">Efector</td><td>Electroimán 12 V P20/15, retención 2,5 kg</td><td class="num">1</td><td class="num">6</td><td class="num">6</td><td class="num">24 000</td></tr>
@@ -1203,7 +1203,7 @@ F = B²·A / (2·μ₀)      <span class="c">μ₀ = 4π × 10⁻⁷ T·m/A</spa
 
   <h4>Componentes y física</h4>
   <ul class="srcs">
-    <li><strong>Sensor inductivo LJ12A3-4-Z/BX.</strong> Alcance nominal 4 mm, 6–36 VDC. Detecta
+    <li><strong>Sensor inductivo LJ18A3-8-Z/BX.</strong> M18, alcance nominal 8 mm, 6–36 VDC (la guía enlazada es del LJ12A3, misma familia y conexión). Detecta
     solo conductores; la salida entrega la tensión de alimentación y requiere adaptación de nivel
     para Arduino.
     <span class="u">electropeak.com/learn/interfacing-inductive-proximity-sensor-lj12a3-4-z-bx-with-arduino/</span></li>

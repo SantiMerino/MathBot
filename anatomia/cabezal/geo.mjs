@@ -139,19 +139,19 @@ export function headSvg(P, e, l) {
   const wires = [[-1.4, "lo"], [1.4, "mid"]].map(([dy, tone]) => L(pathOf([iso([mx + 7.5, my + dy, wz0], P), iso([mx + 7.5, my + dy, wz1 - (jst ? 4 : 0)], P)]), { tone })).join("") +
     (jst ? S(extrude([[mx + 5, my - 2.5], [mx + 10, my - 2.5], [mx + 10, my + 2.5], [mx + 5, my + 2.5]], wz1 - 4, 4, P, { bevel: 0.3 }), { tone: "mid" }) : "");
 
-  // ---- sensor inductivo (240°)
+  // ---- sensor inductivo LJ18A3-8-Z/BX (240°): M18, cabeza de ABS, 68 mm, cara 40 mm bajo la placa
   const [sx0, sy0] = polar(H.tools.sen), [sox, soy] = out(240, 28 * e);
   const sx = sx0 + sox, sy = sy0 + soy;
   const bD = -30 * e;
-  const senBody = (a, b) => C(sx, sy, 6, a, b - a, { tone: "hi", crease: "lo" }, 32);
+  const senBody = (a, b) => C(sx, sy, 9, a, b - a, { tone: "hi", crease: "lo" }, 32);
   const sen = stack(sx, sy, [
-    { kind: "collar", z0: PZ - 38 + bD, z1: PZ - 35 + bD, r: 6.1, style: { tone: "lo" }, steps: 32 },
-    { kind: "rod", z0: PZ - 35 + bD, z1: PZ + 17 + bD, draw: senBody },
-    { kind: "collar", z0: PZ - 5 - 12 * e, z1: PZ - 12 * e, draw: (a, b) => hex(sx, sy, 9.5, a, b - a, { tone: "mid" }) },
-    { kind: "collar", z0: PT + 18 * e, z1: PT + 5 + 18 * e, draw: (a, b) => hex(sx, sy, 9.5, a, b - a, { tone: "mid" }) },
-    { kind: "rod", z0: PZ + 17 + bD, z1: PZ + 23 + bD, r: 5, style: { tone: "mid" }, steps: 28 },
-    { kind: "rod", z0: PZ + 23 + bD, z1: PZ + 27 + bD, r: 2.2, style: { tone: "mid", crease: "none" }, steps: 16 },
-    { kind: "mark", z0: PZ + 20 + bD, z1: PZ + 20 + bD, svg: D([[sx + 5, sy, PZ + 20 + bD]], { size: 1.3, tone: "hi" }) },
+    { kind: "collar", z0: PZ - 40 + bD, z1: PZ - 32 + bD, r: 8.75, style: { tone: "lo" }, steps: 32 },
+    { kind: "rod", z0: PZ - 32 + bD, z1: PZ + 12 + bD, draw: senBody },
+    { kind: "collar", z0: PZ - 5 - 12 * e, z1: PZ - 12 * e, draw: (a, b) => hex(sx, sy, 13.5, a, b - a, { tone: "mid" }) },
+    { kind: "collar", z0: PT + 18 * e, z1: PT + 5 + 18 * e, draw: (a, b) => hex(sx, sy, 13.5, a, b - a, { tone: "mid" }) },
+    { kind: "rod", z0: PZ + 12 + bD, z1: PZ + 22 + bD, r: 8.5, style: { tone: "mid" }, steps: 28 },
+    { kind: "rod", z0: PZ + 22 + bD, z1: PZ + 28 + bD, r: 3.5, style: { tone: "mid", crease: "none" }, steps: 16 },
+    { kind: "mark", z0: PZ + 17 + bD, z1: PZ + 17 + bD, svg: D([[sx + 8.5, sy, PZ + 17 + bD]], { size: 1.3, tone: "hi" }) },
   ], PT);
 
   // ---- módulo del plumón (0°)

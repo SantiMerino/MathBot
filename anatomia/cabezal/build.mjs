@@ -85,7 +85,7 @@ function j3() {
 const first = headSvg(P, 0, 0);
 const svg = k.figureSvg({
   width: WIDTH, height: HEIGHT,
-  label: "Cabezal A v2 de MathBot colgado de un tramo del brazo 2 sobre un soporte de banco. Una placa trébol de 6 mm lleva tres herramientas a 55 mm del eje J3: el plumón en una guía con collar, resorte y un micro-servo que lo levanta 18 mm; el electroimán sobre un separador hexagonal; el sensor inductivo M12 entre dos tuercas.",
+  label: "Cabezal A v2 de MathBot colgado de un tramo del brazo 2 sobre un soporte de banco. Una placa trébol de 6 mm lleva tres herramientas a 55 mm del eje J3: el plumón en una guía con collar, resorte y un micro-servo que lo levanta 18 mm; el electroimán sobre un separador hexagonal; el sensor inductivo LJ18A3 (M18) entre dos tuercas.",
   body: [bench(), stand(), `<g data-part="below">${first.below}</g>`, j3(), `<g data-part="above">${first.above}</g>`],
 });
 
@@ -163,7 +163,7 @@ const body = k.plateHtml({
   readout: "Separación 0 % · plumón abajo · brazo −66°",
   keys: [
     { mark: "lit", label: "Plumón: guía, collar, resorte Ø16 y SG90 con brazo de 12 mm (+18 mm)" },
-    { mark: "raised", label: "Placa trébol PETG 6 mm · electroimán KK-P20/15 · sensor LJ12A3 M12" },
+    { mark: "raised", label: "Placa trébol PETG 6 mm · electroimán KK-P20/15 · sensor LJ18A3 M18" },
   ],
   caption:
     "Las tres herramientas quedan a 55 mm del eje J3, a 0°, 120° y 240°: J3 gira para elegir una. El J3 coupler y la brida ocupan hasta 39 mm del eje sobre la placa, así que todo lo que sube de la placa queda más afuera. Con el plumón abajo, el brazo del servo queda 2 mm bajo el collar y el resorte da la fuerza de trazo; al subir, el brazo levanta el collar 18 mm. Al separar, cada pieza sale por su eje de montaje: el plumón hacia abajo, el puente y el resorte hacia arriba y el servo hacia atrás. 14 piezas, 123 g sin cables.",
