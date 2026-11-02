@@ -7,7 +7,7 @@ export const GEO = {
   DISCO: 20,            // separador 14 + placa 6
   R: 55,                // radio de las herramientas
   PHI: { p: 0, i: 120, s: 240 },
-  BAJO: { p: 50, i: 40, s: 38 },
+  BAJO: { p: 50, i: 40, s: 40 },
   PASOS: [44.4444, 35.5556, 10, 100],
   VMAX: [3000, 3000, 1500, 3500],
   ACEL: [2000, 2000, 1500, 3000],

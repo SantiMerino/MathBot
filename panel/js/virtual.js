@@ -109,7 +109,7 @@ export class MegaVirtual {
   // ---- mensajes
   identificar() {
     const L = limites(this.cfg);
-    this.decir(`I MATHBOT 3.0 L1 228 L2 144 CAIDA 80.5 DISCO 20 R 55 PHI 0 120 240 BAJO 50 40 38 PASOS 44.4444 35.5556 10 100 ZMAX 203 J3 ${L.min[2]} ${L.max[2]} ZMIN ${L.min[3].toFixed(1)}`);
+    this.decir(`I MATHBOT 3.0 L1 228 L2 144 CAIDA 80.5 DISCO 20 R 55 PHI 0 120 240 BAJO 50 40 40 PASOS 44.4444 35.5556 10 100 ZMAX 203 J3 ${L.min[2]} ${L.max[2]} ZMIN ${L.min[3].toFixed(1)}`);
   }
   listarConfig() { for (const [k, v] of Object.entries(this.cfg)) this.decir(`C ${k} ${Number.isInteger(v) && !['zmesa', 'rosax', 'rosay'].includes(k) ? v : v.toFixed(2)}`); }
   listarPuntos() {
