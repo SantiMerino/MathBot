@@ -249,9 +249,9 @@
 <text x="1375.0" y="482" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">opto 12 V → 5 V</text>
 <text x="1375.0" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">salida → D22</text>
 <rect x="1500" y="430" width="160" height="90" rx="8" fill="#455a64" stroke="#00000033" stroke-width="2"/>
-<text x="1580.0" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#fff" text-anchor="middle" font-weight="bold">LJ12A3-4-Z/BX</text>
+<text x="1580.0" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#fff" text-anchor="middle" font-weight="bold">LJ18A3-8-Z/BX</text>
 <text x="1580.0" y="472" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">sensor inductivo</text>
-<text x="1580.0" y="489" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">NPN NA · 4 mm</text>
+<text x="1580.0" y="489" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">NPN NA · 8 mm · M18</text>
 <text x="1580.0" y="506" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="normal">café +12 · azul GND</text>
 <polyline points="1114,442.0 1215,442.0 1215,465 1300,465" fill="none" stroke="#1e88e5" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <text x="1220" y="437.0" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#1e88e5" text-anchor="start" font-weight="bold">D22</text>

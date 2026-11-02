@@ -78,7 +78,7 @@ enum { PLUMON = 0, IMAN = 1, SENSOR = 2 };
 const Herramienta HERR[3] = {
   { "plumon", 'p', 0.0, 55.0, 50.0 },
   { "electroiman", 'i', 120.0, 55.0, 40.0 },
-  { "sensor", 's', 240.0, 55.0, 38.0 },
+  { "sensor", 's', 240.0, 55.0, 40.0 },   // LJ18A3-8-Z/BX: cara a 40 mm (su cable libra el final de J3)
 };
 
 enum { EJE_J1 = 0, EJE_J2 = 1, EJE_J3 = 2, EJE_Z = 3 };
@@ -703,7 +703,7 @@ bool mision() {
 // Identificación y configuración
 // ============================================================================
 void identificar() {
-  Serial.print(F("I MATHBOT " VERSION " L1 228 L2 144 CAIDA 80.5 DISCO 20 R 55 PHI 0 120 240 BAJO 50 40 38"));
+  Serial.print(F("I MATHBOT " VERSION " L1 228 L2 144 CAIDA 80.5 DISCO 20 R 55 PHI 0 120 240 BAJO 50 40 40"));
   Serial.print(F(" PASOS 44.4444 35.5556 10 100 ZMAX 203 J3 "));
   Serial.print(limMin(EJE_J3), 0); Serial.print(' '); Serial.print(limMax(EJE_J3), 0);
   Serial.print(F(" ZMIN ")); Serial.println(limMin(EJE_Z), 1);

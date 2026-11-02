@@ -119,7 +119,7 @@ void verFinales() {
 
 void verSensor() {
   Serial.println(F("   sensor en vivo: acerca/aleja una pieza metalica (Enter para salir)"));
-  Serial.println(F("   el LED del propio sensor tambien debe encender a menos de ~4 mm"));
+  Serial.println(F("   el LED del propio sensor tambien debe encender a menos de ~8 mm (LJ18A3)"));
   vaciarEntrada();
   int previo = -1;
   unsigned long cambios = 0;
