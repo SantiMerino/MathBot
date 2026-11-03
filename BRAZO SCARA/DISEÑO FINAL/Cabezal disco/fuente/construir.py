@@ -1,12 +1,12 @@
 """
-Exporta el cabezal A v3: STL (orientación de impresión) y STEP (marco del cabezal) de cada pieza
+Exporta el cabezal A v3: STL y 3MF (orientación de impresión) y STEP (marco del cabezal) de cada pieza
 impresa, el subensamble del cabezal y el SCARA completo con el cabezal en lugar de la pinza.
 
     python construir.py              # piezas + subensamble + SCARA completo
     python construir.py --sin-scara  # sin el ensamble completo (el STEP de HTM tarda ~1.5 min en leerse)
 
 Salida (carpeta 'Cabezal disco'):
-    STL/NN_pieza.stl, STEP/NN_pieza.step, ensamble/Cabezal A v3.step,
+    STL/NN_pieza.stl, 3MF/NN_pieza.3mf, STEP/NN_pieza.step, ensamble/Cabezal A v3.step,
     ensamble/SCARA con cabezal de disco.step, piezas.json (volumen, gramos, horas)
 """
 
@@ -63,9 +63,47 @@ def gramos(vol_cm3, area_cm2, material):
     return DENSIDAD[material] * (min(cascara, vol_cm3) + 0.25 * max(0.0, vol_cm3 - cascara))
 
 
+def exportar_3mf(s, ruta, nombre):
+    """3MF con vértices compartidos y el nombre de la pieza. El exportador de CadQuery repite los vértices
+    de cada triángulo y Orca lee la malla como abierta (miles de contornos con geometría incorrecta)."""
+    import zipfile
+    from xml.sax.saxutils import quoteattr
+    puntos, tris = s.tessellate(0.01, 0.1)
+    indice, verts, caras = {}, [], []
+    for t in tris:
+        ids = []
+        for i in t:
+            p = puntos[i]
+            clave = (round(p.x, 5), round(p.y, 5), round(p.z, 5))
+            if clave not in indice:
+                indice[clave] = len(verts)
+                verts.append(clave)
+            ids.append(indice[clave])
+        if len(set(ids)) == 3:
+            caras.append(ids)
+    modelo = ['<?xml version="1.0" encoding="UTF-8"?>\n'
+              '<model unit="millimeter" xml:lang="es-ES" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">'
+              f'<resources><object id="1" name={quoteattr(nombre)} type="model"><mesh><vertices>']
+    modelo += [f'<vertex x="{x:.5f}" y="{y:.5f}" z="{z:.5f}"/>' for x, y, z in verts]
+    modelo.append("</vertices><triangles>")
+    modelo += [f'<triangle v1="{a}" v2="{b}" v3="{c}"/>' for a, b, c in caras]
+    modelo.append('</triangles></mesh></object></resources><build><item objectid="1"/></build></model>')
+    with zipfile.ZipFile(ruta, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("[Content_Types].xml",
+                   '<?xml version="1.0" encoding="UTF-8"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+                   '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+                   '<Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/></Types>')
+        z.writestr("_rels/.rels",
+                   '<?xml version="1.0" encoding="UTF-8"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                   '<Relationship Target="/3D/3dmodel.model" Id="rel0" '
+                   'Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>')
+        z.writestr("3D/3dmodel.model", "".join(modelo))
+
+
 def exportar_piezas():
     os.makedirs(os.path.join(RAIZ, "STL"), exist_ok=True)
     os.makedirs(os.path.join(RAIZ, "STEP"), exist_ok=True)
+    os.makedirs(os.path.join(RAIZ, "3MF"), exist_ok=True)
     resumen = []
     for k, v in C.IMPRESAS.items():
         s = v["fn"]().val()
@@ -74,6 +112,7 @@ def exportar_piezas():
         cq.exporters.export(s, os.path.join(RAIZ, "STEP", base + ".step"))
         cama = C.a_cama(k, s)
         cq.exporters.export(cama, os.path.join(RAIZ, "STL", base + ".stl"), tolerance=0.01, angularTolerance=0.1)
+        exportar_3mf(cama, os.path.join(RAIZ, "3MF", base + ".3mf"), base)
         vol, area = s.Volume() / 1000, s.Area() / 100
         mat, per, rel, nota = IMPRESION[k]
         g = gramos(vol, area, mat)
