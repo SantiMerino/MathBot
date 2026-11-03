@@ -8,6 +8,7 @@
   :root {
     --ink: #1b2430; --muted: #5b6876; --line: #d5dce4; --soft: #f3f5f8;
     --accent: #1f3a5f; --tag: #e3eefb; --warn: #8a5a00; --warn-bg: #fff4dc;
+  --ok: #2e7d4f; --ok-bg: #e7f4ec;
   }
   @page { size: A4; margin: 14mm 13mm 14mm 13mm; }
   * { box-sizing: border-box; }
@@ -43,6 +44,14 @@
   td.n, th.n { text-align: right; white-space: nowrap; }
   td.chk { width: 6mm; }
   td.chk::before { content: ""; display: inline-block; width: 3.2mm; height: 3.2mm; border: 1.2px solid var(--muted); border-radius: 0.6mm; }
+  td.chk.ok::before { content: "✓"; background: var(--ok); border-color: var(--ok); color: #fff; font-size: 2.6mm; font-weight: 700; line-height: 3.2mm; text-align: center; }
+  td.chk.part::before { background: linear-gradient(135deg, var(--ok) 50%, #fff 50%); border-color: var(--ok); }
+  td .compra { display: block; color: var(--ok); font-size: 8.4pt; }
+  td .falta { display: block; color: var(--warn); font-size: 8.4pt; }
+  .box.ok { background: var(--ok-bg); border-color: var(--ok); }
+  .leg::before { content: ""; display: inline-block; width: 2.8mm; height: 2.8mm; margin: 0 1mm -0.4mm 0; border: 1.2px solid var(--muted); border-radius: 0.6mm; }
+  .leg.ok::before { background: var(--ok); border-color: var(--ok); }
+  .leg.part::before { background: linear-gradient(135deg, var(--ok) 50%, #fff 50%); border-color: var(--ok); }
   td .note { display: block; color: var(--muted); font-size: 8.4pt; }
   tr.grp td { background: var(--soft); font-weight: 600; color: var(--accent); }
   .tipo { color: var(--muted); font-size: 8.6pt; white-space: nowrap; }
@@ -71,6 +80,14 @@
   Lleven 1 o 2 de más de cada tornillo chico (M2–M3): se pierden y se barren.</p>
   <p>Las medidas salen del CAD de HowToMechatronics, de <code>BRAZO SCARA/DISEÑO FINAL/Cabezal disco/README.md</code> y del presupuesto
   (<code>presupuesto/MathBot_Presupuesto_SCARA.xlsx</code>, filas TOR y CAB-06).</p>
+</div>
+
+<div class="box ok">
+  <p><b>Compra del 3-nov-2026</b> (Almacenes Vidrí, Escalón, $14.30):
+  <span class="leg ok">comprado</span> · <span class="leg part">comprado en parte</span> · <span class="leg">falta</span>.</p>
+  <p>Lo que trajeron es <b>perno estufa</b> (cabeza redonda zincada), no Allen: antes de armar prueben que la cabeza entra en los avellanados de las piezas impresas.
+  Las tuercas M8 son <b>flangeadas</b>, no de seguridad: pónganles fijador azul. Las arandelas de 1/4" no entran en M8 (agujero ≈ 7 mm);
+  úsenlas bajo los M4 × 40 contra la madera. Lo pendiente está sumado al final, en «Para la próxima compra».</p>
 </div>
 
 <h2>Qué es cada cosa <small>· nombre y cómo más le dicen; la foto muestra el tipo de pieza, no siempre la medida</small></h2>
@@ -109,19 +126,19 @@
   <tr><th></th><th>Qué pedir</th><th class="n">Cant.</th><th>Dónde va</th><th>Tipo</th></tr>
   <tr class="grp"><td></td><td colspan="4">Medida fija (vienen en el CAD)</td></tr>
   <tr><td class="chk"></td><td><b>M4 × 60</b> + tuerca de seguridad M4</td><td class="n">4 + 4</td><td>Polea de 110 dientes → acople J1</td><td class="tipo">Allen</td></tr>
-  <tr><td class="chk"></td><td><b>M4 × 50</b> + tuerca de seguridad M4</td><td class="n">4 + 4</td><td>Polea de 92 dientes → acople J2</td><td class="tipo">Allen</td></tr>
-  <tr><td class="chk"></td><td><b>M8 × 45</b> + arandela M8 + tuerca de seguridad M8</td><td class="n">2 + 2 + 2</td><td>Eje de las poleas intermedias de J1 y J2</td><td class="tipo">Allen o hexagonal</td></tr>
-  <tr><td class="chk"></td><td><b>M5 × 25</b></td><td class="n">4</td><td>Plataforma Z → brazo 1</td><td class="tipo">Allen</td></tr>
-  <tr><td class="chk"></td><td><b>M5 × 35</b> + 2 tuercas M5 c/u</td><td class="n">4 + 8</td><td>Tensores de correa <span class="note">Recomendado</span></td><td class="tipo">Allen</td></tr>
-  <tr><td class="chk"></td><td><b>M4 × 40</b> + tuerca M4</td><td class="n">12 + 12</td><td>Base del robot → tabla de madera
-    <span class="note">Largo = grosor de la base + ≈20 mm de madera: midan la base antes de comprar.</span></td><td class="tipo">Allen</td></tr>
+  <tr><td class="chk part"></td><td><b>M4 × 50</b> + tuerca de seguridad M4</td><td class="n">4 + 4</td><td>Polea de 92 dientes → acople J2<span class="compra">Comprado: 4 pernos.</span><span class="falta">Falta: 4 tuercas de seguridad M4.</span></td><td class="tipo">Allen</td></tr>
+  <tr><td class="chk part"></td><td><b>M8 × 45</b> + arandela M8 + tuerca de seguridad M8</td><td class="n">2 + 2 + 2</td><td>Eje de las poleas intermedias de J1 y J2<span class="compra">Comprado: 2 pernos + 2 tuercas M8 flangeadas (con fijador).</span><span class="falta">Falta: 2 arandelas M8.</span></td><td class="tipo">Allen o hexagonal</td></tr>
+  <tr><td class="chk ok"></td><td><b>M5 × 25</b></td><td class="n">4</td><td>Plataforma Z → brazo 1</td><td class="tipo">Allen</td></tr>
+  <tr><td class="chk ok"></td><td><b>M5 × 35</b> + 2 tuercas M5 c/u</td><td class="n">4 + 8</td><td>Tensores de correa <span class="note">Recomendado</span></td><td class="tipo">Allen</td></tr>
+  <tr><td class="chk part"></td><td><b>M4 × 40</b> + tuerca M4</td><td class="n">12 + 12</td><td>Base del robot → tabla de madera
+    <span class="note">Largo = grosor de la base + ≈20 mm de madera: midan la base antes de comprar.</span><span class="compra">Comprado: 12 pernos.</span><span class="falta">Falta: 12 tuercas M4.</span></td><td class="tipo">Allen</td></tr>
   <tr><td class="chk"></td><td><b>M2 × 10</b> + tuerca M2</td><td class="n">8 + 8</td><td>Finales de carrera (2 por switch)
     <span class="note">Solo si los switches no los traen. Sirve también autorroscante para plástico.</span></td><td class="tipo">Cabeza redonda</td></tr>
   <tr class="grp"><td></td><td colspan="4">Tornillos chicos (estimados por los agujeros del CAD: Ø3.2 = M3, Ø4.1 = M4)</td></tr>
   <tr><td class="chk"></td><td><b>M3 × 10</b></td><td class="n">16</td><td>4 por cada NEMA 17
     <span class="note">Si la placa del motor es gruesa, M3 × 12.</span></td><td class="tipo">Allen</td></tr>
   <tr><td class="chk"></td><td><b>M3 × 16</b></td><td class="n">4</td><td>Tuerca de latón del husillo T8</td><td class="tipo">Allen</td></tr>
-  <tr><td class="chk"></td><td><b>M4 × 20</b></td><td class="n">22</td><td>8 abrazaderas de varilla (16) y J2 Coupler → brazo 2 (6)</td><td class="tipo">Allen</td></tr>
+  <tr><td class="chk ok"></td><td><b>M4 × 20</b></td><td class="n">22</td><td>8 abrazaderas de varilla (16) y J2 Coupler → brazo 2 (6)</td><td class="tipo">Allen</td></tr>
   <tr><td class="chk"></td><td><b>M4 × 16 a 30</b> (varios largos)</td><td class="n">20–30</td><td>Tapas, placas del eje Z, polea de J3
     <span class="note">El largo exacto se ve al armar: aquí rinde el surtido.</span></td><td class="tipo">Allen</td></tr>
   <tr><td class="chk"></td><td>Tuercas M3 y M4 para los tornillos chicos</td><td class="n">4 + ≈ 50</td><td>Donde la pieza impresa trae alojamiento de tuerca
@@ -132,8 +149,8 @@
 <h2 class="page">2 · Cabezal A v3 <small>· disco con plumón, electroimán y sensor</small></h2>
 <table class="keep">
   <tr><th></th><th>Qué pedir</th><th class="n">Cant.</th><th>Dónde va</th><th>Tipo</th></tr>
-  <tr><td class="chk"></td><td><b>M4 × 35</b> + arandela M4 + tuerca M4</td><td class="n">4 + 4 + 4</td><td>Placa + separador + connector → brida del J3 Coupler
-    <span class="note">Arandela solo bajo la cabeza; tuerca arriba con fijador y sin arandela (el final de carrera de J3 pasa a 1.8 mm).</span></td><td class="tipo">Allen</td></tr>
+  <tr><td class="chk part"></td><td><b>M4 × 35</b> + arandela M4 + tuerca M4</td><td class="n">4 + 4 + 4</td><td>Placa + separador + connector → brida del J3 Coupler
+    <span class="note">Arandela solo bajo la cabeza; tuerca arriba con fijador y sin arandela (el final de carrera de J3 pasa a 1.8 mm).</span><span class="compra">Comprado: 4 pernos + arandelas SAE #8 (≈ M4).</span><span class="falta">Falta: 4 tuercas M4.</span></td><td class="tipo">Allen</td></tr>
   <tr><td class="chk"></td><td><b>M3 × 10</b></td><td class="n">4</td><td>Soporte del plumón y del servo → placa</td><td class="tipo">Allen</td></tr>
   <tr><td class="chk"></td><td><b>M3 × 12</b></td><td class="n">1</td><td>Apriete del collar del plumón</td><td class="tipo">Allen</td></tr>
   <tr><td class="chk"></td><td><b>M3 × 16 avellanado</b></td><td class="n">3</td><td>Connector → separador (2) y puente → poste (1)</td><td class="tipo">Avellanado</td></tr>
@@ -142,7 +159,7 @@
   <tr><td class="chk"></td><td><b>M3 × 35</b></td><td class="n">1</td><td>Electroimán KK-P20/15 → placa
     <span class="note">Si su electroimán trae rosca M4, M4 × 35.</span></td><td class="tipo">Allen</td></tr>
   <tr><td class="chk"></td><td>Tuerca <b>M3</b></td><td class="n">11</td><td>Separador 2, placa 4, abrazadera 3, collar 1, poste 1</td><td class="tipo">Tuerca</td></tr>
-  <tr><td class="chk"></td><td>Fijador de rosca azul</td><td class="n">1</td><td>Tuercas M4 sobre la brida del J3 Coupler</td><td class="tipo">Fijador</td></tr>
+  <tr><td class="chk ok"></td><td>Fijador de rosca azul</td><td class="n">1</td><td>Tuercas M4 sobre la brida del J3 Coupler</td><td class="tipo">Fijador</td></tr>
   <tr><td class="chk"></td><td>Tornillos M2 del servo</td><td class="n">—</td><td>Vienen con el SG90 / MG90S</td><td class="tipo">—</td></tr>
 </table>
 
@@ -185,29 +202,44 @@
   <tr><td class="chk"></td><td><b>M3 × 25</b></td><td>Allen</td><td class="n">—</td><td class="n">1</td><td class="n"><b>1</b></td></tr>
   <tr><td class="chk"></td><td><b>M3 × 35</b></td><td>Allen</td><td class="n">—</td><td class="n">1</td><td class="n"><b>1</b></td></tr>
   <tr><td class="chk"></td><td><b>M4 × 16 a 30</b></td><td>Allen (o surtido)</td><td class="n">20–30</td><td class="n">—</td><td class="n"><b>20–30</b></td></tr>
-  <tr><td class="chk"></td><td><b>M4 × 20</b></td><td>Allen</td><td class="n">22</td><td class="n">—</td><td class="n"><b>22</b></td></tr>
-  <tr><td class="chk"></td><td><b>M4 × 35</b></td><td>Allen</td><td class="n">—</td><td class="n">4</td><td class="n"><b>4</b></td></tr>
-  <tr><td class="chk"></td><td><b>M4 × 40</b></td><td>Allen</td><td class="n">12</td><td class="n">—</td><td class="n"><b>12</b></td></tr>
-  <tr><td class="chk"></td><td><b>M4 × 50</b></td><td>Allen</td><td class="n">4</td><td class="n">—</td><td class="n"><b>4</b></td></tr>
+  <tr><td class="chk ok"></td><td><b>M4 × 20</b></td><td>Allen</td><td class="n">22</td><td class="n">—</td><td class="n"><b>22</b></td></tr>
+  <tr><td class="chk ok"></td><td><b>M4 × 35</b></td><td>Allen</td><td class="n">—</td><td class="n">4</td><td class="n"><b>4</b></td></tr>
+  <tr><td class="chk ok"></td><td><b>M4 × 40</b></td><td>Allen</td><td class="n">12</td><td class="n">—</td><td class="n"><b>12</b></td></tr>
+  <tr><td class="chk ok"></td><td><b>M4 × 50</b></td><td>Allen</td><td class="n">4</td><td class="n">—</td><td class="n"><b>4</b></td></tr>
   <tr><td class="chk"></td><td><b>M4 × 60</b></td><td>Allen</td><td class="n">4</td><td class="n">—</td><td class="n"><b>4</b></td></tr>
-  <tr><td class="chk"></td><td><b>M5 × 25</b></td><td>Allen</td><td class="n">4</td><td class="n">—</td><td class="n"><b>4</b></td></tr>
-  <tr><td class="chk"></td><td><b>M5 × 35</b></td><td>Allen</td><td class="n">4</td><td class="n">—</td><td class="n"><b>4</b></td></tr>
-  <tr><td class="chk"></td><td><b>M8 × 45</b></td><td>Allen o hexagonal</td><td class="n">2</td><td class="n">—</td><td class="n"><b>2</b></td></tr>
+  <tr><td class="chk ok"></td><td><b>M5 × 25</b></td><td>Allen</td><td class="n">4</td><td class="n">—</td><td class="n"><b>4</b></td></tr>
+  <tr><td class="chk ok"></td><td><b>M5 × 35</b></td><td>Allen</td><td class="n">4</td><td class="n">—</td><td class="n"><b>4</b></td></tr>
+  <tr><td class="chk ok"></td><td><b>M8 × 45</b></td><td>Allen o hexagonal</td><td class="n">2</td><td class="n">—</td><td class="n"><b>2</b></td></tr>
   <tr class="grp"><td></td><td colspan="5">Tuercas, arandelas y fijador</td></tr>
   <tr><td class="chk"></td><td>Tuerca <b>M2</b></td><td>Hexagonal</td><td class="n">8</td><td class="n">—</td><td class="n"><b>8</b></td></tr>
   <tr><td class="chk"></td><td>Tuerca <b>M3</b></td><td>Hexagonal</td><td class="n">4</td><td class="n">11</td><td class="n"><b>15</b></td></tr>
   <tr><td class="chk"></td><td>Tuerca <b>M4</b></td><td>Hexagonal</td><td class="n">12 + ≈ 50</td><td class="n">4</td><td class="n"><b>≈ 66</b></td></tr>
   <tr><td class="chk"></td><td>Tuerca <b>M4</b></td><td>De seguridad</td><td class="n">8</td><td class="n">—</td><td class="n"><b>8</b></td></tr>
-  <tr><td class="chk"></td><td>Tuerca <b>M5</b></td><td>Hexagonal</td><td class="n">8</td><td class="n">—</td><td class="n"><b>8</b></td></tr>
-  <tr><td class="chk"></td><td>Tuerca <b>M8</b></td><td>De seguridad</td><td class="n">2</td><td class="n">—</td><td class="n"><b>2</b></td></tr>
-  <tr><td class="chk"></td><td>Arandela <b>M4</b></td><td>Plana</td><td class="n">—</td><td class="n">4</td><td class="n"><b>4</b></td></tr>
+  <tr><td class="chk ok"></td><td>Tuerca <b>M5</b></td><td>Hexagonal</td><td class="n">8</td><td class="n">—</td><td class="n"><b>8</b></td></tr>
+  <tr><td class="chk part"></td><td>Tuerca <b>M8</b></td><td>De seguridad<span class="compra">Compradas flangeadas</span></td><td class="n">2</td><td class="n">—</td><td class="n"><b>2</b></td></tr>
+  <tr><td class="chk ok"></td><td>Arandela <b>M4</b></td><td>Plana<span class="compra">SAE #8, 10 piezas</span></td><td class="n">—</td><td class="n">4</td><td class="n"><b>4</b></td></tr>
   <tr><td class="chk"></td><td>Arandela <b>M8</b></td><td>Plana</td><td class="n">2</td><td class="n">—</td><td class="n"><b>2</b></td></tr>
-  <tr><td class="chk"></td><td>Fijador de rosca azul</td><td>Frasco chico</td><td class="n">—</td><td class="n">1</td><td class="n"><b>1</b></td></tr>
+  <tr><td class="chk ok"></td><td>Fijador de rosca azul</td><td>Frasco chico<span class="compra">Permatex 242, 10 ml</span></td><td class="n">—</td><td class="n">1</td><td class="n"><b>1</b></td></tr>
 </table>
 <div class="box">
   <p>Si compran el surtido M3/M4/M5, solo hace falta pedir aparte lo largo: M3 × 35, M4 × 35, M4 × 40, M4 × 50, M4 × 60, M5 × 25, M5 × 35 y M8 × 45,
   más los avellanados M3 × 16, las tuercas de seguridad y el fijador. Las tuercas M3/M4 de los tornillos chicos son estimadas: el surtido normalmente trae de sobra.</p>
 </div>
+
+<h2>Para la próxima compra <small>· lo que quedó pendiente el 3-nov-2026</small></h2>
+<table class="keep">
+  <tr><th></th><th>Qué pedir</th><th class="n">Cant.</th><th>Para</th></tr>
+  <tr><td class="chk"></td><td><b>M4 × 60</b> + tuerca de seguridad M4</td><td class="n">4 + 4</td><td>Polea de 110 dientes → acople J1</td></tr>
+  <tr><td class="chk"></td><td>Tuerca de seguridad <b>M4</b></td><td class="n">4</td><td>Los M4 × 50 de la polea de J2</td></tr>
+  <tr><td class="chk"></td><td>Tuerca <b>M4</b></td><td class="n">16 + ≈ 50</td><td>Base (12), cabezal (4) y tornillos chicos</td></tr>
+  <tr><td class="chk"></td><td>Arandela <b>M8</b></td><td class="n">2</td><td>Ejes de las poleas intermedias</td></tr>
+  <tr><td class="chk"></td><td><b>M3 × 10</b></td><td class="n">20</td><td>NEMA 17 (16), soporte del plumón y del servo (4)</td></tr>
+  <tr><td class="chk"></td><td><b>M3 × 12</b> · <b>M3 × 16</b> · <b>M3 × 20</b> · <b>M3 × 25</b> · <b>M3 × 35</b></td><td class="n">1 · 4 · 2 · 1 · 1</td><td>Collar del plumón · tuerca del T8 · abrazadera del sensor · su apriete · electroimán</td></tr>
+  <tr><td class="chk"></td><td><b>M3 × 16 avellanado</b></td><td class="n">3</td><td>Connector → separador y puente → poste</td></tr>
+  <tr><td class="chk"></td><td>Tuerca <b>M3</b></td><td class="n">15</td><td>Cabezal (11) y husillo T8 (4)</td></tr>
+  <tr><td class="chk"></td><td><b>M4 × 16 a 30</b> (o surtido M3/M4)</td><td class="n">20–30</td><td>Tapas, placas del eje Z, polea de J3</td></tr>
+  <tr><td class="chk"></td><td><b>M2 × 10</b> + tuerca M2</td><td class="n">8 + 8</td><td>Finales de carrera, solo si no los traen</td></tr>
+</table>
 
 
 </main>
