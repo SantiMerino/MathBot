@@ -31,8 +31,12 @@ hardware que ya está montado. No hay que pasar a la siguiente hasta que la ante
 |---|---|---|---|
 | 1 · Motores | `prueba_nema/` | Mega + shield + drivers + NEMA sueltos sobre la mesa, 12 V | Cada motor ida y vuelta, luego X+Y+Z juntos. Sin bibliotecas, finales ni PARO. Ajusta Vref antes |
 | 2 · Preliminar | `prueba_componentes/` y `prueba_servo/` | Lo anterior + finales, sensor, electroimán, botones, LED, buzzer, divisor de 12 V, servo | Menú uno por uno: sentido de giro (`INVERTIR_DIR`), finales, sensor, imán, 12 V. `prueba_servo` da los ángulos ARRIBA/ABAJO |
+| 2b · Sensor | `prueba_sensor/` | Sensor LJ18A3 con su PC817; para el paso de ruido, electroimán y servo | Asistente de 6 pasos (`a`): reposo, detección, distancia con calzas, las 4 piezas de la misión a 3 mm, ruido con imán y servo, rebotes. Repetirlo con el sensor ya montado |
 | 3 · Disco | `prueba_cabezal/` | Brazo 2 + J3 + cabezal v3 con sus tres herramientas en un soporte | Homing de J3 y dónde dispara su final, cambio de herramienta, 18 mm de levante del plumón (`c 20`), agarre del imán, distancia de detección del sensor, que nada roce al girar |
 | 4 · Robot completo | `mathbot_mega/` (v3.0) | Todo el SCARA | Homing, jog, puntos, rosa y misión; se maneja desde el [panel de operario](../panel/README.md) o el Monitor Serie |
+
+`prueba_cabezal` tiene además `x`, un chequeo guiado de 9 pasos que termina imprimiendo los `CFG` a copiar.
+Guía visual de las etapas 2b y 3 (cableado del sensor, montaje, servo y chequeo): [`guia_cabezal/index.html`](guia_cabezal/index.html).
 
 Lo que sale de cada etapa se pasa a la siguiente por `CFG` (sin recompilar): `home3` (ángulo donde
 dispara el final de J3, etapa 3), `servoup` / `servodn` (etapas 2–3), `inv` (bits de sentido, etapa 2).
