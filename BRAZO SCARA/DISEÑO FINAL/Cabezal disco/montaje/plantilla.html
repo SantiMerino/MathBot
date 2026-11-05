@@ -1,0 +1,514 @@
+<title>Montaje del cabezal A v3</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Banco de taller: escenario 3D a la izquierda, hoja de montaje a la derecha; en el teléfono, una columna. */
+:root {
+  --bg: #e7ecef; --panel: #f7f9fa; --stage: #dbe2e7; --fg: #17202a; --muted: #586674; --line: #c6d0d8;
+  --accent: #c2700f; --nut: #17799f; --chip: #edf1f4; --on-accent: #ffffff;
+  --f-display: "Barlow Semi Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Barlow", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1317; --panel: #151a20; --stage: #1b2229; --fg: #e3e8ed; --muted: #94a1ae; --line: #29323c;
+  --accent: #f0a540; --nut: #4fb6de; --chip: #1e252d; --on-accent: #1a1206; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1317; --panel: #151a20; --stage: #1b2229; --fg: #e3e8ed; --muted: #94a1ae; --line: #29323c;
+  --accent: #f0a540; --nut: #4fb6de; --chip: #1e252d; --on-accent: #1a1206; color-scheme: dark }
+
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.45; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.app { height: 100%; display: grid; grid-template-rows: auto 1fr; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 12px 16px; gap: 12px; box-sizing: border-box; }
+.barra { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+.barra h1 { font-family: var(--f-display); font-weight: 700; font-size: 26px; letter-spacing: 0.01em; margin: 0; text-wrap: balance; }
+.barra .marca { font-family: var(--f-mono); font-size: 12px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.barra .prog { margin-left: auto; font-family: var(--f-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.cuerpo { display: grid; grid-template-columns: minmax(0, 1fr) 390px; gap: 12px; min-height: 0; }
+.escenario { position: relative; background: var(--stage); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; min-height: 0; touch-action: none; }
+.escenario canvas { display: block; width: 100%; height: 100%; }
+.etiquetas { position: absolute; inset: 0; pointer-events: none; }
+.etq { position: absolute; transform: translate(-50%, -100%); white-space: nowrap; font-family: var(--f-mono); font-size: 12px; padding: 3px 7px; border-radius: 3px; background: var(--panel); color: var(--fg); border: 1px solid var(--line); box-shadow: 0 1px 3px rgba(0,0,0,.12); transition: opacity .2s; }
+.etq::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 1px; height: 6px; background: var(--muted); }
+.etq.tornillo { border-color: var(--accent); }
+.etq.tuerca { border-color: var(--nut); }
+.etq.activa { background: var(--fg); color: var(--panel); border-color: var(--fg); }
+.etq.cota { transform: translate(8px, -50%); background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 500; }
+.etq.cota::after { display: none; }
+.tip { position: absolute; pointer-events: none; font-family: var(--f-mono); font-size: 12px; padding: 4px 8px; border-radius: 3px; background: var(--fg); color: var(--panel); white-space: nowrap; transform: translate(12px, 12px); }
+
+.herr { position: absolute; display: flex; flex-wrap: wrap; gap: 4px; }
+.herr.vistas { top: 10px; left: 10px; right: 10px; }
+.herr.capas { top: 46px; left: 10px; }
+.btn { border: 1px solid var(--line); background: var(--panel); border-radius: 4px; padding: 4px 10px; font-size: 13px; cursor: pointer; line-height: 1.3; }
+.btn:hover { border-color: var(--muted); }
+.btn[aria-pressed="true"] { background: var(--fg); color: var(--panel); border-color: var(--fg); }
+.btn.prim { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+.control { position: absolute; left: 10px; right: 10px; bottom: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+.control label { font-family: var(--f-mono); font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; flex: 1 1 220px; min-width: 0; }
+.control input[type="range"] { flex: 1; min-width: 0; accent-color: var(--accent); }
+.control output { font-family: var(--f-mono); font-size: 13px; color: var(--fg); min-width: 52px; font-variant-numeric: tabular-nums; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chips .btn { font-family: var(--f-mono); font-size: 12px; padding: 3px 8px; }
+.ayuda { position: absolute; right: 12px; bottom: 66px; font-size: 12px; color: var(--muted); text-align: right; pointer-events: none; }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: auto; min-height: 0; display: flex; flex-direction: column; }
+.indice { padding: 14px 16px 12px; border-bottom: 1px solid var(--line); display: grid; gap: 8px; }
+.grupo { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 8px; }
+.grupo span { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.nums { display: flex; flex-wrap: wrap; gap: 4px; }
+.num { width: 32px; height: 30px; border: 1px solid var(--line); border-radius: 4px; background: var(--chip); font-family: var(--f-mono); font-size: 13px; cursor: pointer; font-variant-numeric: tabular-nums; }
+.num.hecho { color: var(--muted); }
+.num[aria-current="step"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+.detalle { padding: 16px; display: grid; gap: 14px; }
+.ceja { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.detalle h2 { font-family: var(--f-display); font-weight: 600; font-size: 24px; line-height: 1.15; margin: 2px 0 0; text-wrap: balance; }
+.detalle ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.detalle li::marker { font-family: var(--f-mono); color: var(--muted); font-size: 13px; }
+.tabla { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tabla th { text-align: left; font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: 0 8px 6px 0; border-bottom: 1px solid var(--line); }
+.tabla td { padding: 7px 8px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tabla td:first-child { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--accent); font-weight: 500; }
+.tabla td:last-child { color: var(--muted); }
+.leyenda { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+.leyenda i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.nav { display: flex; gap: 8px; margin-top: auto; padding: 0 16px 16px; }
+.nav .btn { flex: 1; padding: 8px 10px; font-size: 14px; }
+
+@media (max-width: 860px) {
+  html, body { height: auto; }
+  .app { height: auto; }
+  .cuerpo { grid-template-columns: 1fr; }
+  .escenario { height: 66svh; min-height: 380px; }
+  .ayuda { display: none; }
+  .herr.capas { top: 84px; }
+}
+@media (prefers-reduced-motion: reduce) { .etq { transition: none; } }
+</style>
+
+<div class="app">
+  <header class="barra">
+    <span class="marca">MathBot · Cabezal A v3</span>
+    <h1>Montaje del cabezal</h1>
+    <span class="prog">Paso <b id="nPaso">1</b> de <span id="totPasos">11</span></span>
+  </header>
+  <main class="cuerpo">
+    <section class="escenario" id="escenario" aria-label="Vista 3D del montaje">
+      <canvas id="lienzo"></canvas>
+      <div class="etiquetas" id="etiquetas"></div>
+      <div class="tip" id="tip" hidden></div>
+      <div class="herr vistas" role="toolbar" aria-label="Vistas">
+        <button class="btn" id="v-paso" data-vista="paso">Vista del paso</button>
+        <button class="btn" data-vista="iso">Iso</button>
+        <button class="btn" data-vista="arriba">Arriba</button>
+        <button class="btn" data-vista="abajo">Abajo</button>
+        <button class="btn" data-vista="frente">Frente</button>
+        <button class="btn" data-vista="lado">Lado</button>
+      </div>
+      <div class="herr capas" role="toolbar" aria-label="Capas">
+        <button class="btn" id="t-rayos" aria-pressed="false">Rayos X</button>
+        <button class="btn" id="t-solo" aria-pressed="false">Solo este acople</button>
+        <button class="btn" id="t-etq" aria-pressed="true">Etiquetas</button>
+      </div>
+      <div class="ayuda">Arrastra para girar · rueda para acercar · clic derecho para mover</div>
+      <div class="control" id="ctlArmar">
+        <button class="btn prim" id="armar">Armar</button>
+        <label for="avance">Despiece <input id="avance" type="range" min="0" max="1000" value="1000"> armado</label>
+      </div>
+      <div class="control" id="ctlGiro" hidden>
+        <button class="btn prim" id="girar">Girar</button>
+        <label for="phi">φ J3 <input id="phi" type="range" min="-120" max="121" value="0" step="0.5"><output id="phiVal">0°</output></label>
+        <div class="chips" id="chips"></div>
+      </div>
+    </section>
+    <aside class="panel">
+      <nav class="indice" aria-label="Pasos">
+        <div class="grupo"><span>Banco</span><div class="nums" id="numsBanco"></div></div>
+        <div class="grupo"><span>Robot</span><div class="nums" id="numsRobot"></div></div>
+      </nav>
+      <article class="detalle">
+        <div>
+          <div class="ceja" id="ceja"></div>
+          <h2 id="titulo"></h2>
+        </div>
+        <ol id="texto"></ol>
+        <table class="tabla" id="lista"></table>
+        <div class="leyenda">
+          <span><i style="background: var(--accent)"></i>Tornillos de este paso</span>
+          <span><i style="background: var(--nut)"></i>Tuercas de este paso</span>
+          <span><i style="background: #a9b0b8"></i>Ya puestos</span>
+        </div>
+      </article>
+      <div class="nav">
+        <button class="btn" id="ant">← Anterior</button>
+        <button class="btn prim" id="sig">Siguiente →</button>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const D = /*DATOS*/null;
+const $ = id => document.getElementById(id);
+const PASOS = D.pasos;
+const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- escena
+const lienzo = $('lienzo'), escenario = $('escenario');
+const ren = new THREE.WebGLRenderer({ canvas: lienzo, antialias: true });
+ren.setPixelRatio(Math.min(devicePixelRatio, 2));
+const escena = new THREE.Scene();
+const cam = new THREE.PerspectiveCamera(32, 1, 2, 5000);
+cam.up.set(0, 0, 1);
+const ctrl = new OrbitControls(cam, lienzo);
+ctrl.enableDamping = true;
+escena.add(new THREE.HemisphereLight(0xffffff, 0x6b665e, 1.5));
+const sol = new THREE.DirectionalLight(0xffffff, 1.6); sol.position.set(-200, -300, 600); escena.add(sol);
+const contra = new THREE.DirectionalLight(0xdfefff, 0.9); contra.position.set(300, 400, -200); escena.add(contra);
+const rotor = new THREE.Group(); escena.add(rotor);    // todo lo que gira con J3
+
+// ---------- mallas empaquetadas (uint16 en base64)
+function geometria(p) {
+  const bin = atob(p.q), n = bin.length / 2, f = new Float32Array(n);
+  for (let i = 0; i < n; i++) { const u = bin.charCodeAt(2 * i) | (bin.charCodeAt(2 * i + 1) << 8), a = i % 3; f[i] = p.lo[a] + u / 65535 * p.span[a]; }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(f, 3));
+  g.computeVertexNormals();
+  g.computeBoundingBox();
+  return g;
+}
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const MAT = {
+  acero: new THREE.MeshStandardMaterial({ color: 0xa9b0b8, metalness: 0.75, roughness: 0.35 }),
+  tornillo: new THREE.MeshStandardMaterial({ color: 0xc2700f, metalness: 0.4, roughness: 0.4, emissive: 0x000000 }),
+  tuerca: new THREE.MeshStandardMaterial({ color: 0x17799f, metalness: 0.4, roughness: 0.4 }),
+  arista: new THREE.LineBasicMaterial({ color: 0x20262d, transparent: true, opacity: 0.55 }),
+  cota: new THREE.LineBasicMaterial({ color: 0xc2700f, depthTest: false }),
+};
+
+const OBJ = {};       // id -> { obj, centro (local), nombre, clase }
+const piezasMat = [];
+for (const [k, p] of Object.entries(D.piezas)) {
+  const c = new THREE.Color(p.color[0], p.color[1], p.color[2]);
+  const m = new THREE.MeshStandardMaterial({ color: c, roughness: p.tipo === 'robot' ? 0.7 : 0.55, metalness: p.tipo === 'comprada' ? 0.2 : 0, side: THREE.DoubleSide, flatShading: true });
+  piezasMat.push(m);
+  let mesh;
+  if (p.helice) {
+    const h = p.helice, r = (h.d - h.alambre) / 2, pts = [];
+    for (let i = 0; i <= h.vueltas * 24; i++) { const t = i / (h.vueltas * 24), a = t * h.vueltas * Math.PI * 2; pts.push(new THREE.Vector3(h.x + r * Math.cos(a), h.y + r * Math.sin(a), h.z0 + (h.z1 - h.z0) * t)); }
+    const g = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), h.vueltas * 24, h.alambre / 2 + 0.15, 6, false);
+    g.computeBoundingBox();
+    m.flatShading = false; m.metalness = 0.8; m.roughness = 0.3;
+    mesh = new THREE.Mesh(g, m);
+  } else {
+    const g = geometria(p.m);
+    mesh = new THREE.Mesh(g, m);
+    if (p.tipo !== 'comprada' || k === 'servo') mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 35), MAT.arista));
+  }
+  const grupo = new THREE.Group(); grupo.add(mesh);
+  (k === 'arm2' ? escena : rotor).add(grupo);
+  const centro = new THREE.Vector3(); mesh.geometry.boundingBox.getCenter(centro);
+  mesh.userData.id = k;
+  OBJ[k] = { obj: grupo, malla: mesh, centro, nombre: p.nombre, clase: 'pieza', tipo: p.tipo };
+}
+
+// ---------- tornillería
+const lathe = (pts, n = 24) => { const g = new THREE.LatheGeometry(pts.map(([r, z]) => new THREE.Vector2(r, z)), n); g.rotateX(Math.PI / 2); return g; };
+const TIPOS = { allen: 'DIN 912', avellanado: 'avellanado DIN 7991', cilindrica: 'del servo' };
+function geoFij(f) {
+  const d = f.d;
+  if (f.clase === 'tornillo') {
+    const r = d / 2, L = f.L;
+    if (f.tipo === 'avellanado') return lathe([[0, 0], [d, 0], [r, 0.58 * d], [r, L], [0, L]]);
+    if (f.tipo === 'cilindrica') return lathe([[0, -1.4], [2, -1.4], [2, 0], [r, 0], [r, L], [0, L]]);
+    return lathe([[0, -d * 0.55], [0.55 * d, -d * 0.55], [0.55 * d, -d], [0.8 * d, -d], [0.8 * d, 0], [r, 0], [r, L], [0, L]]);
+  }
+  if (f.clase === 'arandela') return lathe([[d / 2 + 0.2, 0], [f.de / 2, 0], [f.de / 2, f.h], [d / 2 + 0.2, f.h], [d / 2 + 0.2, 0]]);
+  const s = new THREE.Shape(), R = f.ec / Math.sqrt(3);
+  for (let i = 0; i < 6; i++) { const a = Math.PI / 6 + i * Math.PI / 3; i ? s.lineTo(R * Math.cos(a), R * Math.sin(a)) : s.moveTo(R * Math.cos(a), R * Math.sin(a)); }
+  const h = new THREE.Path(); h.absarc(0, 0, d / 2, 0, Math.PI * 2, true); s.holes.push(h);
+  return new THREE.ExtrudeGeometry(s, { depth: f.h, bevelEnabled: false, curveSegments: 16 });
+}
+const nombreFij = f => f.clase === 'tornillo' ? (f.tipo === 'cilindrica' ? `Tornillo M${f.d} del servo` : `M${f.d} × ${f.L} ${TIPOS[f.tipo]}`)
+  : f.clase === 'arandela' ? `Arandela M${f.d}` : `Tuerca M${f.d}`;
+for (const [id, f] of Object.entries(D.fij)) {
+  const gf = geoFij(f); gf.computeBoundingBox();
+  const mesh = new THREE.Mesh(gf, MAT.acero);
+  const a = new THREE.Vector3(...f.a).normalize();
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), a);
+  mesh.position.set(...f.p);
+  mesh.userData.id = id;
+  const grupo = new THREE.Group(); grupo.add(mesh); rotor.add(grupo);
+  const largo = f.clase === 'tornillo' ? f.L / 2 : f.h / 2;
+  OBJ[id] = { obj: grupo, malla: mesh, centro: new THREE.Vector3(...f.p).addScaledVector(a, largo), nombre: nombreFij(f), clase: f.clase };
+}
+
+// ---------- cotas
+const cotas = new THREE.Group(); rotor.add(cotas);
+function dibujarCotas(paso) {
+  cotas.clear();
+  for (const c of paso.cotas || []) {
+    const a = new THREE.Vector3(...c.a), b = new THREE.Vector3(...c.b), t = new THREE.Vector3(4, 0, 0);
+    const pts = [a, b, a.clone().sub(t), a.clone().add(t), b.clone().sub(t), b.clone().add(t)];
+    const g = new THREE.BufferGeometry().setFromPoints([pts[0], pts[1], pts[2], pts[3], pts[4], pts[5]]);
+    g.setIndex([0, 1, 2, 3, 4, 5]);
+    const l = new THREE.LineSegments(g, MAT.cota); l.renderOrder = 10; cotas.add(l);
+  }
+}
+
+// ---------- estado del paso
+let iPaso = 0, avance = 1, rayos = false, solo = false, conEtq = true, phi = 0;
+const vistos = new Set(), fijVistos = new Set(), propios = new Set(), actuales = new Set();
+function calcularVisibles() {
+  vistos.clear(); fijVistos.clear(); propios.clear(); actuales.clear();
+  const p = PASOS[iPaso];
+  for (let i = 0; i <= iPaso; i++) {
+    const q = PASOS[i];
+    if (!q.solo || i === iPaso) for (const k of q.piezas) vistos.add(k);
+    for (const e of q.seq) for (const id of e.objs) if (D.fij[id]) fijVistos.add(id);
+  }
+  if (p.solo) { vistos.clear(); fijVistos.clear(); for (const k of p.piezas) vistos.add(k); }
+  for (const k of p.piezas) propios.add(k);
+  for (const e of p.seq) for (const id of e.objs) { propios.add(id); if (e.clase !== 'pieza' && D.fij[id]) { actuales.add(id); fijVistos.add(id); } }
+  // los pasos de banco solo muestran lo del banco
+  if (p.lugar === 'banco') for (const k of ['conector_j3', 'j3_coupler', 'arm2', 'separador']) vistos.delete(k);
+}
+function aplicarVisibilidad() {
+  for (const [id, o] of Object.entries(OBJ)) {
+    let v = D.fij[id] ? fijVistos.has(id) : vistos.has(id);
+    if (solo && !propios.has(id)) v = false;
+    o.obj.visible = v;
+    if (D.fij[id]) o.malla.material = actuales.has(id) ? (D.fij[id].clase === 'tuerca' ? MAT.tuerca : MAT.tornillo) : MAT.acero;
+  }
+  for (const m of piezasMat) { m.transparent = rayos; m.opacity = rayos ? 0.28 : 1; m.depthWrite = !rayos; m.needsUpdate = true; }
+}
+
+const suave = t => t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t);
+function aplicarAvance() {
+  const p = PASOS[iPaso], n = p.seq.length;
+  const off = {};
+  p.seq.forEach((e, i) => {
+    const f = 1 - suave(avance * n - i);
+    if (f <= 0) return;
+    for (const id of e.objs) { const o = off[id] || (off[id] = [0, 0, 0]); o[0] += e.d[0] * f; o[1] += e.d[1] * f; o[2] += e.d[2] * f; }
+  });
+  for (const [id, o] of Object.entries(OBJ)) { const d = off[id]; o.obj.position.set(d ? d[0] : 0, d ? d[1] : 0, d ? d[2] : 0); }
+  rotor.rotation.z = p.giro ? THREE.MathUtils.degToRad(phi) : 0;
+}
+
+// ---------- etiquetas
+const capa = $('etiquetas');
+let etiquetas = [];
+function crearEtiquetas() {
+  capa.replaceChildren(); etiquetas = [];
+  const p = PASOS[iPaso];
+  p.seq.forEach((e, i) => {
+    if (!e.txt) return;
+    const div = document.createElement('div'); div.className = 'etq ' + e.clase; div.textContent = e.txt; capa.appendChild(div);
+    etiquetas.push({ div, i, objs: e.objs });
+  });
+  for (const c of p.cotas || []) {
+    const div = document.createElement('div'); div.className = 'etq cota'; div.textContent = c.txt; capa.appendChild(div);
+    const m = new THREE.Vector3(...c.a).add(new THREE.Vector3(...c.b)).multiplyScalar(0.5);
+    etiquetas.push({ div, cota: m });
+  }
+}
+const vtmp = new THREE.Vector3();
+function moverEtiquetas() {
+  const r = escenario.getBoundingClientRect(), usados = [];
+  const n = PASOS[iPaso].seq.length, activa = Math.min(n - 1, Math.floor(avance * n));
+  for (const e of etiquetas) {
+    if (!conEtq) { e.div.hidden = true; continue; }
+    if (e.cota) { vtmp.copy(e.cota).applyMatrix4(rotor.matrixWorld); }
+    else {
+      const ids = e.objs.length > 12 ? ['placa'] : e.objs;
+      vtmp.set(0, 0, 0); let k = 0;
+      for (const id of ids) { const o = OBJ[id]; if (!o || !o.obj.visible) continue; vtmp.add(o.centro.clone().add(o.obj.position)); k++; }
+      if (!k) { e.div.hidden = true; continue; }
+      vtmp.multiplyScalar(1 / k).applyMatrix4(rotor.matrixWorld);
+    }
+    vtmp.project(cam);
+    if (vtmp.z > 1) { e.div.hidden = true; continue; }
+    let x = (vtmp.x + 1) / 2 * r.width, y = (1 - vtmp.y) / 2 * r.height - 10;
+    if (!e.cota) for (const u of usados) if (Math.abs(u[0] - x) < 150 && Math.abs(u[1] - y) < 24) y = u[1] - 26;
+    usados.push([x, y]);
+    e.div.hidden = false;
+    e.div.style.left = x + 'px'; e.div.style.top = y + 'px';
+    if (!e.cota) e.div.classList.toggle('activa', e.i === activa && avance < 1);
+  }
+}
+
+// ---------- cámara
+let vuelo = null;
+function volar(pos, obj, ms = 550) {
+  if (reducido) { cam.position.copy(pos); ctrl.target.copy(obj); return; }
+  vuelo = { p0: cam.position.clone(), t0: ctrl.target.clone(), p1: pos, t1: obj, ini: performance.now(), ms };
+}
+// Encuadre del paso: la dirección sale de D.vistas y la distancia de la caja de lo que se mueve en el paso,
+// armado y despiezado, para que todo quepa en la pantalla.
+function encuadre() {
+  const p = PASOS[iPaso], [pv, tv] = D.vistas[p.vista];
+  const tot = {}, caja = new THREE.Box3(), b = new THREE.Box3();
+  for (const e of p.seq) for (const id of e.objs) { const t = tot[id] || (tot[id] = new THREE.Vector3()); t.add(new THREE.Vector3(...e.d)); }
+  const ids = new Set(p.seq.length ? Object.keys(tot) : p.piezas);
+  if (!p.giro) ids.delete('arm2');
+  rotor.rotation.z = 0; for (const o of Object.values(OBJ)) o.obj.position.set(0, 0, 0);
+  escena.updateMatrixWorld(true);
+  for (const id of ids) {
+    const o = OBJ[id]; if (!o || !o.obj.visible) continue;
+    b.copy(o.malla.geometry.boundingBox).applyMatrix4(o.malla.matrixWorld); caja.union(b);
+    if (tot[id]) caja.union(b.translate(tot[id]));
+  }
+  aplicarAvance();
+  const esf = caja.getBoundingSphere(new THREE.Sphere());
+  const dir = new THREE.Vector3(...pv).sub(new THREE.Vector3(...tv)).normalize();
+  const fov = THREE.MathUtils.degToRad(cam.fov) / 2, fovH = Math.atan(Math.tan(fov) * cam.aspect);
+  const d = Math.max(150, esf.radius / Math.sin(Math.min(fov, fovH)) * 0.8);
+  return [esf.center.clone().addScaledVector(dir, d), esf.center.clone()];
+}
+function vistaPaso() { const [p, t] = encuadre(); volar(p, t); }
+function vista(nombre) {
+  if (nombre === 'paso') return vistaPaso();
+  const t = ctrl.target.clone(), d = cam.position.distanceTo(t);
+  const dir = { iso: [1, -1, 0.85], arriba: [0, -0.01, 1], abajo: [0, -0.01, -1], frente: [0, -1, 0.04], lado: [1, 0, 0.04] }[nombre];
+  volar(t.clone().add(new THREE.Vector3(...dir).normalize().multiplyScalar(d)), t);
+}
+
+// ---------- panel
+function renderPanel() {
+  const p = PASOS[iPaso];
+  $('nPaso').textContent = iPaso + 1;
+  $('ceja').textContent = (p.lugar === 'banco' ? 'En el banco' : 'En el robot') + ` · paso ${iPaso + 1}`;
+  $('titulo').textContent = p.titulo;
+  $('texto').replaceChildren(...p.texto.map(t => { const li = document.createElement('li'); li.textContent = t; return li; }));
+  const cab = p.giro ? ['Ángulo', 'Par que se acerca', 'Holgura'] : ['Cant.', 'Qué', 'Dónde / herramienta'];
+  const tabla = $('lista'); tabla.replaceChildren();
+  const th = tabla.createTHead().insertRow(); for (const c of cab) { const x = document.createElement('th'); x.textContent = c; th.appendChild(x); }
+  const tb = tabla.createTBody();
+  for (const fila of p.lista) { const tr = tb.insertRow(); for (const c of fila) tr.insertCell().textContent = c; }
+  document.querySelectorAll('.num').forEach((b, i) => { b.toggleAttribute('aria-current', false); if (i === iPaso) b.setAttribute('aria-current', 'step'); b.classList.toggle('hecho', i < iPaso); });
+  $('ant').disabled = iPaso === 0; $('sig').disabled = iPaso === PASOS.length - 1;
+  $('ctlArmar').hidden = !!p.giro; $('ctlGiro').hidden = !p.giro;
+}
+function irA(i, animar = true) {
+  iPaso = Math.max(0, Math.min(PASOS.length - 1, i));
+  try { localStorage.setItem('montaje-cabezal-paso', String(iPaso)); } catch (_) {}
+  pararGiro();
+  phi = 0; $('phi').value = 0; $('phiVal').textContent = '0°';
+  calcularVisibles(); aplicarVisibilidad(); dibujarCotas(PASOS[iPaso]); crearEtiquetas(); renderPanel(); vistaPaso();
+  if (animar && !reducido && PASOS[iPaso].seq.length) armar(); else ponerAvance(1);
+}
+function ponerAvance(v) { avance = v; $('avance').value = Math.round(v * 1000); aplicarAvance(); }
+
+let anim = null;
+function armar() { anim = { ini: performance.now(), dur: 900 * PASOS[iPaso].seq.length, desde: avance >= 1 ? 0 : avance }; $('armar').textContent = 'Pausa'; }
+function pausa() { anim = null; $('armar').textContent = 'Armar'; }
+$('armar').onclick = () => anim ? pausa() : (avance >= 1 && ponerAvance(0), armar());
+$('avance').oninput = e => { pausa(); ponerAvance(e.target.value / 1000); };
+
+// giro de J3
+let giro = null;
+function pararGiro() { giro = null; $('girar').textContent = 'Girar'; }
+function ponerPhi(v) { phi = v; $('phi').value = v; $('phiVal').textContent = (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(0) + '°'; aplicarAvance(); }
+$('girar').onclick = () => giro ? pararGiro() : (giro = { t: performance.now(), dir: 1 }, $('girar').textContent = 'Detener');
+$('phi').oninput = e => { pararGiro(); ponerPhi(+e.target.value); };
+for (const [txt, v] of [['−120° final', -120], ['−58°', -58], ['−50°', -50], ['−44°', -44], ['0°', 0], ['+121°', 121]]) {
+  const b = document.createElement('button'); b.className = 'btn'; b.textContent = txt; b.onclick = () => { pararGiro(); ponerPhi(v); }; $('chips').appendChild(b);
+}
+
+// índice
+PASOS.forEach((p, i) => {
+  const b = document.createElement('button'); b.className = 'num'; b.textContent = i + 1; b.title = p.titulo; b.setAttribute('aria-label', `Paso ${i + 1}: ${p.titulo}`);
+  b.onclick = () => irA(i); $(p.lugar === 'banco' ? 'numsBanco' : 'numsRobot').appendChild(b);
+});
+$('totPasos').textContent = PASOS.length;
+$('ant').onclick = () => irA(iPaso - 1);
+$('sig').onclick = () => irA(iPaso + 1);
+document.querySelectorAll('[data-vista]').forEach(b => b.onclick = () => vista(b.dataset.vista));
+const alternar = (id, fn) => $(id).onclick = () => { const v = $(id).getAttribute('aria-pressed') !== 'true'; $(id).setAttribute('aria-pressed', v); fn(v); };
+alternar('t-rayos', v => { rayos = v; aplicarVisibilidad(); });
+alternar('t-solo', v => { solo = v; aplicarVisibilidad(); });
+alternar('t-etq', v => { conEtq = v; });
+addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') irA(iPaso + 1); else if (e.key === 'ArrowLeft') irA(iPaso - 1);
+});
+
+// nombre de la pieza o del tornillo bajo el puntero
+const ray = new THREE.Raycaster(), ptr = new THREE.Vector2(), tip = $('tip');
+lienzo.addEventListener('pointermove', ev => {
+  const r = lienzo.getBoundingClientRect();
+  ptr.set((ev.clientX - r.left) / r.width * 2 - 1, -(ev.clientY - r.top) / r.height * 2 + 1);
+  ray.setFromCamera(ptr, cam);
+  const visibles = Object.values(OBJ).filter(o => o.obj.visible).map(o => o.malla);
+  const hit = ray.intersectObjects(visibles, false).find(h => !rayos || D.fij[h.object.userData.id] || true);
+  // con rayos X se prefiere la tornillería aunque esté detrás de una pieza
+  let elegido = hit;
+  if (rayos) { const f = ray.intersectObjects(visibles, false).find(h => D.fij[h.object.userData.id]); if (f) elegido = f; }
+  if (!elegido) { tip.hidden = true; return; }
+  tip.hidden = false; tip.textContent = OBJ[elegido.object.userData.id].nombre;
+  tip.style.left = (ev.clientX - r.left) + 'px'; tip.style.top = (ev.clientY - r.top) + 'px';
+});
+lienzo.addEventListener('pointerleave', () => tip.hidden = true);
+
+// tema
+function aplicarTema() {
+  ren.setClearColor(new THREE.Color(css('--stage') || '#dbe2e7'));
+  MAT.tornillo.color.set(css('--accent') || '#c2700f'); MAT.tuerca.color.set(css('--nut') || '#17799f'); MAT.cota.color.set(css('--accent') || '#c2700f');
+  const oscuro = matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.dataset.theme !== 'light' || document.documentElement.dataset.theme === 'dark';
+  MAT.arista.color.set(oscuro ? 0x0b0e11 : 0x20262d);
+}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarTema);
+new MutationObserver(aplicarTema).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+aplicarTema();
+
+function redimensionar() {
+  const r = escenario.getBoundingClientRect(); if (!r.width) return;
+  ren.setSize(r.width, r.height, false); cam.aspect = r.width / r.height; cam.updateProjectionMatrix();
+}
+new ResizeObserver(redimensionar).observe(escenario);
+redimensionar();
+
+function cuadro(t) {
+  requestAnimationFrame(cuadro);
+  if (vuelo) {
+    const k = suave(Math.min(1, (t - vuelo.ini) / vuelo.ms));
+    cam.position.lerpVectors(vuelo.p0, vuelo.p1, k); ctrl.target.lerpVectors(vuelo.t0, vuelo.t1, k);
+    if (k >= 1) vuelo = null;
+  }
+  if (anim) {
+    const v = Math.min(1, anim.desde + (t - anim.ini) / anim.dur);
+    ponerAvance(v); if (v >= 1) pausa();
+  }
+  if (giro) {
+    const dt = (t - giro.t) / 1000; giro.t = t;
+    let v = phi + giro.dir * 40 * dt;
+    if (v >= 121) { v = 121; giro.dir = -1; } else if (v <= -120) { v = -120; giro.dir = 1; }
+    ponerPhi(v);
+  }
+  ctrl.update();
+  rotor.updateMatrixWorld();
+  ren.render(escena, cam);
+  moverEtiquetas();
+}
+let inicio = 0;
+try { inicio = Math.max(0, Math.min(PASOS.length - 1, +localStorage.getItem('montaje-cabezal-paso') || 0)); } catch (_) {}
+irA(inicio, false);
+vuelo = null; { iPaso = inicio; const [p, t] = encuadre(); cam.position.copy(p); ctrl.target.copy(t); }
+requestAnimationFrame(cuadro);
+</script>

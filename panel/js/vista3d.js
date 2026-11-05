@@ -133,8 +133,11 @@ export class Vista3D {
     const mj3 = caja(42, 42, 24, M.motor, 0, 0, za2 - 24); j2.add(mj3);
     // J3 (gira con φ): coupler, connector y el cabezal v3 colgando 14 mm bajo el connector
     const j3 = this.j3 = new THREE.Group(); j3.position.set(GEO.L2, 0, za2 - G.H_J3GAP); j2.add(j3);
-    const zh = -G.H_J3C - G.H_CON;
-    j3.add(malla(g.j3_coupler, M.oscuro, 0, 0, -G.H_J3C), malla(g.conector_j3, M.oscuro, 0, 0, zh));
+    // En las mallas del simulador el eje largo x' del connector va en −y (agujeros Ø4.2 en (±10.4, ±32.1));
+    // en el marco del cabezal x' está a ALFA = 50.4° (cabezal.py), así que coupler y connector giran
+    // ALFA + 90° para que sus agujeros caigan sobre los 4 pernos M4 del cabezal (igual que GIRO_CONN en el montaje).
+    const zh = -G.H_J3C - G.H_CON, giroConn = rad(50.4 + 90);
+    j3.add(malla(g.j3_coupler, M.oscuro, 0, 0, -G.H_J3C, giroConn), malla(g.conector_j3, M.oscuro, 0, 0, zh, giroConn));
     this.cabezalRobot = this.armarCabezal();
     this.cabezalRobot.grupo.position.z = zh - META.z_conector;
     j3.add(this.cabezalRobot.grupo);

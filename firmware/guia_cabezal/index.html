@@ -1,0 +1,621 @@
+<title>Pruebas del cabezal A</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Hoja de banco: una columna de pasos numerados (el orden es real), con diagramas de cableado
+   dibujados con los colores reales de los cables. Barra de progreso fija arriba. */
+:root {
+  --bg: #eef1f3; --hoja: #ffffff; --hoja-2: #f6f8f9; --linea: #d3dadf; --linea-2: #b8c2c9;
+  --tinta: #14202b; --tinta-2: #4a5866; --tenue: #6b7885;
+  --acento: #1f55c8; --acento-suave: #e3ebfb;
+  --ok: #1d7f49; --ok-suave: #e1f3e8; --mal: #b8322a; --mal-suave: #fbe6e4; --aviso: #9a6510; --aviso-suave: #fbf0dc;
+  --c-cafe: #8a5527; --c-azul: #2563d4; --c-negro: #15181b; --c-rojo: #d33a2c; --c-naranja: #e2851f; --c-gnd: #2d3640;
+  --halo: #ffffff; --chip: #23292f; --chip-txt: #e9eef2; --pcb: #1d6f5f; --metal: #9aa6b0; --metal-2: #c6ced5;
+  --term-bg: #10171d; --term-txt: #cfe3d4; --term-dim: #7f948a; --term-ok: #7fe0a0; --term-mal: #ff8a7a;
+  --f-tit: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  --f-txt: "IBM Plex Sans", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1418; --hoja: #151d23; --hoja-2: #1a242b; --linea: #2a3640; --linea-2: #3a4853;
+  --tinta: #e4eaee; --tinta-2: #a9b6bf; --tenue: #8796a1;
+  --acento: #79a3ff; --acento-suave: #1b2a47;
+  --ok: #5ccf8c; --ok-suave: #15301f; --mal: #ff7d70; --mal-suave: #3a1d1a; --aviso: #f0b45a; --aviso-suave: #3a2c14;
+  --c-cafe: #c08350; --c-azul: #5b8ff0; --c-negro: #0b0d0f; --c-rojo: #ff6a5a; --c-naranja: #f5a04a; --c-gnd: #9fb0bd;
+  --halo: #c9d3da; --chip: #0b0f12; --chip-txt: #e4eaee; --pcb: #2d8a77; --metal: #7d8a95; --metal-2: #a6b1ba;
+  --term-bg: #0a0f13; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e1418; --hoja: #151d23; --hoja-2: #1a242b; --linea: #2a3640; --linea-2: #3a4853;
+  --tinta: #e4eaee; --tinta-2: #a9b6bf; --tenue: #8796a1;
+  --acento: #79a3ff; --acento-suave: #1b2a47;
+  --ok: #5ccf8c; --ok-suave: #15301f; --mal: #ff7d70; --mal-suave: #3a1d1a; --aviso: #f0b45a; --aviso-suave: #3a2c14;
+  --c-cafe: #c08350; --c-azul: #5b8ff0; --c-negro: #0b0d0f; --c-rojo: #ff6a5a; --c-naranja: #f5a04a; --c-gnd: #9fb0bd;
+  --halo: #c9d3da; --chip: #0b0f12; --chip-txt: #e4eaee; --pcb: #2d8a77; --metal: #7d8a95; --metal-2: #a6b1ba;
+  --term-bg: #0a0f13; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--tinta); font: 400 15px/1.55 var(--f-txt); -webkit-font-smoothing: antialiased; }
+.envoltura { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
+h1, h2, h3 { font-family: var(--f-tit); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 700; letter-spacing: -.01em; }
+h2 { font-size: 24px; font-weight: 700; }
+h3 { font-size: 17px; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+code, kbd, .mono { font-family: var(--f-mono); font-size: .9em; }
+code { background: var(--hoja-2); border: 1px solid var(--linea); border-radius: 4px; padding: 0 4px; }
+a { color: var(--acento); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+.etiqueta { font: 600 11px/1 var(--f-tit); letter-spacing: .12em; text-transform: uppercase; color: var(--tenue); }
+
+/* barra fija de progreso */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--hoja); }
+.barra { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--hoja); border-bottom: 1px solid var(--linea); }
+.barra .envoltura { display: flex; align-items: center; gap: 14px; padding-block: 10px; overflow-x: auto; scrollbar-width: none; }
+.barra .envoltura::-webkit-scrollbar { display: none; }
+.barra nav { display: flex; gap: 6px; flex: 1; }
+.barra nav a { display: flex; align-items: center; gap: 6px; white-space: nowrap; text-decoration: none; color: var(--tinta-2); font: 500 13px/1 var(--f-tit); padding: 6px 9px; border-radius: 999px; border: 1px solid var(--linea); }
+.barra nav a .n { font-family: var(--f-mono); font-size: 11px; width: 18px; height: 18px; display: grid; place-items: center; border-radius: 50%; background: var(--hoja-2); border: 1px solid var(--linea-2); }
+.barra nav a.hecho { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+.barra nav a.hecho .n { background: var(--ok); color: var(--hoja); border-color: var(--ok); }
+.progreso { display: flex; align-items: center; gap: 8px; white-space: nowrap; font: 500 13px var(--f-mono); color: var(--tinta-2); }
+.progreso .riel { width: 90px; height: 6px; border-radius: 3px; background: var(--linea); overflow: hidden; }
+.progreso .riel i { display: block; height: 100%; width: 0; background: var(--ok); transition: width .25s; }
+
+/* cabecera */
+header.portada { padding-block: 36px 24px; display: grid; gap: 14px; }
+header.portada p { color: var(--tinta-2); font-size: 16px; }
+.mapa { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.mapa div { background: var(--hoja); border: 1px solid var(--linea); border-radius: 8px; padding: 10px; display: grid; gap: 4px; align-content: start; }
+.mapa b { font: 600 14px/1.2 var(--f-tit); }
+.mapa span { font-size: 12px; color: var(--tenue); font-family: var(--f-mono); }
+.mapa .n { font: 600 12px var(--f-mono); color: var(--acento); }
+@media (max-width: 760px) { .mapa { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* lista de material */
+.material { display: flex; flex-wrap: wrap; gap: 6px; }
+.material span { font-size: 13px; padding: 4px 9px; border-radius: 6px; background: var(--hoja); border: 1px solid var(--linea); }
+
+/* pasos */
+section.paso { margin-top: 28px; background: var(--hoja); border: 1px solid var(--linea); border-radius: 12px; overflow: hidden; scroll-margin-top: 70px; }
+.cab-paso { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-bottom: 1px solid var(--linea); background: var(--hoja-2); }
+.cab-paso .num { flex: none; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font: 600 17px var(--f-mono); background: var(--acento); color: var(--hoja); }
+.cab-paso .tit { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.cab-paso .tit p { color: var(--tinta-2); font-size: 14px; }
+.hecho-chk { display: flex; align-items: center; gap: 8px; font: 500 13px var(--f-tit); color: var(--tinta-2); cursor: pointer; user-select: none; white-space: nowrap; }
+.hecho-chk input { width: 20px; height: 20px; accent-color: var(--ok); }
+section.paso.listo .cab-paso .num { background: var(--ok); }
+.cuerpo { padding: 20px; display: grid; gap: 20px; }
+.dos { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 760px) { .dos { grid-template-columns: minmax(0, 1fr); } .cab-paso { flex-wrap: wrap; } }
+
+figure { margin: 0; display: grid; gap: 8px; }
+figure .lienzo { overflow-x: auto; border: 1px solid var(--linea); border-radius: 8px; background: var(--hoja-2); }
+figure svg { display: block; width: 100%; min-width: 560px; height: auto; }
+figure.chico svg { min-width: 300px; }
+figure img { display: block; width: 100%; height: auto; border-radius: 8px; background: #ffffff; border: 1px solid var(--linea); }
+figcaption { font-size: 13px; color: var(--tenue); }
+
+/* pasitos dentro de un paso */
+ol.acciones { margin: 0; padding: 0; list-style: none; counter-reset: a; display: grid; gap: 10px; }
+ol.acciones li { counter-increment: a; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; }
+ol.acciones li::before { content: counter(a, lower-alpha); font: 600 13px/26px var(--f-mono); text-align: center; width: 26px; height: 26px; border-radius: 6px; background: var(--acento-suave); color: var(--acento); }
+
+/* avisos */
+.aviso { display: grid; grid-template-columns: 4px minmax(0, 1fr); gap: 12px; padding: 12px 14px 12px 0; border-radius: 8px; background: var(--aviso-suave); }
+.aviso::before { content: ""; background: var(--aviso); border-radius: 0 3px 3px 0; }
+.aviso.peligro { background: var(--mal-suave); }
+.aviso.peligro::before { background: var(--mal); }
+.aviso b { font-family: var(--f-tit); }
+
+/* tablas */
+.tabla { overflow-x: auto; border: 1px solid var(--linea); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { font: 600 12px var(--f-tit); letter-spacing: .06em; text-transform: uppercase; color: var(--tenue); background: var(--hoja-2); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pill { display: inline-block; font: 600 11px/1 var(--f-mono); padding: 4px 6px; border-radius: 4px; white-space: nowrap; }
+.pill.ok { background: var(--ok-suave); color: var(--ok); }
+.pill.mal { background: var(--mal-suave); color: var(--mal); }
+.cable { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.cable i { width: 22px; height: 6px; border-radius: 3px; outline: 1px solid var(--linea-2); }
+
+/* terminal */
+.terminal { position: relative; background: var(--term-bg); color: var(--term-txt); border-radius: 8px; font: 13px/1.6 var(--f-mono); padding: 14px 16px; overflow-x: auto; white-space: pre; }
+.terminal .d { color: var(--term-dim); }
+.terminal .o { color: var(--term-ok); }
+.terminal .m { color: var(--term-mal); }
+.terminal .t { color: #ffd479; }
+.copiar { position: absolute; top: 8px; right: 8px; font: 500 12px var(--f-tit); color: var(--term-txt); background: rgb(255 255 255 / .08); border: 1px solid rgb(255 255 255 / .18); border-radius: 6px; padding: 4px 9px; cursor: pointer; }
+.copiar:hover { background: rgb(255 255 255 / .16); }
+
+/* chequeo vertical */
+.escalera { display: grid; gap: 0; }
+.escalon { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--linea); align-items: start; }
+.escalon:last-child { border-bottom: 0; }
+.escalon .k { font: 600 13px/26px var(--f-mono); text-align: center; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--acento); color: var(--acento); }
+.escalon b { font: 600 15px var(--f-tit); }
+.escalon p { font-size: 14px; color: var(--tinta-2); }
+.escalon .meta { font: 500 12px var(--f-mono); color: var(--ok); white-space: nowrap; text-align: right; }
+@media (max-width: 560px) { .escalon { grid-template-columns: 34px minmax(0, 1fr); } .escalon .meta { grid-column: 2; text-align: left; } }
+
+/* svg */
+.svg-txt { font: 500 13px var(--f-txt); fill: var(--tinta); }
+.svg-sub { font: 400 11.5px var(--f-mono); fill: var(--tenue); }
+.svg-tit { font: 600 14px var(--f-tit); fill: var(--tinta); }
+.svg-chip { font: 600 12px var(--f-mono); fill: var(--chip-txt); }
+.svg-pin { font: 600 11px var(--f-mono); fill: var(--tinta-2); }
+.halo { fill: none; stroke: var(--halo); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+.w { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.cota { stroke: var(--acento); stroke-width: 1.3; fill: none; }
+.cota-txt { font: 600 12px var(--f-mono); fill: var(--acento); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+footer { margin-top: 32px; color: var(--tenue); font-size: 13px; }
+</style>
+
+<div class="barra">
+  <div class="envoltura">
+    <nav id="nav">
+      <a href="#p1"><span class="n">1</span>Conectar</a>
+      <a href="#p2"><span class="n">2</span>Sensor suelto</a>
+      <a href="#p3"><span class="n">3</span>Servo</a>
+      <a href="#p4"><span class="n">4</span>Montar</a>
+      <a href="#p5"><span class="n">5</span>Chequeo</a>
+      <a href="#p6"><span class="n">6</span>Al firmware</a>
+    </nav>
+    <div class="progreso"><div class="riel"><i id="riel"></i></div><span id="cuenta">0/6</span></div>
+  </div>
+</div>
+
+<div class="envoltura">
+<header class="portada">
+  <span class="etiqueta">MathBot · cabezal A v3 · banco de pruebas</span>
+  <h1>Sensor inductivo, servo y cabezal paso a paso</h1>
+  <p>Seis pasos en orden. No pases al siguiente hasta que el anterior salga bien: cada sketch imprime BIEN o FALLA y te dice qué revisar. Marca cada paso al terminarlo y la barra de arriba guarda tu avance en este navegador.</p>
+  <div class="mapa">
+    <div><span class="n">1</span><b>Conectar el sensor</b><span>PC817 → D22</span></div>
+    <div><span class="n">2</span><b>Probar el sensor suelto</b><span>prueba_sensor</span></div>
+    <div><span class="n">3</span><b>Calibrar el servo</b><span>prueba_servo</span></div>
+    <div><span class="n">4</span><b>Montar en el cabezal</b><span>cara a 40 mm</span></div>
+    <div><span class="n">5</span><b>Chequeo del cabezal</b><span>prueba_cabezal · x</span></div>
+    <div><span class="n">6</span><b>Pasar al firmware</b><span>CFG + GUARDAR</span></div>
+  </div>
+  <div class="material" aria-label="Material">
+    <span>Mega 2560 + CNC Shield</span><span>Fuente 12 V</span><span>LJ18A3-8-Z/BX</span><span>PC817 + resistencia 2.2 kΩ</span>
+    <span>Electroimán + módulo D4184 + diodo 1N5819</span><span>SG90 o MG90S + buck a 6 V</span><span>Multímetro</span>
+    <span>Arandela y tuerca de acero, ficha de PLA, bloque de madera</span><span>Calzas de 1 mm o calibrador</span>
+  </div>
+</header>
+
+<!-- ================================================================ 1 -->
+<section class="paso" id="p1" data-paso="1">
+  <div class="cab-paso">
+    <span class="num">1</span>
+    <div class="tit"><h3>Conectar el sensor</h3><p>LJ18A3 a 12 V, salida por el optoacoplador PC817 hacia D22. Con metal, D22 baja a LOW.</p></div>
+    <label class="hecho-chk"><input type="checkbox" id="chk1">Hecho</label>
+  </div>
+  <div class="cuerpo">
+    <div class="aviso peligro"><p><b>El cable negro nunca va directo a D22.</b> El sensor trabaja a 12 V y en muchos LJ18A3 la salida sube hacia los 12 V cuando no hay metal. El PC817 separa los dos lados: el sensor solo enciende un LED y el Arduino solo ve un transistor que cierra a GND.</p></div>
+
+    <figure>
+      <div class="lienzo">
+      <svg viewBox="0 0 780 380" role="img" aria-label="Diagrama de conexión del sensor LJ18A3 con el PC817 y el Arduino Mega">
+        <!-- rieles -->
+        <text x="20" y="34" class="svg-tit">Fuente 12 V</text>
+        <line x1="20" y1="50" x2="520" y2="50" stroke="var(--c-rojo)" stroke-width="5" stroke-linecap="round"/>
+        <text x="526" y="54" class="svg-sub">+12 V</text>
+        <line x1="20" y1="340" x2="740" y2="340" stroke="var(--c-gnd)" stroke-width="5" stroke-linecap="round"/>
+        <text x="20" y="364" class="svg-sub">GND común (fuente, Mega, buck, módulo MOSFET)</text>
+
+        <!-- sensor -->
+        <g transform="translate(30 150)">
+          <rect x="0" y="0" width="16" height="56" rx="3" fill="var(--c-naranja)" opacity=".9"/>
+          <rect x="16" y="4" width="150" height="48" rx="4" fill="var(--metal)"/>
+          <g stroke="var(--metal-2)" stroke-width="2">
+            <line x1="26" y1="4" x2="26" y2="52"/><line x1="36" y1="4" x2="36" y2="52"/><line x1="46" y1="4" x2="46" y2="52"/><line x1="56" y1="4" x2="56" y2="52"/>
+            <line x1="66" y1="4" x2="66" y2="52"/><line x1="76" y1="4" x2="76" y2="52"/><line x1="86" y1="4" x2="86" y2="52"/><line x1="96" y1="4" x2="96" y2="52"/>
+            <line x1="106" y1="4" x2="106" y2="52"/><line x1="116" y1="4" x2="116" y2="52"/><line x1="126" y1="4" x2="126" y2="52"/><line x1="136" y1="4" x2="136" y2="52"/>
+          </g>
+          <rect x="166" y="10" width="26" height="36" rx="3" fill="var(--chip)"/>
+          <circle cx="180" cy="20" r="4" fill="var(--c-rojo)"/>
+          <text x="0" y="-12" class="svg-tit">LJ18A3-8-Z/BX</text>
+          <text x="0" y="76" class="svg-sub">cara (detecta)</text>
+          <text x="150" y="76" class="svg-sub">LED rojo</text>
+        </g>
+
+        <!-- cables del sensor -->
+        <path class="halo" d="M222 168 H250 V50"/><path class="w" stroke="var(--c-cafe)" d="M222 168 H250 V50"/>
+        <path class="halo" d="M222 178 H290 V230 H372"/><path class="w" stroke="var(--c-negro)" d="M222 178 H290 V230 H372"/>
+        <path class="halo" d="M222 188 H270 V340"/><path class="w" stroke="var(--c-azul)" d="M222 188 H270 V340"/>
+        <circle cx="250" cy="50" r="5" fill="var(--c-rojo)"/><circle cx="270" cy="340" r="5" fill="var(--c-gnd)"/>
+        <text x="256" y="120" class="svg-sub">café</text>
+        <text x="296" y="222" class="svg-sub">negro</text>
+        <text x="200" y="300" class="svg-sub">azul</text>
+
+        <!-- resistencia -->
+        <path d="M340 50 V92" stroke="var(--tinta-2)" stroke-width="2.5" fill="none"/>
+        <rect x="330" y="92" width="20" height="54" rx="4" fill="#d9c08f" stroke="var(--tinta-2)" stroke-width="1.5"/>
+        <rect x="330" y="102" width="20" height="5" fill="var(--c-rojo)"/><rect x="330" y="112" width="20" height="5" fill="var(--c-rojo)"/><rect x="330" y="122" width="20" height="5" fill="var(--c-rojo)"/>
+        <path d="M340 146 V196 H372" stroke="var(--tinta-2)" stroke-width="2.5" fill="none"/>
+        <circle cx="340" cy="50" r="5" fill="var(--c-rojo)"/>
+        <text x="298" y="86" class="svg-txt">2.2 kΩ</text>
+
+        <!-- PC817 -->
+        <rect x="372" y="170" width="96" height="86" rx="6" fill="var(--chip)"/>
+        <circle cx="386" cy="184" r="4" fill="var(--chip-txt)" opacity=".7"/>
+        <text x="420" y="216" text-anchor="middle" class="svg-chip">PC817</text>
+        <g fill="var(--metal-2)"><rect x="362" y="190" width="10" height="12"/><rect x="362" y="224" width="10" height="12"/><rect x="468" y="190" width="10" height="12"/><rect x="468" y="224" width="10" height="12"/></g>
+        <text x="352" y="188" class="svg-pin" text-anchor="end">1 ánodo</text>
+        <text x="352" y="250" class="svg-pin" text-anchor="end">2 cátodo</text>
+        <text x="488" y="188" class="svg-pin">4 colector</text>
+        <text x="488" y="250" class="svg-pin">3 emisor</text>
+        <text x="420" y="278" text-anchor="middle" class="svg-sub">punto = pata 1</text>
+
+        <!-- salida al Mega -->
+        <path class="halo" d="M478 196 H560 V150 H640"/><path class="w" stroke="var(--acento)" d="M478 196 H560 V150 H640"/>
+        <path class="halo" d="M478 230 H580 V200 H640"/><path class="w" stroke="var(--c-gnd)" d="M478 230 H580 V200 H640"/>
+        <path d="M700 230 V340" stroke="var(--c-gnd)" stroke-width="4" stroke-dasharray="7 6"/>
+        <circle cx="700" cy="340" r="5" fill="var(--c-gnd)"/>
+
+        <!-- Mega -->
+        <rect x="640" y="110" width="120" height="120" rx="8" fill="var(--pcb)"/>
+        <text x="700" y="100" text-anchor="middle" class="svg-tit">Mega 2560</text>
+        <g fill="var(--chip)"><rect x="652" y="140" width="22" height="20" rx="2"/><rect x="652" y="190" width="22" height="20" rx="2"/></g>
+        <text x="682" y="155" class="svg-chip">D22</text>
+        <text x="682" y="205" class="svg-chip">GND</text>
+        <text x="652" y="128" class="svg-sub" fill="var(--chip-txt)" style="fill:var(--chip-txt)">INPUT_PULLUP</text>
+        <text x="610" y="292" class="svg-sub">GND del Mega unido al de la fuente</text>
+      </svg>
+      </div>
+      <figcaption>Sin metal: LED del PC817 apagado, D22 en HIGH por el pull-up interno. Con metal: el negro cierra a GND, el LED enciende y D22 baja a LOW.</figcaption>
+    </figure>
+
+    <div class="dos">
+      <div class="tabla"><table>
+        <thead><tr><th>Desde</th><th>Hasta</th></tr></thead>
+        <tbody>
+          <tr><td><span class="cable"><i style="background:var(--c-cafe)"></i>café</span></td><td>+12 V</td></tr>
+          <tr><td><span class="cable"><i style="background:var(--c-azul)"></i>azul</span></td><td>GND de la fuente</td></tr>
+          <tr><td><span class="cable"><i style="background:var(--c-negro)"></i>negro</span></td><td>PC817 pata 2 (cátodo)</td></tr>
+          <tr><td>+12 V → 2.2 kΩ</td><td>PC817 pata 1 (ánodo, el punto)</td></tr>
+          <tr><td>PC817 pata 4 (colector)</td><td>D22</td></tr>
+          <tr><td>PC817 pata 3 (emisor)</td><td>GND del Mega</td></tr>
+        </tbody>
+      </table></div>
+      <ol class="acciones">
+        <li><p><b>Sensor solo, sin Arduino.</b> Café a +12 V y azul a GND. Acerca la arandela: el LED rojo de la parte trasera debe encender a unos 5–8 mm.</p></li>
+        <li><p><b>Mide el negro.</b> Multímetro entre negro y GND. Con metal, casi 0 V. Sin metal, flota o marca algo alto: por eso no va directo al Arduino.</p></li>
+        <li><p><b>Pon el PC817 y la resistencia.</b> Con 2.2 kΩ pasan unos 5 mA por el LED del opto, suficiente para que cierre y poco para el sensor.</p></li>
+        <li><p><b>Une los GND</b> de la fuente y del Mega antes de conectar el USB.</p></li>
+      </ol>
+    </div>
+
+    <details>
+      <summary class="etiqueta" style="cursor:pointer">Electroimán y servo (los usa el paso 2.5 y el chequeo)</summary>
+      <figure class="chico" style="margin-top:12px">
+        <div class="lienzo">
+        <svg viewBox="0 0 640 230" role="img" aria-label="Conexión del electroimán con el módulo MOSFET y del servo con el buck">
+          <text x="20" y="28" class="svg-tit">Electroimán (D24)</text>
+          <rect x="20" y="50" width="110" height="70" rx="6" fill="var(--pcb)"/><text x="75" y="82" text-anchor="middle" class="svg-chip">D4184</text><text x="75" y="100" text-anchor="middle" class="svg-chip" style="font-size:10px">MOSFET</text>
+          <path class="halo" d="M20 140 H75 V120"/><path class="w" stroke="var(--acento)" d="M20 140 H75 V120"/><text x="20" y="160" class="svg-sub">SIG ← D24</text>
+          <path class="halo" d="M130 66 H200"/><path class="w" stroke="var(--c-rojo)" d="M130 66 H200"/>
+          <path class="halo" d="M130 104 H200"/><path class="w" stroke="var(--c-gnd)" d="M130 104 H200"/>
+          <circle cx="235" cy="85" r="32" fill="var(--metal)"/><circle cx="235" cy="85" r="12" fill="var(--metal-2)"/>
+          <text x="235" y="140" text-anchor="middle" class="svg-sub">bobina 12 V</text>
+          <path d="M200 66 V44 H270 V66" stroke="var(--tinta-2)" stroke-width="2" fill="none"/>
+          <rect x="222" y="36" width="26" height="16" rx="3" fill="var(--chip)"/><rect x="240" y="36" width="5" height="16" fill="var(--metal-2)"/>
+          <text x="282" y="44" class="svg-sub">1N5819, banda al +</text>
+          <text x="282" y="60" class="svg-sub">en paralelo a la bobina</text>
+
+          <text x="360" y="28" class="svg-tit">Servo del plumón (D44)</text>
+          <rect x="360" y="50" width="96" height="60" rx="6" fill="var(--pcb)"/><text x="408" y="78" text-anchor="middle" class="svg-chip">buck</text><text x="408" y="96" text-anchor="middle" class="svg-chip" style="font-size:10px">12 → 6 V</text>
+          <rect x="520" y="56" width="100" height="48" rx="5" fill="var(--c-azul)"/><text x="570" y="85" text-anchor="middle" class="svg-chip">SG90</text>
+          <path class="halo" d="M456 66 H520"/><path class="w" stroke="var(--c-rojo)" d="M456 66 H520"/>
+          <path class="halo" d="M456 94 H520"/><path class="w" stroke="var(--c-cafe)" d="M456 94 H520"/>
+          <path class="halo" d="M570 104 V150 H420"/><path class="w" stroke="var(--c-naranja)" d="M570 104 V150 H420"/>
+          <text x="360" y="155" class="svg-sub">D44 →</text>
+          <text x="470" y="58" class="svg-sub">rojo +6</text><text x="470" y="114" class="svg-sub">café GND</text><text x="580" y="140" class="svg-sub">naranja</text>
+          <text x="360" y="190" class="svg-sub">El servo nunca va al 5 V del Mega:</text>
+          <text x="360" y="206" class="svg-sub">al moverse tira el voltaje y reinicia la placa.</text>
+        </svg>
+        </div>
+      </figure>
+    </details>
+  </div>
+</section>
+
+<!-- ================================================================ 2 -->
+<section class="paso" id="p2" data-paso="2">
+  <div class="cab-paso">
+    <span class="num">2</span>
+    <div class="tit"><h3>Probar el sensor suelto</h3><p>Sketch <code>firmware/prueba_sensor</code>. Sensor sujeto con su tuerca a un taco, cara hacia arriba.</p></div>
+    <label class="hecho-chk"><input type="checkbox" id="chk2">Hecho</label>
+  </div>
+  <div class="cuerpo">
+    <ol class="acciones">
+      <li><p>Abre <code>prueba_sensor.ino</code>, placa <b>Arduino Mega or Mega 2560</b>, sube el sketch.</p></li>
+      <li><p>Monitor Serie a <b>115200</b> con <b>Nueva línea</b>. Escribe <kbd>a</kbd> y Enter: corre los 6 pasos seguidos. Para repetir uno, escribe su número.</p></li>
+      <li><p>Cada paso termina en <span class="pill ok">BIEN</span> o <span class="pill mal">FALLA</span> con qué revisar. <kbd>x</kbd> cancela, <kbd>?</kbd> muestra el resumen, <kbd>v</kbd> deja una vista en vivo con pitido.</p></li>
+    </ol>
+
+    <div class="tabla"><table>
+      <thead><tr><th>#</th><th>Qué haces</th><th>Qué debe pasar</th><th>Si falla</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td>Nada metálico a 10 cm</td><td>0 lecturas con METAL en 3 s</td><td>PC817 al revés, negro y café cruzados, falta GND común</td></tr>
+        <tr><td class="n">2</td><td>Acercas y alejas la arandela</td><td>METAL y luego nada, antes de 15 s</td><td>LED del sensor enciende pero D22 no cambia: opto, resistencia, D22</td></tr>
+        <tr><td class="n">3</td><td>Pones la arandela a 8, 7, 6 … 0 mm y escribes cada distancia</td><td>Estable al 100 % hasta ≥ 4.5 mm</td><td>Margen corto sobre los 3 mm del escaneo</td></tr>
+        <tr><td class="n">4</td><td>Las 4 piezas de la misión a 3 mm</td><td>Acero METAL, PLA y madera nada</td><td>Hay metal debajo de la pieza (mesa, tornillo)</td></tr>
+        <tr><td class="n">5</td><td>Nada; el sketch prende el imán y mueve el servo 10 veces</td><td>0 lecturas falsas</td><td>Diodo 1N5819, cables separados, GND en un punto</td></tr>
+        <tr><td class="n">6</td><td>Arandela quieta a 3 mm 5 s, luego 5 pasadas rápidas</td><td>0 cambios con la pieza quieta</td><td>Estás en el borde de detección: acércala</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="dos">
+      <figure class="chico">
+        <div class="lienzo">
+        <svg viewBox="0 0 360 300" role="img" aria-label="Prueba de distancia: arandela bajo la cara del sensor con calzas">
+          <rect x="120" y="20" width="80" height="110" rx="4" fill="var(--metal)"/>
+          <g stroke="var(--metal-2)" stroke-width="2"><line x1="120" y1="40" x2="200" y2="40"/><line x1="120" y1="52" x2="200" y2="52"/><line x1="120" y1="64" x2="200" y2="64"/><line x1="120" y1="76" x2="200" y2="76"/><line x1="120" y1="88" x2="200" y2="88"/><line x1="120" y1="100" x2="200" y2="100"/></g>
+          <rect x="116" y="118" width="88" height="14" rx="3" fill="var(--c-naranja)"/>
+          <text x="214" y="129" class="svg-sub">cara</text>
+          <!-- zona -->
+          <rect x="100" y="132" width="120" height="96" fill="var(--ok)" opacity=".13"/>
+          <rect x="100" y="228" width="120" height="24" fill="var(--aviso)" opacity=".16"/>
+          <!-- escala 12 px/mm -->
+          <g class="cota">
+            <line x1="70" y1="132" x2="70" y2="252"/>
+            <line x1="64" y1="132" x2="76" y2="132"/><line x1="66" y1="168" x2="74" y2="168"/><line x1="66" y1="180" x2="74" y2="180"/><line x1="64" y1="192" x2="76" y2="192"/><line x1="66" y1="228" x2="74" y2="228"/><line x1="64" y1="252" x2="76" y2="252"/>
+          </g>
+          <text x="58" y="136" text-anchor="end" class="cota-txt">0</text>
+          <text x="58" y="172" text-anchor="end" class="cota-txt">3</text>
+          <text x="58" y="196" text-anchor="end" class="cota-txt">5</text>
+          <text x="58" y="232" text-anchor="end" class="cota-txt">8</text>
+          <text x="58" y="256" text-anchor="end" class="cota-txt">10 mm</text>
+          <!-- arandela a 3 mm -->
+          <rect x="128" y="168" width="64" height="7" rx="2" fill="var(--metal-2)" stroke="var(--tinta-2)" stroke-width="1"/>
+          <line x1="96" y1="168" x2="300" y2="168" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <text x="232" y="164" class="svg-sub" style="fill:var(--acento)">escaneo: 3 mm</text>
+          <!-- calzas -->
+          <g fill="var(--hoja)" stroke="var(--linea-2)"><rect x="128" y="175" width="64" height="12"/><rect x="128" y="187" width="64" height="12"/><rect x="128" y="199" width="64" height="12"/></g>
+          <text x="232" y="196" class="svg-sub">calzas de 1 mm</text>
+          <text x="232" y="214" class="svg-sub">verde: zona estable</text>
+          <text x="232" y="244" class="svg-sub">ámbar: borde (oscila)</text>
+          <text x="20" y="286" class="svg-sub">8 mm es con placa de acero de 18 × 18 mm; con una arandela suele ser menos</text>
+        </svg>
+        </div>
+        <figcaption>Paso 3: el sensor pide que la zona estable pase de 4.5 mm, o sea 1.5 mm de margen sobre la altura de escaneo.</figcaption>
+      </figure>
+<div class="terminal" id="term1"><button class="copiar" data-copiar="a">Copiar</button><span class="d">&gt; a</span>
+== 1 · REPOSO: aleja todo lo metalico ...
+   1489 lecturas, 0 con METAL
+   <span class="o">&gt;&gt; paso 1 (reposo): BIEN</span>
+== 3 · DISTANCIA ...
+   <span class="d">mm?</span> 8
+8.0 mm -&gt; 0 % METAL  (no detecta)
+   <span class="d">mm?</span> 6
+6.0 mm -&gt; 37 % METAL  (borde: aqui oscila)
+   <span class="d">mm?</span> 5
+5.0 mm -&gt; 100 % METAL  (estable)
+   <span class="d">mm?</span> f
+   detecta estable hasta 5.0 mm, deja de detectar a 8.0 mm
+   el escaneo baja a 3.0 mm: margen 2.0 mm
+   <span class="o">&gt;&gt; paso 3 (distancia): BIEN</span>
+== 5 · RUIDO ...
+..........
+   lecturas falsas de METAL: 3
+   <span class="m">&gt;&gt; paso 5 (ruido): FALLA</span>
+      <span class="t">revisa: pon el diodo 1N5819 ...</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ 3 -->
+<section class="paso" id="p3" data-paso="3">
+  <div class="cab-paso">
+    <span class="num">3</span>
+    <div class="tit"><h3>Calibrar el servo del plumón</h3><p>Sketch <code>firmware/prueba_servo</code>. Hazlo antes de poner el brazo del servo.</p></div>
+    <label class="hecho-chk"><input type="checkbox" id="chk3">Hecho</label>
+  </div>
+  <div class="cuerpo">
+    <div class="dos">
+      <figure>
+        <img src="img/levante_plumon.png" alt="Plumón abajo y arriba: el brazo del servo gira de -57 a +19 grados y levanta 18 mm la oreja del collar" loading="lazy" width="1800" height="1100">
+        <figcaption>ABAJO: brazo a −57° bajo la horizontal, punta 0.6 mm sobre la placa. ARRIBA: +19°, el plumón sube 18 mm.</figcaption>
+      </figure>
+      <div style="display:grid;gap:14px">
+        <div class="tabla"><table>
+          <thead><tr><th>Escribe</th><th>Hace</th></tr></thead>
+          <tbody>
+            <tr><td class="n">90</td><td>servo a 90°</td></tr>
+            <tr><td class="n">+ / -</td><td>±1°</td></tr>
+            <tr><td class="n">z</td><td>guarda la posición actual como ABAJO</td></tr>
+            <tr><td class="n">a</td><td>guarda la posición actual como ARRIBA</td></tr>
+            <tr><td class="n">p</td><td>alterna arriba y abajo</td></tr>
+            <tr><td class="n">c 20</td><td>20 bajadas y subidas</td></tr>
+            <tr><td class="n">d</td><td>suelta el servo (lo giras con la mano)</td></tr>
+          </tbody>
+        </table></div>
+        <ol class="acciones">
+          <li><p>Escribe <kbd>20</kbd> (el ABAJO de fábrica). Monta el brazo simple apuntando al plumón, unos 57° bajo la horizontal.</p></li>
+          <li><p>Ajusta con <kbd>+</kbd> <kbd>-</kbd> hasta que la punta del brazo quede justo bajo la oreja del collar sin tocar la placa. <kbd>z</kbd>.</p></li>
+          <li><p>Sube hasta que el plumón levante 18 mm. Si el servo zumba arriba, baja 2°. <kbd>a</kbd>.</p></li>
+          <li><p><kbd>c 20</kbd>: las 20 subidas deben verse iguales. Anota ARRIBA y ABAJO.</p></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ 4 -->
+<section class="paso" id="p4" data-paso="4">
+  <div class="cab-paso">
+    <span class="num">4</span>
+    <div class="tit"><h3>Montar el sensor en el cabezal</h3><p>Abrazadera M18 bajo la placa, cara del sensor 40 mm bajo la cara inferior de la placa.</p></div>
+    <label class="hecho-chk"><input type="checkbox" id="chk4">Hecho</label>
+  </div>
+  <div class="cuerpo">
+    <div class="dos">
+      <figure class="chico">
+        <div class="lienzo">
+        <svg viewBox="0 0 380 340" role="img" aria-label="Vista lateral del sensor montado: cara a 40 mm bajo la placa y cable doblado hacia afuera">
+          <!-- eje J3 -->
+          <line x1="60" y1="20" x2="60" y2="320" stroke="var(--tenue)" stroke-width="1.3" stroke-dasharray="8 5"/>
+          <text x="66" y="34" class="svg-sub">eje de J3</text>
+          <!-- final de carrera -->
+          <rect x="120" y="36" width="90" height="22" rx="3" fill="var(--chip)"/>
+          <text x="216" y="51" class="svg-sub">final de carrera J3</text>
+          <!-- placa -->
+          <rect x="40" y="118" width="300" height="12" rx="2" fill="#e0a13a"/>
+          <text x="300" y="112" class="svg-sub">placa 6 mm</text>
+          <!-- abrazadera -->
+          <rect x="226" y="130" width="64" height="30" rx="3" fill="#8f7ac0"/>
+          <text x="296" y="150" class="svg-sub">abrazadera</text>
+          <!-- sensor: 1 mm = 2.6 px -->
+          <rect x="240" y="64" width="36" height="22" rx="3" fill="var(--chip)"/>
+          <rect x="242" y="86" width="32" height="140" rx="3" fill="var(--metal)"/>
+          <g stroke="var(--metal-2)" stroke-width="1.6"><line x1="242" y1="170" x2="274" y2="170"/><line x1="242" y1="180" x2="274" y2="180"/><line x1="242" y1="190" x2="274" y2="190"/><line x1="242" y1="200" x2="274" y2="200"/><line x1="242" y1="210" x2="274" y2="210"/></g>
+          <rect x="240" y="226" width="36" height="8" rx="2" fill="var(--c-naranja)"/>
+          <!-- cable hacia afuera -->
+          <path class="halo" d="M258 64 C258 46 270 40 296 40 H350"/><path class="w" stroke="var(--c-negro)" d="M258 64 C258 46 270 40 296 40 H350"/>
+          <text x="290" y="30" class="svg-sub">cable hacia afuera</text>
+          <!-- cota 40 mm -->
+          <g class="cota"><line x1="214" y1="130" x2="214" y2="234"/><line x1="208" y1="130" x2="220" y2="130"/><line x1="208" y1="234" x2="220" y2="234"/></g>
+          <text x="206" y="188" text-anchor="end" class="cota-txt">40 mm</text>
+          <!-- cota 55 mm -->
+          <g class="cota"><line x1="60" y1="290" x2="258" y2="290"/><line x1="60" y1="284" x2="60" y2="296"/><line x1="258" y1="284" x2="258" y2="296"/></g>
+          <text x="160" y="310" text-anchor="middle" class="cota-txt">55 mm</text>
+          <!-- holgura -->
+          <text x="120" y="80" class="svg-sub" style="fill:var(--mal)">1.5 mm al final</text>
+          <line x1="150" y1="84" x2="236" y2="60" stroke="var(--mal)" stroke-width="1.2"/>
+          <!-- mesa -->
+          <line x1="20" y1="262" x2="360" y2="262" stroke="var(--linea-2)" stroke-width="2"/>
+          <text x="282" y="256" class="svg-sub">pieza a 3 mm</text>
+        </svg>
+        </div>
+        <figcaption>El cable sale doblado hacia afuera, lejos del eje de J3, y no sube más de 30 mm sobre la placa: pasa a 1.5 mm del final de carrera.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/cabezal_abajo.png" alt="Vista inferior del cabezal A v3 con el sensor en su abrazadera, el electroimán y la guía del plumón" loading="lazy" width="1400" height="1000">
+        <figcaption>Vista inferior: sensor a 240°, electroimán a 120°, plumón a 0°, los tres a 55 mm del eje de J3.</figcaption>
+      </figure>
+    </div>
+    <ol class="acciones">
+      <li><p>Tuercas M3 en la abrazadera (2 abajo y 1 lateral). Abrazadera bajo la placa con 2 × M3 × 20 desde arriba.</p></li>
+      <li><p>Mete el LJ18A3 desde abajo. Las dos tuercas M18 que trae no se usan.</p></li>
+      <li><p>Pon un taco de 40 mm entre la cara inferior de la placa y la cara del sensor. Aprieta el M3 × 25 lateral.</p></li>
+      <li><p>Dobla el cable hacia afuera con una curva de unos 6 mm y amárralo con un cincho en la ranura del brazo del sensor.</p></li>
+      <li><p>Repite <code>prueba_sensor</code> pasos 1 y 4 con el sensor ya montado: tornillos y tuercas cerca de la cara pueden dispararlo.</p></li>
+    </ol>
+    <div class="aviso"><p><b>Si tu sensor mide más de 68 mm</b> de largo total, baja la cara lo que sobre. Si no, el cable choca con el final de carrera de J3 al girar.</p></div>
+  </div>
+</section>
+
+<!-- ================================================================ 5 -->
+<section class="paso" id="p5" data-paso="5">
+  <div class="cab-paso">
+    <span class="num">5</span>
+    <div class="tit"><h3>Chequeo del cabezal</h3><p>Sketch <code>firmware/prueba_cabezal</code>, orden <kbd>x</kbd>. Brazo 2 con J3 y el cabezal completo, sujeto a un soporte.</p></div>
+    <label class="hecho-chk"><input type="checkbox" id="chk5">Hecho</label>
+  </div>
+  <div class="cuerpo">
+    <div class="aviso peligro"><p><b>Mano lejos del cabezal en el homing y en el paso 4.</b> J3 gira solo. El hongo de PARO (D28) lo detiene; si no lo tienes, ten la fuente de 12 V al alcance.</p></div>
+    <div class="escalera">
+      <div class="escalon"><span class="k">1</span><div><b>Final de carrera de J3</b><p>Motor suelto. Presionas el final con el dedo y Enter.</p></div><span class="meta">lee ACTIVO</span></div>
+      <div class="escalon"><span class="k">2</span><div><b>Homing</b><p>J3 gira hacia negativo hasta tocar el final, luego va a φ = 0.</p></div><span class="meta">dispara cerca de −119.5°</span></div>
+      <div class="escalon"><span class="k">3</span><div><b>Alineación</b><p>Corriges con <kbd>+</kbd> <kbd>-</kbd> hasta que el plumón quede sobre la línea del brazo 2. Calcula el <code>home3</code>.</p></div><span class="meta">corrección ≤ 3°</span></div>
+      <div class="escalon"><span class="k">4</span><div><b>Holguras al girar</b><p>De −120° a +121° en pasos de 10°, más lento entre −60° y −40°, donde el sensor y las tuercas M4 pasan bajo el final.</p></div><span class="meta">nada roza</span></div>
+      <div class="escalon"><span class="k">5</span><div><b>Herramientas al frente</b><p>Plumón (0°), electroimán (−120°), sensor (+120°). Respondes s/n en cada una.</p></div><span class="meta">las 3 alineadas</span></div>
+      <div class="escalon"><span class="k">6</span><div><b>Levante del plumón</b><p>Mides la punta abajo y arriba con regla o calibrador; luego 10 ciclos.</p></div><span class="meta">16–20 mm</span></div>
+      <div class="escalon"><span class="k">7</span><div><b>Electroimán</b><p>Sostienes la tuerca contra la cara; se prende 5 s y la sueltas.</p></div><span class="meta">sostiene 5 s y cae</span></div>
+      <div class="escalon"><span class="k">8</span><div><b>Sensor en el cabezal</b><p>Arandela a 3 mm bajo la cara y luego sin ella.</p></div><span class="meta">METAL / nada</span></div>
+      <div class="escalon"><span class="k">9</span><div><b>Ruido girando</b><p>J3 va y viene 6 veces con el imán prendido; cuenta lecturas falsas.</p></div><span class="meta">0 falsas</span></div>
+    </div>
+
+    <h3>Pruebas puntuales</h3>
+    <p>Fuera del chequeo, el mismo sketch acepta órdenes sueltas para repetir solo lo que falló.</p>
+    <div class="tabla"><table>
+      <thead><tr><th>Orden</th><th>Qué prueba</th><th>Mira que</th></tr></thead>
+      <tbody>
+        <tr><td class="n">h</td><td>homing de J3</td><td>imprime la deriva si ya tenía home: menos de 1°</td></tr>
+        <tr><td class="n">t p · t i · t s</td><td>cambio de herramienta</td><td>gira ±120° sin rozar y la herramienta queda al frente</td></tr>
+        <tr><td class="n">g 45 · + · ++</td><td>J3 a un ángulo · ±1° · ±10°</td><td>no pasa de −120 … +121</td></tr>
+        <tr><td class="n">p · c 20</td><td>plumón arriba/abajo · 20 ciclos</td><td>sube y baja igual, el collar no toca el puente</td></tr>
+        <tr><td class="n">u 110 · d 20</td><td>ángulos ARRIBA / ABAJO en vivo</td><td>mismos valores que en el paso 3</td></tr>
+        <tr><td class="n">e · m</td><td>imán ON/OFF · imán 5 s</td><td>agarra la tuerca y no se calienta en 1 min</td></tr>
+        <tr><td class="n">n</td><td>sensor en vivo</td><td>cambia solo con metal delante</td></tr>
+        <tr><td class="n">r 3</td><td>ciclo completo 3 veces</td><td>plumón → sensor → imán → plumón sin errores</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================================================================ 6 -->
+<section class="paso" id="p6" data-paso="6">
+  <div class="cab-paso">
+    <span class="num">6</span>
+    <div class="tit"><h3>Pasar los valores al firmware</h3><p>El chequeo imprime tres líneas al final. Se pegan en <code>mathbot_mega</code> sin recompilar.</p></div>
+    <label class="hecho-chk"><input type="checkbox" id="chk6">Hecho</label>
+  </div>
+  <div class="cuerpo">
+    <ol class="acciones">
+      <li><p>Sube <code>firmware/mathbot_mega</code>. Monitor Serie a 115200.</p></li>
+      <li><p>Pega una línea a la vez y espera el <code>ok</code> antes de la siguiente (el buffer es de 64 bytes).</p></li>
+      <li><p><kbd>GUARDAR</kbd> las escribe en la EEPROM. <kbd>CFG</kbd> sin nada las muestra.</p></li>
+    </ol>
+<div class="terminal"><button class="copiar" data-copiar="CFG home3 -120.0&#10;CFG servoup 110&#10;CFG servodn 20&#10;GUARDAR">Copiar</button><span class="d"># ejemplo: usa los números que te dio el chequeo</span>
+CFG home3 -120.0
+CFG servoup 110
+CFG servodn 20
+GUARDAR</div>
+    <p style="color:var(--tinta-2)">Después, en el robot completo: <kbd>H</kbd>, <kbd>T p</kbd>. Si el plumón no queda sobre la línea del brazo 2, corrige <code>home3</code> por la diferencia.</p>
+  </div>
+</section>
+
+<footer>Sketches: <code>firmware/prueba_sensor</code>, <code>firmware/prueba_servo</code>, <code>firmware/prueba_cabezal</code>. Medidas del cabezal en <code>BRAZO SCARA/DISEÑO FINAL/Cabezal disco/README.md</code>.</footer>
+</div>
+
+<script>
+(function () {
+  var KEY = 'mathbot-guia-cabezal';
+  var estado = {};
+  try { estado = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { estado = {}; }
+  var secciones = document.querySelectorAll('section.paso');
+  var enlaces = document.querySelectorAll('#nav a');
+  function pintar() {
+    var n = 0;
+    secciones.forEach(function (s, i) {
+      var k = s.dataset.paso, ok = !!estado[k];
+      s.classList.toggle('listo', ok);
+      document.getElementById('chk' + k).checked = ok;
+      enlaces[i].classList.toggle('hecho', ok);
+      if (ok) n++;
+    });
+    document.getElementById('cuenta').textContent = n + '/6';
+    document.getElementById('riel').style.width = (n / 6 * 100) + '%';
+  }
+  secciones.forEach(function (s) {
+    var k = s.dataset.paso;
+    document.getElementById('chk' + k).addEventListener('change', function (e) {
+      estado[k] = e.target.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(estado)); } catch (err) {}
+      pintar();
+    });
+  });
+  pintar();
+  document.querySelectorAll('.copiar').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var txt = b.getAttribute('data-copiar');
+      var hecho = function () { b.textContent = 'Copiado'; setTimeout(function () { b.textContent = 'Copiar'; }, 1400); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(hecho, function () { seleccionar(b.parentNode); });
+      } else { seleccionar(b.parentNode); }
+    });
+  });
+  function seleccionar(el) {
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+})();
+</script>

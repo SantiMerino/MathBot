@@ -8,6 +8,7 @@ Parte de la v2 de `anatomia/cabezal/` y la corrige con las medidas reales del en
 | Carpeta / archivo | Qué es |
 |---|---|
 | `STL/` | 7 piezas en orientación de impresión, sin soportes |
+| `3MF/` | Las mismas 7 piezas en 3MF (malla cerrada, en mm, con el nombre de la pieza) para Orca / Bambu Studio |
 | `STEP/` | Las mismas piezas en el marco del cabezal: origen en el eje de J3, z = 0 en la cara superior de la placa, +x hacia el plumón |
 | `ensamble/Cabezal A v3.step` | Subensamble: piezas impresas, compradas y tornillería, plumón abajo |
 | `ensamble/SCARA con cabezal de disco.step` | `SCARA Robot 3D Model.STEP` sin la pinza, con el connector, el cabezal y J3 en φ = 0 |

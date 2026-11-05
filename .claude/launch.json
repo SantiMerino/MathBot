@@ -33,6 +33,18 @@
         "8770"
       ],
       "port": 8770
+    },
+    {
+      "name": "montaje-cabezal",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8772",
+        "--directory",
+        "BRAZO SCARA/DISEÑO FINAL/Cabezal disco/montaje"
+      ],
+      "port": 8772
     }
   ]
 }
