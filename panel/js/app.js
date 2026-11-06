@@ -108,6 +108,79 @@ function volcarLog() {
   box.scrollTop = box.scrollHeight;
 }
 robot.addEventListener('log', e => log(e.detail.texto, e.detail.tipo));
+
+// ---------------------------------------------------------------- tamaño del panel de control y de la terminal
+// Arrastrar los divisores (o flechas con el divisor enfocado); doble clic vuelve al tamaño de fábrica.
+// Se recuerda en esta pantalla. La terminal se pliega con OCULTAR o F2 y deja todo el alto a los controles.
+const consolaEl = $('.consola');
+const BAHIA = { min: 360 }, TELE = { min: 110 };
+function ponerTam(varCss, px) {
+  if (px == null) consolaEl.style.removeProperty(varCss); else consolaEl.style.setProperty(varCss, Math.round(px) + 'px');
+}
+function limitarBahia(px) {
+  const r = consolaEl.getBoundingClientRect();
+  return Math.max(BAHIA.min, Math.min(px, r.width - 24 - 320));   // la pantalla conserva al menos 320 px
+}
+function limitarTele(px) {
+  const r = consolaEl.getBoundingClientRect();
+  return Math.max(TELE.min, Math.min(px, r.height - 24 - 180));   // el panel de control conserva al menos 180 px
+}
+if (+pref('bahia', 0)) ponerTam('--bahia', +pref('bahia', 0));
+if (+pref('tele', 0)) ponerTam('--tele', +pref('tele', 0));
+function divisor(el, eje, aplicar, borrar) {
+  el.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    el.setPointerCapture(e.pointerId);
+    el.classList.add('arrastrando');
+    document.body.classList.add('arrastrando-' + eje);
+  });
+  el.addEventListener('pointermove', e => { if (el.hasPointerCapture(e.pointerId)) aplicar(e); });
+  const soltar = e => {
+    if (!el.classList.contains('arrastrando')) return;
+    el.classList.remove('arrastrando');
+    document.body.classList.remove('arrastrando-' + eje);
+    try { el.releasePointerCapture(e.pointerId); } catch {}
+  };
+  el.addEventListener('pointerup', soltar);
+  el.addEventListener('pointercancel', soltar);
+  el.addEventListener('dblclick', borrar);
+}
+const anchoBahia = () => $('#bahia').getBoundingClientRect().width;
+const altoTele = () => $('#teletipo').getBoundingClientRect().height;
+function fijarBahia(px) { px = limitarBahia(px); ponerTam('--bahia', px); guardarPref('bahia', Math.round(px)); }
+function fijarTele(px) { px = limitarTele(px); ponerTam('--tele', px); guardarPref('tele', Math.round(px)); }
+divisor($('#divBahia'), 'v',
+  e => fijarBahia(consolaEl.getBoundingClientRect().right - 12 - e.clientX - 6),
+  () => { ponerTam('--bahia', null); guardarPref('bahia', 0); });
+divisor($('#divTele'), 'h',
+  e => fijarTele(consolaEl.getBoundingClientRect().bottom - 12 - e.clientY + 6),
+  () => { ponerTam('--tele', null); guardarPref('tele', 0); });
+$('#divBahia').addEventListener('keydown', e => {
+  const d = { ArrowLeft: 20, ArrowRight: -20 }[e.key];
+  if (d) { e.preventDefault(); e.stopPropagation(); fijarBahia(anchoBahia() + d); }
+});
+$('#divTele').addEventListener('keydown', e => {
+  const d = { ArrowUp: 20, ArrowDown: -20 }[e.key];
+  if (d) { e.preventDefault(); e.stopPropagation(); fijarTele(altoTele() + d); }
+});
+// si la ventana se achica, que lo guardado no deje la pantalla sin espacio
+window.addEventListener('resize', () => {
+  if (+pref('bahia', 0)) ponerTam('--bahia', limitarBahia(+pref('bahia', 0)));
+  if (+pref('tele', 0) && !document.body.classList.contains('tele-plegada')) ponerTam('--tele', limitarTele(+pref('tele', 0)));
+});
+
+function plegarTele(on) {
+  document.body.classList.toggle('tele-plegada', on);
+  $('#plegarTele span').textContent = on ? 'MOSTRAR' : 'OCULTAR';
+  $('#plegarTele').setAttribute('aria-expanded', String(!on));
+  guardarPref('teleplegada', on ? '1' : '0');
+  if (!on) $('#log').scrollTop = $('#log').scrollHeight;
+}
+plegarTele(pref('teleplegada', '0') === '1');
+$('#plegarTele').addEventListener('click', () => plegarTele(!document.body.classList.contains('tele-plegada')));
+document.addEventListener('keydown', e => {
+  if (e.key === 'F2') { e.preventDefault(); plegarTele(!document.body.classList.contains('tele-plegada')); }
+});
 robot.addEventListener('aviso', e => log('AVISO: ' + e.detail, 'err'));
 
 // ---------------------------------------------------------------- conexión
@@ -387,7 +460,7 @@ const TECLAS = { ArrowLeft: ['1', 'x', -1], ArrowRight: ['1', 'x', 1], ArrowUp: 
 const jogVisible = () => !$('#jog').closest('.mod').hidden;
 document.addEventListener('keydown', e => {
   const t = TECLAS[e.key];
-  if (!t || !jogVisible() || e.target.closest('input, [role="radiogroup"], dialog, .cajon') || e.repeat) return;
+  if (!t || !jogVisible() || e.target.closest('input, [role="radiogroup"], [role="separator"], dialog, .cajon') || e.repeat) return;
   e.preventDefault();
   jogLoop(modoJog === 'art' ? t[0] : t[1], t[2]);
 });
@@ -444,7 +517,7 @@ window.addEventListener('pointerup', njFinTodos);
 window.addEventListener('blur', njFinTodos);
 document.addEventListener('visibilitychange', () => { if (document.hidden) njFinTodos(); });
 const NJ_TECLAS = { ArrowLeft: ['1', -1], ArrowRight: ['1', 1], ArrowUp: ['2', 1], ArrowDown: ['2', -1], q: ['3', -1], e: ['3', 1], Q: ['3', -1], E: ['3', 1], PageUp: ['4', 1], PageDown: ['4', -1] };
-const njTecla = e => robot.modo === 'nema' && NJ_TECLAS[e.key] && !e.target.closest?.('input, textarea, [role="radiogroup"], dialog, .cajon');
+const njTecla = e => robot.modo === 'nema' && NJ_TECLAS[e.key] && !e.target.closest?.('input, textarea, [role="radiogroup"], [role="separator"], dialog, .cajon');
 document.addEventListener('keydown', e => {
   if (!njTecla(e)) return;
   e.preventDefault(); e.stopImmediatePropagation();

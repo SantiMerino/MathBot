@@ -209,21 +209,48 @@ body.sin-stickers .st { display: none; }
 /* ------------------------------------------------------------ consola */
 .consola {
   min-height: 0; display: grid; gap: 12px; padding: 12px;
-  grid-template-columns: minmax(0, 1fr) 500px; grid-template-rows: minmax(0, 1fr) 230px;
+  /* --bahia y --tele los fija el operario arrastrando los divisores (app.js); --bahia-auto cambia con la pantalla */
+  grid-template-columns: minmax(0, 1fr) var(--bahia, var(--bahia-auto, 500px)); grid-template-rows: minmax(0, 1fr) var(--tele, 230px);
   grid-template-areas: "pant bahia" "pant tele";
 }
 .pantalla { grid-area: pant; min-height: 0; display: flex; }
-.bahia { grid-area: bahia; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+.bahia { grid-area: bahia; min-height: 0; display: flex; flex-direction: column; gap: 10px; position: relative; }
+
+/* divisores: arrastrar cambia el ancho del panel de control y el alto de la terminal */
+.divisor { position: absolute; z-index: 6; touch-action: none; }
+.divisor::after { content: ""; position: absolute; border-radius: 3px; background: #4a4842; transition: background .15s; }
+.divisor:hover::after, .divisor:focus-visible::after, .divisor.arrastrando::after { background: var(--cian); }
+.divisor:focus-visible { outline: none; }
+.divisor-v { left: -12px; top: 0; bottom: 0; width: 12px; cursor: col-resize; }
+.divisor-v::after { left: 4px; top: 50%; width: 4px; height: 56px; translate: 0 -50%; }
+.divisor-h { left: 0; right: 0; top: 0; height: 12px; cursor: row-resize; }
+.divisor-h::after { top: 4px; left: 50%; width: 56px; height: 4px; translate: -50% 0; }
+body.arrastrando-v { cursor: col-resize; user-select: none; }
+body.arrastrando-h { cursor: row-resize; user-select: none; }
+
+/* panel de control ancho (arrastrado): los módulos se acomodan en dos columnas para ver más a la vez */
+body.gemelo .bahia { container-type: inline-size; }
+@container (min-width: 860px) {
+  .bahia .modulos { display: grid; grid-template-columns: 1fr 1fr; align-content: start; align-items: start; }
+  .bahia .modulos > .mod { grid-column: span var(--span, 1); }
+}
+
+/* terminal plegada: solo queda su cabecera y el panel de control gana el alto */
+body.tele-plegada .consola { grid-template-rows: minmax(0, 1fr) auto; }
+body.tele-plegada .teletipo { padding-bottom: 12px; }
+body.tele-plegada .teletipo .lineas, body.tele-plegada #manual, body.tele-plegada .divisor-h { display: none; }
+body.tele-plegada .tt-cab { margin-bottom: 0; }
 .teletipo { grid-area: tele; }
 .modulos { min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 12px; padding: 2px 4px 12px 2px; }
 
 /* modo solo mando: la consola completa en rejilla, la mesa en una pantalla chica */
 body:not(.gemelo) .consola { display: grid; overflow: auto; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); grid-template-rows: none; grid-template-areas: none; grid-auto-flow: row; align-items: start; }
 body:not(.gemelo) .bahia, body:not(.gemelo) .modulos { display: contents; }
-body:not(.gemelo) .modo-bahia, body:not(.gemelo) .solo-gemelo { display: none; }
+body:not(.gemelo) .modo-bahia, body:not(.gemelo) .solo-gemelo, body:not(.gemelo) .divisor-v { display: none; }
+body:not(.gemelo).tele-plegada .teletipo { height: auto; }
 body:not(.gemelo) .mod { grid-column: span var(--span, 1); }
 body:not(.gemelo) .pantalla { grid-column: 1 / span 2; grid-row: 1 / span 2; height: 470px; }
-body:not(.gemelo) .teletipo { grid-area: auto / 1 / auto / -1; height: 200px; position: sticky; bottom: 0; z-index: 5; box-shadow: 0 -10px 24px rgb(0 0 0 / .7); }
+body:not(.gemelo) .teletipo { grid-area: auto / 1 / auto / -1; height: var(--tele, 200px); position: sticky; bottom: 0; z-index: 5; box-shadow: 0 -10px 24px rgb(0 0 0 / .7); }
 
 .modo-bahia { display: flex; gap: 0; border-radius: 8px; padding: 4px; background: var(--ranura); box-shadow: inset 0 2px 5px rgb(0 0 0 / .9); }
 .modo-bahia button {
@@ -452,7 +479,7 @@ body:not(.virtual) .solovirtual { display: none !important; }
 
 /* ------------------------------------------------------------ pantallas chicas */
 @media (max-width: 1280px) {
-  .consola { grid-template-columns: minmax(0, 1fr) 440px; }
+  .consola { --bahia-auto: 440px; }
   .lamparas .lampara { min-width: 54px; padding: 6px 5px; }
   .ventana { min-width: 180px; font-size: 16px; }
 }
@@ -460,7 +487,7 @@ body:not(.virtual) .solovirtual { display: none !important; }
   .riel { flex-wrap: wrap; row-gap: 10px; }
   .anunciador { order: 5; flex: 1 1 100%; margin-left: 0; }
   .paro-base { margin-left: auto; }
-  .consola { grid-template-columns: minmax(0, 1fr) 420px; }
+  .consola { --bahia-auto: 420px; }
 }
 @media (max-width: 980px) {
   body { overflow: auto; display: block; }
@@ -477,6 +504,8 @@ body:not(.virtual) .solovirtual { display: none !important; }
   .pantalla { height: 60vh; }
   .modulos { overflow: visible; }
   .teletipo { height: 280px; }
+  body.tele-plegada .teletipo { height: auto; }
+  .divisor { display: none; }
   .jog-caja, .mision-caja { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
