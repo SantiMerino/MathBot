@@ -32,6 +32,24 @@ La carpeta `entrega/` guarda lo que salió en MATLAB Online R2026b, listo para s
 - Las capturas y `validacion_mathbot.png`.
 - Los logs de la corrida.
 
+## App interactiva
+
+```matlab
+mathbot_app
+```
+
+Es un SCARA virtual con pestañas, al estilo App Designer pero programado en `mathbot_app.m` para que se pueda editar:
+
+- **Pestañas a la izquierda:**
+  - **Inicio:** geometría, herramienta activa, codo y límites editables.
+  - **Modo Jog:** mueve cada junta, o la punta con la cinemática inversa, y deja tinta con el plumón abajo.
+  - **Cinemática:** directa e inversa, con el jacobiano.
+  - **Trayectorias:** reproduce la misión de la rosa con pausa, velocidad y barra de tiempo.
+- **Pestañas a la derecha:** Vista 3D con las piezas reales, Espacio de trabajo, Error de seguimiento y Articulaciones.
+- **Abajo:** la cinemática directa en vivo.
+
+No necesita toolboxes. La primera vez genera `referencia_mathbot.mat` si no existe.
+
 Cada paso también se puede correr por separado, en este orden:
 
 | Paso | Script | Qué hace |
