@@ -14,7 +14,9 @@ export class EnlaceSerial {
   async leer() {
     const dec = new TextDecoder();
     let resto = '';
-    while (this.puerto?.readable) {
+    // Sin this.cerrando, al cancelar el lector el bucle pedía otro readable al instante y giraba
+    // en microtareas sin ceder nunca: la página se congelaba ("La página no responde").
+    while (!this.cerrando && this.puerto?.readable) {
       this.lector = this.puerto.readable.getReader();
       try {
         for (;;) {
@@ -29,7 +31,7 @@ export class EnlaceSerial {
           }
         }
       } catch (e) {
-        this.alCaer?.(e);
+        if (!this.cerrando) this.alCaer?.(e);
         break;
       } finally {
         this.lector.releaseLock();
@@ -39,7 +41,9 @@ export class EnlaceSerial {
   onLinea(cb) { this.cb = cb; }
   async escribir(texto) { await this.salida.write(new TextEncoder().encode(texto)); }
   async cerrar() {
+    this.cerrando = true;
     try { await this.lector?.cancel(); } catch {}
+    try { await this.leyendo; } catch {}
     try { this.salida?.releaseLock(); } catch {}
     try { await this.puerto?.close(); } catch {}
     this.puerto = null;
@@ -54,7 +58,12 @@ export class EnlaceVirtual {
   async cerrar() { this.mega.desconectar(); }
 }
 
-const ESTADOS = { R: 'Listo', H: 'Listo (home manual)', N: 'Sin home', M: 'Moviendo', L: 'Motores sueltos', P: 'PARO' };
+const ESTADOS = { R: 'Listo', H: 'Listo (home manual)', N: 'Sin home', M: 'Moviendo', L: 'Motores sueltos', P: 'PARO', T: 'Prueba NEMA' };
+
+// firmware/prueba_nema: no habla el protocolo v3. Se reconoce por su primera línea y solo acepta
+// líneas de dígitos 1-4 (o "t"): cada dígito mueve ese motor media vuelta y lo regresa.
+const BANNER_NEMA = /^1 X \| 2 Y \| 3 Z/;
+export const ORDEN_NEMA = /^(t|[1-4]{1,4}|[+-][1-4]( \d+)?|x[1-4]|[sclp])$/;
 
 export class Robot extends EventTarget {
   constructor() {
@@ -84,13 +93,27 @@ export class Robot extends EventTarget {
     this.enlace = enlace;
     enlace.onLinea(l => this.linea(l));
     enlace.alCaer = () => this.perdido('se cortó la comunicación');
+    this.modo = 'v3';
     const listo = new Promise(res => { this.alIdentificar = res; });
     await enlace.abrir();
     // El Mega real se reinicia al abrir el puerto: espera su identificación (o la pide si no llega).
     const t = setTimeout(() => this.enlace?.escribir('?\n'), 2500);
-    await Promise.race([listo, new Promise((_, rej) => setTimeout(() => rej(new Error('el Mega no respondió (¿firmware v3 cargado?)')), 6000))]);
-    clearTimeout(t);
+    let tMax;
+    try {
+      this.modo = await Promise.race([listo, new Promise((_, rej) => { tMax = setTimeout(() => rej(new Error('el Mega no respondió (¿firmware v3 o prueba_nema cargado?)')), 6000); })]);
+    } finally {
+      clearTimeout(t); clearTimeout(tMax);
+      this.alIdentificar = null;
+    }
     this.conectado = true;
+    if (this.modo === 'nema') {
+      this.estado.letra = 'T';
+      this.estado.q = [0, 0, 0, GEO.ZMAX];   // el Mega se reinició: sus contadores arrancan en cero
+      this.emitir('log', { tipo: 'ev', texto: 'Modo PRUEBA NEMA (firmware prueba_nema): usa las teclas de la terminal o escribe 1, 2, 3, 4, 12, 123, t. Cada prueba da media vuelta y regresa. Este firmware no tiene PARO: para cortar, quita los 12 V.' });
+      this.emitir('conexion', true);
+      this.emitir('estado', this.estado);
+      return;
+    }
     this.vigilar = setInterval(() => {
       if (this.ocupado && performance.now() - this.tUltimaLinea > 3000) this.emitir('aviso', 'Sin noticias del Mega hace 3 s');
     }, 1000);
@@ -103,6 +126,7 @@ export class Robot extends EventTarget {
     try { await this.enlace?.cerrar(); } catch {}
     this.enlace = null;
     this.conectado = false;
+    this.modo = 'v3';
     for (const p of this.pendientes.values()) p.rechazar(new Error('desconectado'));
     this.pendientes.clear();
     this.estado.letra = '-';
@@ -124,6 +148,7 @@ export class Robot extends EventTarget {
 
   enviarYa(orden) {
     if (!this.enlace) return Promise.reject(new Error('sin conexión'));
+    if (this.modo === 'nema') return this.enviarNema(orden);
     const id = this.sigId++;
     this.ocupado = true;
     this.emitir('ocupado', orden);
@@ -134,8 +159,31 @@ export class Robot extends EventTarget {
     }).finally(() => { if (!this.pendientes.size) { this.ocupado = false; this.emitir('ocupado', null); } });
   }
 
+  // prueba_nema no contesta "ok": la línea sale tal cual. Cualquier otra orden se bloquea, porque sus
+  // dígitos (p. ej. el 1 de "J 1 1.00") moverían motores en este firmware.
+  async enviarNema(orden) {
+    orden = orden.trim();
+    if (!ORDEN_NEMA.test(orden)) {
+      this.emitir('log', { tipo: 'err', texto: `${orden}: en PRUEBA NEMA solo 1, 2, 3, 4, sus combinaciones (12, 123, 1234) o t` });
+      throw new Error('orden no válida en prueba_nema');
+    }
+    this.emitir('log', { tipo: 'tx', texto: orden });
+    await this.enlace.escribir(orden + '\n');
+    return true;
+  }
+
+  // Jog de prueba_nema: la orden se repite cada 150 ms mientras se mantiene el botón; va sin cola ni log.
+  nemaCrudo(texto) {
+    if (this.modo === 'nema' && this.enlace) this.enlace.escribir(texto + '\n').catch(() => {});
+  }
+
   // "!" no espera turno: el firmware lo lee aunque esté en medio de un movimiento.
   async paro() {
+    if (this.modo === 'nema') {
+      await this.enlace?.escribir('!');
+      this.emitir('log', { tipo: 'err', texto: this.nemaJog ? '! (PARO del jog). Una prueba de ½ vuelta en curso no se detiene: para eso quita los 12 V.' : 'Este prueba_nema no tiene PARO: quita los 12 V para cortar los motores.' });
+      return;
+    }
     await this.enlace?.escribir('!');
     this.emitir('log', { tipo: 'tx', texto: '! (PARO)' });
   }
@@ -165,7 +213,7 @@ export class Robot extends EventTarget {
         if (info.CAIDA) GEO.CAIDA = info.CAIDA;
         if (info.DISCO) GEO.DISCO = info.DISCO;
         this.emitir('log', { tipo: 'rx', texto: l });
-        this.alIdentificar?.();
+        this.alIdentificar?.('v3');
         this.emitir('info', info);
         return;
       }
@@ -192,7 +240,23 @@ export class Robot extends EventTarget {
         else { const m = t.slice(2).join(' '); this.emitir('log', { tipo: 'err', texto: `${p.orden}: ${m}` }); p.rechazar(new Error(m)); }
         return;
       }
+      case 'P':
+        // prueba_nema: grados de J1-J3 y mm de Z contados desde que arrancó (no hay home)
+        if (this.modo === 'nema' || this.alIdentificar) {
+          this.nemaPos = t.slice(1, 5).map(Number);
+          this.estado.q = [...this.nemaPos.slice(0, 3), GEO.ZMAX + this.nemaPos[3]];
+          this.emitir('estado', this.estado);
+          return;
+        }
+        this.emitir('log', { tipo: 'rx', texto: l });
+        return;
+      case 'JOG':
+        this.nemaJog = true;
+        this.emitir('nemajog', true);
+        this.emitir('log', { tipo: 'rx', texto: l });
+        return;
       default:
+        if (BANNER_NEMA.test(l)) { this.nemaJog = false; this.nemaPos = [0, 0, 0, 0]; this.alIdentificar?.('nema'); }
         this.emitir('log', { tipo: 'rx', texto: l });
     }
   }

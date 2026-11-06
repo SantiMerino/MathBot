@@ -382,6 +382,19 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 28px; border-radius
 .lineas .ok { color: var(--fosforo); text-shadow: 0 0 6px rgb(141 255 122 / .4); }
 .lineas .err { color: #ff8a83; text-shadow: 0 0 6px rgb(255 59 48 / .5); }
 .lineas .ev { color: var(--cian); }
+.nema { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 8px; background: #030a04; box-shadow: inset 0 1px 0 rgb(141 255 122 / .08); }
+.nema[hidden] { display: none; }
+.nema > span, .nema-jog > span { flex-basis: 100%; font-size: 11px; letter-spacing: .12em; color: var(--cian); }
+.nema-jog { flex-basis: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 6px; padding-top: 8px; border-top: 1px solid rgb(141 255 122 / .12); }
+.nj-ejes { display: grid; grid-template-columns: auto 1fr minmax(84px, auto) 1fr; gap: 6px 8px; align-items: center; }
+.nj-ejes b { font: 12px var(--f-dig); color: var(--serigrafia-2); letter-spacing: .1em; }
+.nj-ejes .tecla { min-height: 40px; font-size: 18px; touch-action: none; user-select: none; }
+.nj-ejes .tecla.activa { box-shadow: inset 0 0 0 2px var(--cian), 0 0 12px rgb(0 200 255 / .35); }
+.nj-ejes .dig { font: 15px var(--f-dig); color: var(--fosforo); text-align: center; }
+.nj-vel { display: flex; flex-wrap: wrap; gap: 6px; }
+.nj-vel [role="radio"][aria-checked="true"] { box-shadow: inset 0 0 0 2px var(--fosforo); }
+.nj-aviso { margin: 0; font-size: 12px; color: #ffc46b; }
+.nema-jog.sin-jog .nj-ejes, .nema-jog.sin-jog .nj-vel { opacity: .35; pointer-events: none; }
 #manual { display: flex; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 0 0 6px 6px; background: #030a04; box-shadow: inset 0 1px 0 rgb(141 255 122 / .08); }
 #manual .prompt { font: 16px var(--f-dig); color: var(--fosforo); }
 #manual input { flex: 1; width: auto; border: 0; box-shadow: none; background: none; padding: 4px 0; }
