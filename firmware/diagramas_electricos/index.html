@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Cableado eléctrico MathBot</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: hojas de plano apiladas (E-01, E-02, E-03), cada una con su cajetín; dibujos con scroll propio en móvil */
+:root{
+  --bg:#e9eef2; --sheet:#fbfcfd; --ink:#17232d; --muted:#586977; --rule:#c6d0d9; --grid:#e6ecf1;
+  --chip:#eef3f7; --accent:#1c5d99; --opt:#7d8b97;
+  --w12:#c9302c; --w6:#d06d0c; --wsig:#1f6fd1; --wmot:#23877c; --wbrown:#8a5527; --wblue:#2563d4; --wpe:#3c8f3a;
+  --led-g:#2e9b47; --led-y:#c99700; --led-r:#d1352b;
+  --metal:#c9d1d8; --metal2:#aeb8c1; --cap:#26313a; --captext:#eef3f6; --plastic:#e39a33; --cable:#5d6b76;
+  --resbody:#dcc79c; --band-r:#c0392b; --band-gold:#b8902c;
+  --f-disp:"IBM Plex Sans Condensed","Arial Narrow",sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1318; --sheet:#121b22; --ink:#dbe5ec; --muted:#8d9fad; --rule:#2a3843; --grid:#17222a;
+  --chip:#18242d; --accent:#6aa8e6; --opt:#7f8f9c;
+  --w12:#ff6b5f; --w6:#f5a04a; --wsig:#5c9cf2; --wmot:#4cc0b2; --wbrown:#c78a57; --wblue:#6b9cf5; --wpe:#6cc266;
+  --led-g:#4fc86a; --led-y:#f0c23a; --led-r:#ff6b5f;
+  --metal:#5a6873; --metal2:#71808c; --cap:#3a4954; --captext:#eef3f6; --plastic:#d08a2c; --cable:#8796a2;
+  --resbody:#9c8a63; --band-r:#e0533f; --band-gold:#d6ad45; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1318; --sheet:#121b22; --ink:#dbe5ec; --muted:#8d9fad; --rule:#2a3843; --grid:#17222a;
+  --chip:#18242d; --accent:#6aa8e6; --opt:#7f8f9c;
+  --w12:#ff6b5f; --w6:#f5a04a; --wsig:#5c9cf2; --wmot:#4cc0b2; --wbrown:#c78a57; --wblue:#6b9cf5; --wpe:#6cc266;
+  --led-g:#4fc86a; --led-y:#f0c23a; --led-r:#ff6b5f;
+  --metal:#5a6873; --metal2:#71808c; --cap:#3a4954; --captext:#eef3f6; --plastic:#d08a2c; --cable:#8796a2;
+  --resbody:#9c8a63; --band-r:#e0533f; --band-gold:#d6ad45; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:28px}
+header{display:grid;gap:6px}
+.kicker{font:600 12px/1 var(--f-disp);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 clamp(28px,4.4vw,42px)/1.05 var(--f-disp);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{color:var(--muted);max-width:68ch;margin:0}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+nav a{font:600 13px/1 var(--f-disp);color:var(--ink);text-decoration:none;border:1px solid var(--rule);background:var(--sheet);padding:9px 12px;border-radius:4px;display:flex;gap:8px;align-items:center}
+nav a b{font-family:var(--f-mono);font-weight:500;color:var(--accent)}
+nav a:hover,nav a:focus-visible{border-color:var(--accent);outline:none}
+
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;overflow:hidden;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-position:-1px -1px}
+.sheet-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;align-items:end;padding:20px 22px 14px;border-bottom:1px solid var(--rule);background:var(--sheet)}
+.sheet-head h2{font:700 24px/1.1 var(--f-disp);margin:0;text-wrap:balance}
+.sheet-head p{margin:4px 0 0;color:var(--muted);max-width:70ch}
+.cajetin{display:grid;grid-template-columns:repeat(4,auto);border:1px solid var(--ink);font:12px/1.2 var(--f-mono);min-width:0}
+.cajetin div{padding:5px 9px;border-left:1px solid var(--ink)}
+.cajetin div:first-child{border-left:0}
+.cajetin span{display:block;font:500 9.5px/1 var(--f-disp);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.sheet-body{padding:18px 22px 24px;display:grid;gap:22px;background:color-mix(in srgb,var(--sheet) 82%,transparent)}
+
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--rule);border-radius:4px;background:var(--sheet)}
+.scroll svg{display:block;width:100%;height:auto}
+.min-1000{min-width:1000px}.min-760{min-width:760px}.min-480{min-width:480px}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font:13px/1.2 var(--f-disp)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:26px;height:4px;border-radius:2px}
+.legend i.dash{height:0;border-top:2px dashed var(--opt);border-radius:0}
+
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
+figure{margin:0;display:grid;gap:8px;min-width:0}
+figcaption{font-size:13.5px;color:var(--muted);max-width:68ch}
+figcaption b{color:var(--ink);font-weight:600}
+.fig-t{font:700 15px/1.2 var(--f-disp);display:flex;gap:10px;align-items:baseline}
+.fig-t code{font:500 12px var(--f-mono);color:var(--accent)}
+
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font:600 11.5px/1.2 var(--f-disp);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--chip)}
+td code,li code,p code{font:500 12.5px var(--f-mono);color:var(--ink);background:var(--chip);padding:1px 5px;border-radius:3px}
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--sheet)}
+.tbl table{min-width:560px}
+td.num{font-family:var(--f-mono);white-space:nowrap}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:18px;align-items:start}
+.box{border:1px solid var(--rule);border-radius:4px;background:var(--sheet);padding:14px 16px;min-width:0}
+.box h3{font:700 15px/1.2 var(--f-disp);margin:0 0 8px}
+.box ol,.box ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.box p{margin:0 0 6px}
+.warn{border-color:color-mix(in srgb,var(--w12) 55%,var(--rule));background:color-mix(in srgb,var(--w12) 7%,var(--sheet))}
+.warn h3{color:var(--w12)}
+.calc{font:13px/1.7 var(--f-mono)}
+footer{color:var(--muted);font-size:13px}
+
+/* SVG */
+.dwg text{font-family:var(--f-disp);fill:var(--ink)}
+.dwg .t{font-size:13px;font-weight:600}
+.dwg .tb{font-size:15px;font-weight:700;letter-spacing:.03em}
+.dwg .tl{font-size:12px;font-weight:500}
+.dwg .ts{font-size:11px;fill:var(--muted)}
+.dwg .tm{font-family:var(--f-mono);font-size:11px}
+.dwg .mid{text-anchor:middle}.dwg .end{text-anchor:end}
+.dwg .f12{fill:var(--w12)}.dwg .f6{fill:var(--w6)}.dwg .fs{fill:var(--wsig)}.dwg .fcap{fill:var(--captext)}
+.blk{fill:var(--chip);stroke:var(--ink);stroke-width:1.4}
+.blk2{fill:var(--sheet);stroke:var(--ink);stroke-width:1.2}
+.opt{fill:none;stroke:var(--opt);stroke-width:1.4;stroke-dasharray:5 4}
+.dash{stroke-dasharray:5 4}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.w{fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.w12{stroke:var(--w12)}.wg{stroke:var(--ink)}.ws{stroke:var(--wsig)}.w6{stroke:var(--w6)}
+.wm{stroke:var(--wmot);stroke-width:5}.wmt{stroke:var(--wmot)}
+.wbr{stroke:var(--wbrown)}.wbl{stroke:var(--wblue)}.wpe{stroke:var(--wpe)}
+.c12{color:var(--w12)}.cg{color:var(--ink)}.cs{color:var(--wsig)}.c6{color:var(--w6)}
+.cled-g{color:var(--led-g)}.cled-y{color:var(--led-y)}.cled-r{color:var(--led-r)}
+@media (prefers-reduced-motion:no-preference){nav a{transition:border-color .15s}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="gnd"><path d="M0 0V8M-9 8H9M-5.5 12H5.5M-2 16H2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="dot"><circle r="3.4" fill="currentColor"/></g>
+    <g id="res"><path d="M-25 0H-15l2.5-6 5 12 5-12 5 12 5-12 5 12 2.5-6H25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></g>
+    <g id="dio"><path d="M-20 0H-7M7 0H20M7-7V7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M-7-7L7 0-7 7Z" fill="currentColor"/></g>
+    <g id="led"><use href="#dio"/><path d="M-1-10L5-18M1.5-18H5V-14.5M5-10L11-18M7.5-18H11V-14.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></g>
+    <g id="fuse"><rect x="-18" y="-7" width="36" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M-26 0H26" stroke="currentColor" stroke-width="1.6"/></g>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+<header>
+  <div class="kicker">MathBot · SCARA de doble efector</div>
+  <h1>Cableado eléctrico</h1>
+  <p class="lede">Arduino Mega 2560 con CNC Shield V3, cabezal de disco (plumón, electroimán y sensor inductivo) y panel del operador. Pines tomados de <code>firmware/mathbot_mega/mathbot_mega.ino</code> v3.0.</p>
+  <nav aria-label="Planos">
+    <a href="#e01"><b>E-01</b>Conexión general</a>
+    <a href="#e02"><b>E-02</b>Diagrama de circuito</a>
+    <a href="#e03"><b>E-03</b>Sensor inductivo</a>
+  </nav>
+</header>
+
+<!-- ============================ E-01 ============================ -->
+<section class="sheet" id="e01">
+  <div class="sheet-head">
+    <div>
+      <h2>Conexión general</h2>
+      <p>Qué va a dónde: la fuente de 12 V reparte a la shield, al electroimán, al buck del servo, al sensor y al divisor; el Mega manda las señales.</p>
+    </div>
+    <div class="cajetin"><div><span>Plano</span>E-01</div><div><span>Hoja</span>1 / 3</div><div><span>Rev.</span>A</div><div><span>Fecha</span>06-11-2026</div></div>
+  </div>
+  <div class="sheet-body">
+    <div class="legend" aria-label="Código de colores">
+      <span><i style="background:var(--w12)"></i>+12 V</span>
+      <span><i style="background:var(--ink)"></i>GND / retorno</span>
+      <span><i style="background:var(--w6)"></i>+6 V servo</span>
+      <span><i style="background:var(--wsig)"></i>señal del Mega</span>
+      <span><i style="background:var(--wmot);height:6px"></i>motor (4 hilos)</span>
+      <span><i style="background:var(--wbrown)"></i>L / café</span>
+      <span><i style="background:var(--wblue)"></i>N / azul</span>
+      <span><i style="background:var(--wpe)"></i>PE tierra</span>
+      <span><i class="dash"></i>recomendado, no está en la BOM</span>
+    </div>
+
+    <div class="scroll">
+    <svg class="dwg min-1000" viewBox="0 0 1280 900" role="img" aria-label="Diagrama de conexión general del MathBot: fuente de 12 voltios, Arduino Mega con CNC Shield, motores, finales de carrera, sensor, electroimán, servo, divisor y panel del operador">
+      <!-- AC -->
+      <rect class="blk" x="20" y="35" width="90" height="90" rx="6"/>
+      <text class="t mid" x="58" y="72">Toma</text>
+      <text class="ts mid" x="58" y="90">120 V AC</text>
+      <text class="tm end" x="104" y="64">L</text><text class="tm end" x="104" y="89">N</text><text class="tm end" x="104" y="114">PE</text>
+      <path class="w wbr" d="M110 60H140"/><path class="w wbl" d="M110 85H140"/><path class="w wpe" d="M110 110H250"/>
+      <rect class="blk dash" x="140" y="45" width="70" height="52" rx="5"/>
+      <text class="t mid" x="175" y="67">S1</text><text class="ts mid" x="175" y="84">interruptor</text>
+      <text class="ts" x="150" y="124">PE · tierra</text>
+      <path class="w wbr" d="M210 60H250"/><path class="w wbl" d="M210 85H250"/>
+      <rect class="blk" x="250" y="30" width="170" height="100" rx="6"/>
+      <text class="tm" x="258" y="64">L</text><text class="tm" x="258" y="89">N</text><text class="tm" x="258" y="114">PE</text>
+      <text class="tb mid" x="340" y="74">FUENTE 12 V</text>
+      <text class="ts mid" x="340" y="92">6 A · conmutada</text>
+      <text class="tm end" x="412" y="64">+V</text><text class="tm end" x="412" y="104">−V</text>
+      <path class="w w12" d="M420 60H437"/>
+      <g class="c12" opacity=".8"><use href="#fuse" x="463" y="60"/></g>
+      <text class="ts" x="438" y="42">F1 · 5 A (recomendado)</text>
+      <path class="w w12" d="M489 60H1225V552H1000"/>
+      <text class="t f12" x="620" y="52">+12 V</text>
+      <path class="w wg" d="M420 100H470"/><g class="cg"><use href="#gnd" x="470" y="100"/></g>
+      <text class="ts" x="484" y="114">GND común</text>
+
+      <!-- Mega + shield -->
+      <rect class="blk" x="230" y="160" width="310" height="710" rx="8"/>
+      <rect class="blk" x="262" y="150" width="36" height="12" rx="2"/>
+      <text class="ts" x="306" y="152">USB ↔ PC · datos + 5 V lógica</text>
+      <text class="tb mid" x="352" y="186">ARDUINO MEGA 2560</text>
+      <text class="ts mid" x="352" y="203">+ CNC Shield V3 encima</text>
+      <rect class="blk2" x="470" y="164" width="60" height="34" rx="3"/>
+      <text class="tm" x="475" y="177">VMOT+</text><text class="tm" x="475" y="194">VMOT−</text>
+      <path class="w w12" d="M530 172H560V60"/><g class="c12"><use href="#dot" x="560" y="60"/></g>
+      <path class="w wg" d="M530 190H580"/><g class="cg"><use href="#gnd" x="580" y="190"/></g>
+
+      <!-- drivers + motores -->
+      <g>
+        <rect class="blk2" x="245" y="220" width="100" height="70" rx="4"/><text class="t mid" x="295" y="249">A4988 · X</text><text class="tm mid" x="295" y="270">D2 · D5</text>
+        <rect class="blk2" x="245" y="305" width="100" height="70" rx="4"/><text class="t mid" x="295" y="334">A4988 · Y</text><text class="tm mid" x="295" y="355">D3 · D6</text>
+        <rect class="blk2" x="245" y="390" width="100" height="70" rx="4"/><text class="t mid" x="295" y="419">A4988 · Z</text><text class="tm mid" x="295" y="440">D4 · D7</text>
+        <rect class="blk2" x="245" y="475" width="100" height="70" rx="4"/><text class="t mid" x="295" y="504">A4988 · A</text><text class="tm mid" x="295" y="525">D12 · D13</text>
+        <text class="ts" x="245" y="566">STEP · DIR por ranura · EN común en D8</text>
+        <text class="ts" x="245" y="582">jumper solo en MS2 → 1/4 de paso</text>
+
+        <rect class="blk" x="30" y="220" width="140" height="70" rx="6"/><text class="t mid" x="100" y="250">NEMA 17</text><text class="ts mid" x="100" y="270">J1 · base</text>
+        <rect class="blk" x="30" y="305" width="140" height="70" rx="6"/><text class="t mid" x="100" y="335">NEMA 17</text><text class="ts mid" x="100" y="355">J2 · codo</text>
+        <rect class="blk" x="30" y="390" width="140" height="70" rx="6"/><text class="t mid" x="100" y="420">NEMA 17</text><text class="ts mid" x="100" y="440">J3 · disco del cabezal</text>
+        <rect class="blk" x="30" y="475" width="140" height="70" rx="6"/><text class="t mid" x="100" y="505">NEMA 17</text><text class="ts mid" x="100" y="525">Z · husillo Tr8×8</text>
+        <path class="w wm" d="M170 255H245M170 340H245M170 425H245M170 510H245"/>
+        <path class="sym" d="M201 264L213 246M201 349L213 331M201 434L213 416M201 519L213 501"/>
+        <text class="ts" x="215" y="244">4</text><text class="ts" x="215" y="329">4</text><text class="ts" x="215" y="414">4</text><text class="ts" x="215" y="499">4</text>
+      </g>
+
+      <!-- finales -->
+      <g>
+        <rect class="blk" x="30" y="598" width="140" height="46" rx="6"/><text class="t mid" x="100" y="617">SW1 · J1</text><text class="ts mid" x="100" y="634">microswitch · NC</text>
+        <rect class="blk" x="30" y="668" width="140" height="46" rx="6"/><text class="t mid" x="100" y="687">SW2 · J2</text><text class="ts mid" x="100" y="704">microswitch · NC</text>
+        <rect class="blk" x="30" y="738" width="140" height="46" rx="6"/><text class="t mid" x="100" y="757">SW3 · J3</text><text class="ts mid" x="100" y="774">microswitch · NC</text>
+        <rect class="blk" x="30" y="808" width="140" height="46" rx="6"/><text class="t mid" x="100" y="827">SW4 · Z</text><text class="ts mid" x="100" y="844">microswitch · NC</text>
+        <path class="w ws" d="M170 612H230M170 682H230M170 752H230M170 822H230"/>
+        <path class="w wg" d="M170 630H195M170 700H195M170 770H195M170 840H195"/>
+        <g class="cg"><use href="#gnd" x="195" y="630"/><use href="#gnd" x="195" y="700"/><use href="#gnd" x="195" y="770"/><use href="#gnd" x="195" y="840"/></g>
+        <text class="tm" x="240" y="616">D11 · borne Z+</text>
+        <text class="tm" x="240" y="686">D10 · borne Y+</text>
+        <text class="tm" x="240" y="756">D9 · borne X+</text>
+        <text class="tm" x="240" y="826">A3 · borne CoolEn</text>
+      </g>
+      <g class="cg"><use href="#gnd" x="385" y="870"/></g>
+      <text class="ts" x="400" y="890">GND del Mega al GND común</text>
+
+      <!-- etiquetas de pines a la derecha -->
+      <g class="tm">
+        <text class="tm end" x="532" y="219">D22</text>
+        <text class="tm end" x="532" y="324">D24</text>
+        <text class="tm end" x="532" y="444">D44</text>
+        <text class="tm end" x="532" y="564">A8</text>
+        <text class="tm end" x="532" y="678">D26</text>
+        <text class="tm end" x="532" y="713">D28</text>
+        <text class="tm end" x="532" y="748">D30</text>
+        <text class="tm end" x="532" y="783">D32</text>
+        <text class="tm end" x="532" y="818">D34</text>
+        <text class="tm end" x="532" y="853">D36</text>
+      </g>
+      <path class="w ws" d="M540 215H640M540 320H640M540 440H640M540 560H860M540 674H640M540 709H640M540 744H640M540 779H640M540 814H640M540 849H640"/>
+
+      <!-- P1 sensor + PC817 -->
+      <rect class="blk" x="640" y="195" width="120" height="67" rx="4"/>
+      <text class="tm" x="646" y="219">C·4</text><text class="tm" x="646" y="249">E·3</text>
+      <text class="tm end" x="754" y="219">1·A</text><text class="tm end" x="754" y="249">2·K</text>
+      <text class="t mid" x="700" y="236">PC817</text>
+      <text class="ts mid" x="700" y="277">optoacoplador</text>
+      <path class="w wg" d="M640 245H620"/><g class="cg"><use href="#gnd" x="620" y="245"/></g>
+      <path class="w w12" d="M760 215H790M834 215H1225"/>
+      <rect class="blk2" x="790" y="208" width="44" height="14" rx="2"/>
+      <text class="ts mid" x="812" y="202">R1 2.2 kΩ</text>
+      <path class="w wg" d="M760 245H900"/><text class="ts" x="818" y="239">negro</text>
+      <rect class="blk" x="900" y="228" width="150" height="52" rx="6"/>
+      <text class="t mid" x="975" y="250">LJ18A3-8-Z/BX</text>
+      <text class="ts mid" x="975" y="268">inductivo · NPN NA</text>
+      <path class="w wbr" d="M1050 240H1225"/><text class="ts" x="1110" y="234">café</text>
+      <path class="w wbl" d="M1050 266H1080"/><g class="cg"><use href="#gnd" x="1080" y="266"/></g><text class="ts" x="1092" y="276">azul</text>
+      <g class="c12"><use href="#dot" x="1225" y="215"/><use href="#dot" x="1225" y="240"/></g>
+
+      <!-- P2 electroimán -->
+      <rect class="blk" x="640" y="292" width="160" height="106" rx="4"/>
+      <text class="tm" x="646" y="324">TRIG</text><text class="tm" x="646" y="388">GND</text>
+      <text class="tm end" x="794" y="309">VIN+</text><text class="tm end" x="794" y="329">VIN−</text>
+      <text class="tm end" x="794" y="352">OUT+</text><text class="tm end" x="794" y="392">OUT−</text>
+      <text class="t mid" x="705" y="350">D4184</text><text class="ts mid" x="705" y="367">módulo MOSFET</text>
+      <path class="w wg" d="M640 384H620"/><g class="cg"><use href="#gnd" x="620" y="384"/></g>
+      <path class="w w12" d="M800 305H1225"/><g class="c12"><use href="#dot" x="1225" y="305"/></g>
+      <path class="w wg" d="M800 325H830"/><g class="cg"><use href="#gnd" x="830" y="325"/></g>
+      <path class="w w12" d="M800 348H960"/><path class="w wg" d="M800 388H960"/>
+      <g class="cg"><use href="#dio" transform="translate(900 368) rotate(-90)"/></g>
+      <g class="c12"><use href="#dot" x="900" y="348"/></g><g class="cg"><use href="#dot" x="900" y="388"/></g>
+      <text class="ts end" x="888" y="372">D1 · 1N5819</text>
+      <rect class="blk" x="960" y="336" width="130" height="62" rx="6"/>
+      <text class="t mid" x="1025" y="362">Electroimán</text><text class="ts mid" x="1025" y="380">12 V · KK-P20/15</text>
+
+      <!-- P3 servo + buck -->
+      <rect class="blk" x="640" y="420" width="130" height="72" rx="6"/>
+      <text class="t mid" x="705" y="455">SG90 / MG90S</text><text class="ts mid" x="705" y="473">levante del plumón</text>
+      <path class="w w6" d="M770 445H860"/><text class="t f6 mid" x="815" y="438">6 V</text>
+      <path class="w wg" d="M770 478H860"/>
+      <rect class="blk" x="860" y="420" width="140" height="72" rx="6"/>
+      <text class="t mid" x="930" y="452">Buck LM2596</text><text class="ts mid" x="930" y="470">12 V → 6 V</text>
+      <path class="w w12" d="M1000 445H1225"/><g class="c12"><use href="#dot" x="1225" y="445"/></g>
+      <path class="w wg" d="M1000 478H1030"/><g class="cg"><use href="#gnd" x="1030" y="478"/></g>
+
+      <!-- P4 divisor -->
+      <rect class="blk" x="860" y="540" width="140" height="46" rx="6"/>
+      <text class="t mid" x="930" y="560">Divisor</text><text class="ts mid" x="930" y="577">10 kΩ / 3.3 kΩ</text>
+      <path class="w wg" d="M1000 576H1030"/><g class="cg"><use href="#gnd" x="1030" y="576"/></g>
+      <text class="ts" x="690" y="552">≈ 3 V con 12 V</text>
+
+      <!-- P5 panel -->
+      <text class="tb" x="640" y="640">PANEL DEL OPERADOR</text>
+      <rect class="blk" x="640" y="652" width="230" height="214" rx="6"/>
+      <text class="tl" x="652" y="678">START · pulsador NA</text><text class="ts end" x="862" y="678">entrada</text>
+      <text class="tl" x="652" y="713">PARO · hongo NC</text><text class="ts end" x="862" y="713">entrada</text>
+      <text class="tl" x="652" y="748">LED verde + 220 Ω</text><text class="ts end" x="862" y="748">listo</text>
+      <text class="tl" x="652" y="783">LED amarillo + 220 Ω</text><text class="ts end" x="862" y="783">moviendo</text>
+      <text class="tl" x="652" y="818">LED rojo + 220 Ω</text><text class="ts end" x="862" y="818">paro / error</text>
+      <text class="tl" x="652" y="853">Buzzer</text><text class="ts end" x="862" y="853">aviso</text>
+      <path class="w wg" d="M870 760H900"/><g class="cg"><use href="#gnd" x="900" y="760"/></g>
+      <text class="ts" x="914" y="772">todo el panel cierra a GND</text>
+
+    </svg>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Función</th><th>Pin Mega</th><th>Va a</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr><td>J1 · J2 · J3 · Z (STEP / DIR)</td><td class="num">2/5 · 3/6 · 4/7 · 12/13</td><td>ranuras X, Y, Z, A de la shield</td><td>eje A clonado a D12/D13 con jumpers</td></tr>
+          <tr><td>Enable de los 4 drivers</td><td class="num">D8</td><td>EN de la shield</td><td>LOW = energizados</td></tr>
+          <tr><td>Finales SW1 · SW2 · SW3 · SW4</td><td class="num">D11 · D10 · D9 · A3</td><td>bornes Z+, Y+, X+, CoolEn</td><td>NC a GND, <code>INPUT_PULLUP</code></td></tr>
+          <tr><td>Sensor inductivo</td><td class="num">D22</td><td>PC817 pata 4</td><td>LOW = metal (ver E-03)</td></tr>
+          <tr><td>Electroimán</td><td class="num">D24</td><td>TRIG del D4184</td><td>1N5819 en paralelo a la bobina</td></tr>
+          <tr><td>START · PARO</td><td class="num">D26 · D28</td><td>pulsador NA · hongo NC</td><td>los dos a GND</td></tr>
+          <tr><td>LED verde · amarillo · rojo</td><td class="num">D30 · D32 · D34</td><td>220 Ω + LED a GND</td><td>HIGH = encendido</td></tr>
+          <tr><td>Buzzer</td><td class="num">D36</td><td>buzzer a GND</td><td></td></tr>
+          <tr><td>Servo del plumón</td><td class="num">D44</td><td>cable naranja del servo</td><td>alimentado por el buck, no por el Mega</td></tr>
+          <tr><td>Monitor de 12 V</td><td class="num">A8</td><td>punto medio del divisor</td><td>aviso si &lt; 10.5 V</td></tr>
+          <tr><td>Libres</td><td class="num">Serial1–3 · 20/21 · A9–A15</td><td colspan="2">HC-05, STS3215, AS5600, LCD I2C</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cols">
+      <div class="box warn">
+        <h3>Antes de dar corriente</h3>
+        <ol>
+          <li>Cablea la parte de 120 V con la fuente desenchufada y la tapa de bornes puesta. PE de la toma al borne ⏚ de la fuente.</li>
+          <li>Ajusta la Vref de cada A4988 antes de conectar los motores. Nunca desconectes un motor con 12 V aplicados: el driver se quema.</li>
+          <li>Cinta aislante sobre el conector USB del Mega antes de montar la shield.</li>
+          <li>El PARO es solo software. Para la versión final, que el hongo corte VMOT con un relé (Z va a caer, pon un tope).</li>
+        </ol>
+      </div>
+      <div class="box">
+        <h3>Tierras y alimentación</h3>
+        <ul>
+          <li>Un solo GND común: fuente −V, Mega, buck, D4184, PC817 y el panel. Únelos en una bornera, no en cadena.</li>
+          <li>El Mega toma 5 V del USB de la PC; la shield solo lleva 12 V a los drivers.</li>
+          <li>El servo va al buck (5.5–6 V). En el 5 V del Mega reinicia la placa al moverse.</li>
+          <li>S1 y F1 no están en la lista de compras. Cuestan poco y protegen el cableado si algo hace corto.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ E-02 ============================ -->
+<section class="sheet" id="e02">
+  <div class="sheet-head">
+    <div>
+      <h2>Diagrama de circuito</h2>
+      <p>El mismo sistema con símbolos, dividido por bloques. Los nombres de red (+12 V, +6 V, D22…) unen los bloques entre sí.</p>
+    </div>
+    <div class="cajetin"><div><span>Plano</span>E-02</div><div><span>Hoja</span>2 / 3</div><div><span>Rev.</span>A</div><div><span>Fecha</span>06-11-2026</div></div>
+  </div>
+  <div class="sheet-body">
+    <div class="grid2">
+
+      <figure>
+        <div class="fig-t">Alimentación <code>+12 V · GND</code></div>
+        <div class="scroll">
+        <svg class="dwg min-480" viewBox="0 0 640 250" role="img" aria-label="Esquema de alimentación: 120 voltios alternos, interruptor, fuente de 12 voltios, fusible y reparto a cada bloque">
+          <circle cx="40" cy="110" r="18" class="sym"/><path class="sym" d="M31 110c3-7 6-7 9 0s6 7 9 0"/>
+          <text class="ts mid" x="40" y="148">120 V AC</text>
+          <path class="w wbr" d="M40 92V60H77"/>
+          <circle cx="80" cy="60" r="3" class="sym"/><circle cx="130" cy="60" r="3" class="sym"/><path class="sym" d="M83 59L126 43"/>
+          <text class="ts mid" x="105" y="34">S1</text>
+          <path class="w wbr" d="M133 60H200"/>
+          <path class="w wbl" d="M40 128V170H200"/>
+          <rect class="blk" x="200" y="40" width="120" height="150" rx="5"/>
+          <text class="tm" x="206" y="64">L</text><text class="tm" x="206" y="174">N</text>
+          <text class="tm end" x="314" y="64">+</text><text class="tm end" x="314" y="174">−</text>
+          <text class="t mid" x="260" y="110">AC / DC</text><text class="ts mid" x="260" y="128">12 V · 6 A</text>
+          <path class="w w12" d="M320 60H334"/><g class="c12"><use href="#fuse" x="360" y="60"/></g>
+          <text class="ts mid" x="360" y="44">F1 5 A</text>
+          <path class="w w12" d="M386 60H420V180M420 60H440M420 90H440M420 120H440M420 150H440M420 180H440"/>
+          <g class="c12"><use href="#dot" x="420" y="90"/><use href="#dot" x="420" y="120"/><use href="#dot" x="420" y="150"/></g>
+          <text class="t f12 end" x="412" y="84">+12 V</text>
+          <text class="tl" x="448" y="64">VMOT · CNC Shield (4 × A4988)</text>
+          <text class="tl" x="448" y="94">VIN+ · D4184 → electroimán</text>
+          <text class="tl" x="448" y="124">IN+ · LM2596 → +6 V servo</text>
+          <text class="tl" x="448" y="154">café · sensor LJ18A3 y R1</text>
+          <text class="tl" x="448" y="184">R2 · divisor → A8</text>
+          <path class="w wg" d="M320 170H345V200"/><g class="cg"><use href="#gnd" x="345" y="200"/></g>
+          <text class="ts" x="358" y="214">GND común</text>
+          <text class="ts" x="20" y="240">Mega: 5 V por USB. Su GND va al GND común. PE de la toma al borne ⏚ de la fuente.</text>
+        </svg>
+        </div>
+        <figcaption>S1 y F1 van <b>antes</b> de repartir. Con F1 de 5 A sobra margen: en marcha el robot pide menos de 4 A a 12 V.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="fig-t">Sensor inductivo <code>D22</code></div>
+        <div class="scroll">
+        <svg class="dwg min-480" viewBox="0 0 560 290" role="img" aria-label="Esquema del sensor inductivo NPN con optoacoplador PC817 hacia el pin D22">
+          <text class="t f12" x="20" y="44">+12 V</text>
+          <path class="w w12" d="M66 40H300V50"/>
+          <path class="w wbr" d="M75 40V205"/><g class="c12"><use href="#dot" x="75" y="40"/></g>
+          <text class="ts" x="82" y="92">café</text>
+          <text class="t" x="95" y="114">LJ18A3-8-Z/BX</text>
+          <rect class="opt" x="30" y="122" width="175" height="133" rx="6"/>
+          <text class="ts end" x="199" y="138">por dentro</text>
+          <rect class="blk" x="45" y="205" width="65" height="40" rx="3"/><text class="ts mid" x="77" y="229">osc.</text>
+          <path class="sym" d="M110 224H140"/>
+          <path class="sym" d="M140 210V238" style="stroke-width:2.6"/>
+          <path class="sym" d="M140 217L158 203V195"/>
+          <path class="sym" d="M140 231L158 245V262"/><polygon points="155,242.7 147.4,241.2 151.6,235.6" fill="var(--ink)"/>
+          <g class="cg"><use href="#gnd" x="158" y="262"/></g>
+          <text class="ts" x="170" y="276">azul · 0 V</text>
+          <path class="w wg" d="M158 195H300V168"/>
+          <text class="ts" x="215" y="189">negro (salida)</text>
+          <g class="cg"><use href="#res" transform="translate(300 75) rotate(90)"/></g>
+          <path class="w wg" d="M300 100V128"/>
+          <text class="tl" x="312" y="80">R1 2.2 kΩ</text>
+          <text class="ts" x="312" y="110">≈ 4.5 mA</text>
+          <rect class="opt" x="270" y="115" width="150" height="100" rx="6"/>
+          <g class="cg"><use href="#led" transform="translate(300 148) rotate(90)"/></g>
+          <path class="sym" d="M372 135V165" style="stroke-width:2.6"/>
+          <path class="sym" d="M372 143L390 129"/>
+          <path class="sym" d="M372 157L390 171V240"/><polygon points="387,168.7 379.4,167.2 383.6,161.6" fill="var(--ink)"/>
+          <text class="tl mid" x="345" y="207">PC817</text>
+          <g class="cg"><use href="#gnd" x="390" y="240"/></g>
+          <text class="ts" x="402" y="254">GND Mega</text>
+          <path class="w ws" d="M390 129H510"/>
+          <rect class="opt" x="460" y="45" width="90" height="165" rx="6"/>
+          <text class="ts mid" x="510" y="58">+5 V</text>
+          <path class="w wg" d="M510 62V70"/>
+          <g class="cg"><use href="#res" transform="translate(510 95) rotate(90)"/></g>
+          <path class="w wg" d="M510 120V129"/><g class="cs"><use href="#dot" x="510" y="129"/></g>
+          <text class="tm" x="470" y="149">D22</text>
+          <text class="ts" x="466" y="180">pull-up interno</text>
+          <text class="ts" x="466" y="195">≈ 20–50 kΩ</text>
+        </svg>
+        </div>
+        <figcaption>Con metal, el transistor del sensor cierra el negro a 0 V, el LED del PC817 enciende y D22 baja a <b>LOW</b>. Sin metal, el pull-up deja D22 en HIGH. Detalle físico en E-03.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="fig-t">Electroimán <code>D24</code></div>
+        <div class="scroll">
+        <svg class="dwg min-480" viewBox="0 0 460 285" role="img" aria-label="Esquema del electroimán con módulo MOSFET D4184 y diodo de rueda libre 1N5819">
+          <text class="t f12 end" x="204" y="34">+12 V</text>
+          <path class="w w12" d="M210 30H300V70"/>
+          <path class="w w12" d="M300 50H240V90"/><g class="c12"><use href="#dot" x="300" y="50"/></g>
+          <g class="cg"><use href="#dio" transform="translate(240 110) rotate(-90)"/></g>
+          <path class="w wg" d="M240 130V170H300"/><g class="cg"><use href="#dot" x="300" y="170"/></g>
+          <text class="tl end" x="228" y="114">D1</text><text class="ts end" x="228" y="130">1N5819</text>
+          <path class="sym" d="M300 70a8 8 0 0 1 0 16a8 8 0 0 1 0 16a8 8 0 0 1 0 16a8 8 0 0 1 0 16a8 8 0 0 1 0 16"/>
+          <text class="tl" x="322" y="104">L1 · electroimán</text><text class="ts" x="322" y="120">KK-P20/15 · 12 V</text>
+          <text class="tm" x="312" y="64">OUT+</text><text class="tm" x="312" y="188">OUT−</text>
+          <path class="w wg" d="M300 150V197H290"/>
+          <rect class="opt" x="200" y="174" width="165" height="98" rx="6"/>
+          <text class="ts" x="208" y="190">módulo D4184</text>
+          <path class="sym" d="M290 192V228" style="stroke-width:2.6"/>
+          <path class="sym" d="M282 197V223"/>
+          <path class="sym" d="M290 223H300V250M290 210H300V223"/>
+          <polygon points="291,210 298,206.5 298,213.5" fill="var(--ink)"/>
+          <g class="cg"><use href="#gnd" x="300" y="250"/></g>
+          <path class="w ws" d="M70 210H282"/>
+          <text class="tm" x="30" y="214">D24</text>
+          <text class="tm" x="208" y="205">TRIG</text>
+        </svg>
+        </div>
+        <figcaption>D24 en HIGH conecta la bobina a GND y el imán atrae. Al soltar, <b>D1</b> se lleva el pico inductivo; sin él aparecen lecturas falsas en el sensor. Banda del diodo hacia +12 V.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="fig-t">Servo del plumón <code>D44</code></div>
+        <div class="scroll">
+        <svg class="dwg min-480" viewBox="0 0 460 230" role="img" aria-label="Esquema del servo alimentado por el convertidor LM2596 a 6 voltios con señal en D44">
+          <text class="t f12" x="8" y="66">+12 V</text>
+          <path class="w w12" d="M44 70H70"/>
+          <rect class="blk" x="70" y="45" width="120" height="105" rx="5"/>
+          <text class="tm" x="76" y="74">IN+</text><text class="tm" x="76" y="134">IN−</text>
+          <text class="tm end" x="184" y="74">OUT+</text><text class="tm end" x="184" y="134">OUT−</text>
+          <text class="t mid" x="130" y="98">LM2596</text><text class="ts mid" x="130" y="114">buck 12 → 6 V</text>
+          <path class="w wg" d="M130 150V160"/><g class="cg"><use href="#gnd" x="130" y="160"/></g>
+          <path class="w w6" d="M190 70H260"/><path class="w wg" d="M190 130H260"/>
+          <text class="t f6" x="236" y="62">+6 V</text>
+          <g opacity=".75">
+            <path class="w w6" d="M228 70V93"/><path class="sym" d="M216 93H240M216 103q12-6 24 0"/><path class="w wg" d="M228 100V130"/>
+            <text class="ts" x="242" y="92">+</text>
+          </g>
+          <g class="c6"><use href="#dot" x="228" y="70"/></g><g class="cg"><use href="#dot" x="228" y="130"/></g>
+          <text class="ts mid" x="215" y="182">C1 470 µF · opcional</text>
+          <rect class="blk" x="260" y="45" width="150" height="105" rx="5"/>
+          <text class="tm" x="266" y="74">rojo</text><text class="tm" x="266" y="134">café</text>
+          <circle cx="360" cy="90" r="22" class="sym"/><text class="t mid" x="360" y="95">M</text>
+          <text class="ts mid" x="360" y="136">SG90 / MG90S</text>
+          <path class="w ws" d="M300 205V150"/>
+          <text class="tm" x="308" y="200">D44 · naranja</text>
+        </svg>
+        </div>
+        <figcaption>Ajusta el buck a 5.5–6 V con el multímetro <b>antes</b> de conectar el servo. C1 evita que los picos del servo bajen la tensión.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="fig-t">Monitor de 12 V <code>A8</code></div>
+        <div class="scroll">
+        <svg class="dwg min-480" viewBox="0 0 420 220" role="img" aria-label="Divisor de tensión de 10 kiloohmios y 3.3 kiloohmios hacia A8">
+          <text class="t f12 mid" x="60" y="22">+12 V</text>
+          <path class="w w12" d="M60 28V50"/>
+          <g class="cg"><use href="#res" transform="translate(60 75) rotate(90)"/><use href="#res" transform="translate(60 165) rotate(90)"/></g>
+          <path class="w wg" d="M60 100V140M60 190V196"/><g class="cg"><use href="#gnd" x="60" y="196"/></g>
+          <g class="cs"><use href="#dot" x="60" y="120"/></g><path class="w ws" d="M60 120H200"/>
+          <text class="tm" x="208" y="124">A8</text>
+          <text class="tl" x="74" y="80">R2 10 kΩ</text><text class="tl" x="74" y="170">R3 3.3 kΩ</text>
+          <text class="tl" x="170" y="160">V(A8) = 12 × 3.3 / 13.3 ≈ 2.98 V</text>
+          <text class="ts" x="170" y="178">firmware: lectura × 5/1023 × 13.3/3.3</text>
+          <text class="ts" x="170" y="196">avisa en el homing si &lt; 10.5 V</text>
+        </svg>
+        </div>
+        <figcaption>Aunque la fuente suba a 14 V, A8 queda en 3.5 V: lejos de los 5 V del pin.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="fig-t">Panel del operador <code>D26–D36</code></div>
+        <div class="scroll">
+        <svg class="dwg min-480" viewBox="0 0 520 300" role="img" aria-label="Esquema del panel: pulsador START, hongo de paro, tres LED con resistencias de 220 ohmios y buzzer">
+          <path class="w wg" d="M450 40V270"/><g class="cg"><use href="#gnd" x="450" y="270"/><use href="#dot" x="450" y="88"/><use href="#dot" x="450" y="135"/><use href="#dot" x="450" y="175"/><use href="#dot" x="450" y="215"/><use href="#dot" x="450" y="258"/></g>
+          <text class="tm" x="14" y="44">D26</text>
+          <path class="w ws" d="M50 40H147"/><circle cx="150" cy="40" r="3" class="sym"/><circle cx="200" cy="40" r="3" class="sym"/>
+          <path class="sym" d="M144 30H206M175 30V20"/><path class="w wg" d="M203 40H450"/>
+          <text class="ts" x="230" y="32">START · NA</text>
+          <text class="tm" x="14" y="92">D28</text>
+          <path class="w ws" d="M50 88H147"/><circle cx="150" cy="88" r="3" class="sym"/><circle cx="200" cy="88" r="3" class="sym"/>
+          <path class="sym" d="M146 93H204M175 93V68"/><path d="M163 68a12 8 0 0 1 24 0Z" fill="var(--led-r)"/>
+          <path class="w wg" d="M203 88H450"/>
+          <text class="ts" x="230" y="80">PARO · hongo NC (abierto = paro)</text>
+          <text class="tm" x="14" y="139">D30</text><text class="tm" x="14" y="179">D32</text><text class="tm" x="14" y="219">D34</text>
+          <path class="w ws" d="M50 135H125M50 175H125M50 215H125"/>
+          <g class="cg"><use href="#res" x="150" y="135"/><use href="#res" x="150" y="175"/><use href="#res" x="150" y="215"/></g>
+          <path class="w wg" d="M175 135H220M175 175H220M175 215H220M260 135H450M260 175H450M260 215H450"/>
+          <g class="cled-g"><use href="#led" x="240" y="135"/></g><g class="cled-y"><use href="#led" x="240" y="175"/></g><g class="cled-r"><use href="#led" x="240" y="215"/></g>
+          <text class="ts mid" x="150" y="124">220 Ω</text>
+          <text class="ts" x="280" y="127">verde · listo</text><text class="ts" x="280" y="167">amarillo · moviendo</text><text class="ts" x="280" y="207">rojo · paro / error</text>
+          <text class="tm" x="14" y="262">D36</text>
+          <path class="w ws" d="M50 258H215"/><rect class="blk" x="215" y="246" width="44" height="24" rx="3"/><text class="tm mid" x="237" y="262">BZ</text>
+          <path class="w wg" d="M259 258H450"/><text class="ts" x="280" y="250">buzzer</text>
+        </svg>
+        </div>
+        <figcaption>START y PARO usan <code>INPUT_PULLUP</code>: no llevan resistencia. Si se corta un cable del hongo, el Mega lo ve como paro.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="fig-t">Finales de carrera <code>D11 · D10 · D9 · A3</code></div>
+        <div class="scroll">
+        <svg class="dwg min-480" viewBox="0 0 440 220" role="img" aria-label="Esquema de los cuatro finales de carrera normalmente cerrados a GND">
+          <path class="w wg" d="M360 40V190"/><g class="cg"><use href="#gnd" x="360" y="190"/><use href="#dot" x="360" y="85"/><use href="#dot" x="360" y="130"/><use href="#dot" x="360" y="175"/></g>
+          <text class="tm" x="14" y="44">D11</text><text class="tm" x="14" y="89">D10</text><text class="tm" x="14" y="134">D9</text><text class="tm" x="14" y="179">A3</text>
+          <path class="w ws" d="M50 40H147M50 85H147M50 130H147M50 175H147"/>
+          <g>
+            <circle cx="150" cy="40" r="3" class="sym"/><circle cx="200" cy="40" r="3" class="sym"/><path class="sym" d="M152 41L208 49M200 43V49"/>
+            <circle cx="150" cy="85" r="3" class="sym"/><circle cx="200" cy="85" r="3" class="sym"/><path class="sym" d="M152 86L208 94M200 88V94"/>
+            <circle cx="150" cy="130" r="3" class="sym"/><circle cx="200" cy="130" r="3" class="sym"/><path class="sym" d="M152 131L208 139M200 133V139"/>
+            <circle cx="150" cy="175" r="3" class="sym"/><circle cx="200" cy="175" r="3" class="sym"/><path class="sym" d="M152 176L208 184M200 178V184"/>
+          </g>
+          <path class="w wg" d="M203 40H360M203 85H360M203 130H360M203 175H360"/>
+          <text class="ts" x="215" y="32">SW1 · J1 · borne Z+</text><text class="ts" x="215" y="77">SW2 · J2 · borne Y+</text>
+          <text class="ts" x="215" y="122">SW3 · J3 · borne X+</text><text class="ts" x="215" y="167">SW4 · Z · borne CoolEn</text>
+        </svg>
+        </div>
+        <figcaption>Pin al contacto <b>NC</b>, común a GND. En reposo el pin lee LOW; al pisar el final se abre y sube a HIGH. Un cable suelto también da HIGH, así que el robot se detiene en vez de chocar.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="fig-t">Motores <code>×4 iguales</code></div>
+        <div class="scroll">
+        <svg class="dwg min-480" viewBox="0 0 520 240" role="img" aria-label="Esquema de un driver A4988 con su motor NEMA 17 de dos bobinas">
+          <rect class="blk" x="170" y="35" width="130" height="160" rx="5"/>
+          <text class="t mid" x="235" y="54">A4988</text>
+          <text class="tm" x="176" y="74">STEP</text><text class="tm" x="176" y="104">DIR</text><text class="tm" x="176" y="134">EN</text><text class="tm" x="176" y="164">MS2</text>
+          <text class="tm end" x="294" y="74">2B</text><text class="tm end" x="294" y="104">2A</text><text class="tm end" x="294" y="134">1A</text><text class="tm end" x="294" y="164">1B</text>
+          <path class="w ws" d="M130 70H170M130 100H170M130 130H170M130 160H170"/>
+          <text class="tm end" x="124" y="74">D2·D3·D4·D12</text><text class="tm end" x="124" y="104">D5·D6·D7·D13</text>
+          <text class="tm end" x="124" y="134">D8 (común)</text><text class="tm end" x="124" y="164">jumper → 5 V</text>
+          <path class="w w12" d="M215 35V16"/><text class="tl f12" x="222" y="22">VMOT +12 V</text>
+          <path class="w wg" d="M235 195V202"/><g class="cg"><use href="#gnd" x="235" y="202"/></g>
+          <path class="w wmt" d="M300 70H380M380 100H300M300 130H380M380 160H300"/>
+          <path class="sym" d="M380 70a7.5 7.5 0 0 1 0 15a7.5 7.5 0 0 1 0 15M380 130a7.5 7.5 0 0 1 0 15a7.5 7.5 0 0 1 0 15"/>
+          <rect class="opt" x="345" y="52" width="140" height="125" rx="6"/>
+          <text class="ts" x="398" y="90">bobina B</text><text class="ts" x="398" y="150">bobina A</text>
+          <text class="tl mid" x="415" y="196">NEMA 17</text>
+        </svg>
+        </div>
+        <figcaption>Ranura X → J1, Y → J2, Z → J3, A → Z (husillo). Si un eje gira al revés, invierte <b>un</b> par de cables o cambia el bit con <code>CFG inv</code>.</figcaption>
+      </figure>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================ E-03 ============================ -->
+<section class="sheet" id="e03">
+  <div class="sheet-head">
+    <div>
+      <h2>Conexión del sensor inductivo</h2>
+      <p>LJ18A3-8-Z/BX (NPN, normalmente abierto) a 12 V, con el PC817 como puente hacia los 5 V del Mega. Seis cables en total.</p>
+    </div>
+    <div class="cajetin"><div><span>Plano</span>E-03</div><div><span>Hoja</span>3 / 3</div><div><span>Rev.</span>A</div><div><span>Fecha</span>06-11-2026</div></div>
+  </div>
+  <div class="sheet-body">
+    <div class="scroll">
+    <svg class="dwg min-760" viewBox="0 0 900 400" role="img" aria-label="Dibujo de conexión física del sensor LJ18A3 con la fuente de 12 voltios, la resistencia de 2.2 kiloohmios, el PC817 y el Arduino Mega">
+      <!-- fuente -->
+      <rect class="blk" x="20" y="40" width="90" height="340" rx="6"/>
+      <text class="tb mid" x="65" y="204">FUENTE</text><text class="t mid" x="65" y="222">12 V</text>
+      <rect x="100" y="63" width="14" height="14" rx="2" fill="var(--metal)" stroke="var(--ink)"/><text class="tm end" x="94" y="74">+12 V</text>
+      <rect x="100" y="353" width="14" height="14" rx="2" fill="var(--metal)" stroke="var(--ink)"/><text class="tm end" x="94" y="364">GND</text>
+      <path class="w w12" d="M114 70H500V112"/>
+      <path class="w wg" d="M114 360H740V300H764"/>
+
+      <!-- sensor -->
+      <rect x="150" y="196" width="8" height="48" rx="1" fill="var(--opt)"/>
+      <text class="ts mid" x="154" y="188">metal</text>
+      <path class="sym" d="M158 270H182M158 264V276M182 264V276" style="stroke-width:1.2"/>
+      <text class="ts mid" x="170" y="290">3 mm</text>
+      <rect x="182" y="193" width="10" height="54" rx="2" fill="var(--plastic)" stroke="var(--ink)" stroke-width="1.2"/>
+      <rect x="192" y="190" width="150" height="60" fill="var(--metal)" stroke="var(--ink)" stroke-width="1.4"/>
+      <path d="M200 190v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60m8-60v60" stroke="var(--metal2)" stroke-width="1.2" fill="none"/>
+      <rect x="232" y="182" width="16" height="76" rx="2" fill="var(--metal2)" stroke="var(--ink)" stroke-width="1.2"/>
+      <rect x="300" y="182" width="16" height="76" rx="2" fill="var(--metal2)" stroke="var(--ink)" stroke-width="1.2"/>
+      <rect x="342" y="198" width="40" height="44" rx="4" fill="var(--cap)" stroke="var(--ink)" stroke-width="1.2"/>
+      <circle cx="360" cy="210" r="4" fill="var(--led-r)"/>
+      <text class="ts mid" x="362" y="190">LED</text>
+      <path d="M382 220H410" stroke="var(--cable)" stroke-width="10" stroke-linecap="round" fill="none"/>
+      <text class="t" x="192" y="312">LJ18A3-8-Z/BX</text>
+      <text class="ts" x="192" y="328">inductivo M18 · NPN NA · 6–36 V · 3 hilos</text>
+      <text class="ts" x="192" y="344">cara activa a la izquierda</text>
+
+      <!-- hilos del sensor -->
+      <path class="w wbr" d="M410 212H430V70"/><g class="c12"><use href="#dot" x="430" y="70"/></g>
+      <path class="w wg" d="M410 220H480V245H508"/>
+      <path class="w wbl" d="M410 228H445V360"/><g class="cg"><use href="#dot" x="445" y="360"/></g>
+      <text class="tl" x="436" y="150">café</text>
+      <text class="tl" x="447" y="213">negro</text>
+      <text class="tl" x="452" y="300">azul</text>
+
+      <!-- R1 -->
+      <rect x="492" y="112" width="16" height="46" rx="7" fill="var(--resbody)" stroke="var(--ink)" stroke-width="1.2"/>
+      <rect x="492" y="119" width="16" height="4" fill="var(--band-r)"/><rect x="492" y="127" width="16" height="4" fill="var(--band-r)"/>
+      <rect x="492" y="135" width="16" height="4" fill="var(--band-r)"/><rect x="492" y="148" width="16" height="4" fill="var(--band-gold)"/>
+      <path class="w wg" d="M500 158V200H508"/>
+      <text class="tl" x="516" y="126">R1 2.2 kΩ · ¼ W</text>
+      <text class="ts" x="516" y="142">rojo · rojo · rojo · oro</text>
+
+      <!-- PC817 -->
+      <rect x="508" y="195" width="12" height="10" fill="var(--metal)" stroke="var(--ink)"/><rect x="508" y="240" width="12" height="10" fill="var(--metal)" stroke="var(--ink)"/>
+      <rect x="610" y="195" width="12" height="10" fill="var(--metal)" stroke="var(--ink)"/><rect x="610" y="240" width="12" height="10" fill="var(--metal)" stroke="var(--ink)"/>
+      <rect x="520" y="180" width="90" height="85" rx="4" fill="var(--cap)" stroke="var(--ink)" stroke-width="1.2"/>
+      <circle cx="533" cy="192" r="4" fill="var(--captext)"/>
+      <text class="t mid fcap" x="565" y="228">PC817</text>
+      <text class="tm fcap" x="528" y="210">A</text><text class="tm fcap" x="528" y="255">K</text>
+      <text class="tm end fcap" x="603" y="210">C</text><text class="tm end fcap" x="603" y="255">E</text>
+      <text class="ts mid" x="514" y="188">1</text><text class="ts mid" x="514" y="266">2</text>
+      <text class="ts mid" x="616" y="188">4</text><text class="ts mid" x="616" y="266">3</text>
+
+      <!-- Mega -->
+      <path class="w ws" d="M622 200H764"/>
+      <path class="w wg" d="M622 245H680V360"/><g class="cg"><use href="#dot" x="680" y="360"/></g>
+      <text class="tm" x="636" y="192">C → D22</text>
+      <text class="tm" x="688" y="290">E → GND</text>
+      <rect class="blk" x="760" y="150" width="120" height="190" rx="6"/>
+      <text class="t" x="772" y="172">Arduino Mega</text>
+      <text class="ts" x="772" y="187">header doble D22–D53</text>
+      <rect x="764" y="195" width="10" height="10" fill="var(--ink)"/><text class="tm" x="782" y="204">D22</text>
+      <text class="ts" x="782" y="220">pull-up interno</text>
+      <rect x="764" y="295" width="10" height="10" fill="var(--ink)"/><text class="tm" x="782" y="304">GND</text>
+      <text class="ts" x="20" y="394">GND de la fuente y GND del Mega son el mismo punto. Une esa tierra antes de conectar el USB.</text>
+    </svg>
+    </div>
+
+    <div class="cols">
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Desde</th><th>Hasta</th></tr></thead>
+          <tbody>
+            <tr><td><span class="sw" style="background:var(--wbrown)"></span>Sensor · café</td><td>+12 V de la fuente</td></tr>
+            <tr><td><span class="sw" style="background:var(--wblue)"></span>Sensor · azul</td><td>GND de la fuente</td></tr>
+            <tr><td><span class="sw" style="background:var(--ink)"></span>Sensor · negro</td><td>PC817 pata 2 (K)</td></tr>
+            <tr><td>+12 V → R1 2.2 kΩ</td><td>PC817 pata 1 (A, la del punto)</td></tr>
+            <tr><td>PC817 pata 4 (C)</td><td>Mega D22</td></tr>
+            <tr><td>PC817 pata 3 (E)</td><td>Mega GND</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Estado</th><th>LED sensor</th><th>LED opto</th><th>D22</th></tr></thead>
+          <tbody>
+            <tr><td>Sin metal</td><td>apagado</td><td>apagado</td><td class="num">HIGH · 1</td></tr>
+            <tr><td>Metal a ≤ 8 mm</td><td>encendido</td><td>encendido</td><td class="num">LOW · 0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="box warn">
+        <h3>El negro nunca va directo a D22</h3>
+        <p>En muchos LJ18A3 la salida flota o sube hacia 12 V sin metal. Directo al Mega quema la entrada. El PC817 separa los dos lados: el sensor solo enciende un LED y el Mega solo ve un transistor que cierra a GND.</p>
+      </div>
+      <div class="box">
+        <h3>Cálculo de R1</h3>
+        <div class="calc">I = (12 − 1.2 − 1.0) / 2200 ≈ 4.5 mA<br>P = 9.8² / 2200 ≈ 44 mW → ¼ W sobra</div>
+        <p style="margin-top:8px;color:var(--muted);font-size:13.5px">1.2 V cae en el LED del opto y hasta 1 V en el transistor del sensor. Con 4.5 mA el PC817 satura de sobra contra el pull-up interno.</p>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="box">
+        <h3>Prueba en este orden</h3>
+        <ol>
+          <li>Solo el sensor: café a +12 V, azul a GND. Acerca una arandela: el LED trasero enciende a 5–8 mm.</li>
+          <li>Multímetro entre negro y GND: casi 0 V con metal.</li>
+          <li>Agrega R1 y el PC817, une los GND y sube <code>firmware/prueba_sensor</code>.</li>
+          <li>Corre el asistente con <code>a</code>: reposo, detección, distancia, las 4 piezas a 3 mm, ruido con imán y servo, rebotes.</li>
+        </ol>
+      </div>
+      <div class="box">
+        <h3>Si falla</h3>
+        <ul>
+          <li><b>D22 siempre en metal:</b> negro y café cruzados, o falta el GND común.</li>
+          <li><b>El LED del sensor enciende pero D22 no cambia:</b> PC817 al revés (busca el punto), R1 suelta o cable a otro pin.</li>
+          <li><b>Lecturas falsas al mover el imán o el servo:</b> falta D1 (1N5819), o el cable del sensor va pegado al de la bobina.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Sufijo en la etiqueta</th><th>Tipo</th><th>Cómo se conecta</th></tr></thead>
+        <tbody>
+          <tr><td class="num">-Z/BX</td><td>NPN · NA</td><td>Este plano.</td></tr>
+          <tr><td class="num">-Z/AX</td><td>NPN · NC</td><td>Mismo cableado, lógica invertida: D22 queda en LOW sin metal. Requiere cambiar el firmware.</td></tr>
+          <tr><td class="num">-Z/BY</td><td>PNP · NA</td><td>Negro → R1 2.2 kΩ → pata 1; pata 2 → GND. El lado del Mega no cambia.</td></tr>
+          <tr><td class="num">-Z/AY</td><td>PNP · NC</td><td>Como /BY, con la lógica invertida.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>Fuente de los datos: <code>firmware/mathbot_mega/mathbot_mega.ino</code> (pines), <code>firmware/README.md</code>, <code>firmware/guia_cabezal/index.html</code> y <code>simulador_scara/CABEZALES_compras.md</code>. S1, F1 y C1 son agregados recomendados.</footer>
+</div>
+
+</html>

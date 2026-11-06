@@ -2,6 +2,9 @@
 
 ![Diagrama de conexión](diagrama_conexion_mega.svg)
 
+Planos eléctricos (conexión general E-01, diagrama de circuito E-02 y conexión del sensor inductivo E-03):
+[`diagramas_electricos/index.html`](diagramas_electricos/index.html). S1, F1 y C1 aparecen como agregados recomendados.
+
 La CNC Shield V3 se monta sobre el Mega igual que sobre el UNO: los pines D2–D13 y A0–A3 coinciden,
 así que motores y finales de carrera quedan como en el artículo de HowToMechatronics. Lo que agrega
 el cabezal de disco va a los pines que solo tiene el Mega.
