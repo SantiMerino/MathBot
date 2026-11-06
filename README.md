@@ -62,7 +62,7 @@ MathBot/
 │   └── mathbot_trayectoria.html           # herramienta interactiva: modelo, error, export CSV/MATLAB/Arduino
 ├── mathbot_investigacion_construccion.html # investigación: arquitecturas, presupuesto de error, BOM y costos
 ├── mathbot_compras_el_salvador.html        # abastecimiento 100% local: tiendas, sustituciones, BOM en El Salvador
-├── matlab/                                # simulación y validación (Avance 1 y 2)
+├── matlab/avance2/                        # Avance 2: prototipo virtual 3D, optimización, validación y Simulink/Simscape (ver LEEME.md)
 ├── firmware/                              # Arduino MEGA: firmware por etapas, protocolo, diagrama y Wokwi (ver firmware/README.md)
 └── panel/                                 # panel de operario + robot virtual (ver panel/README.md)
 ```

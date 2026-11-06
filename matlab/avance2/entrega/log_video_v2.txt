@@ -1,0 +1,207 @@
+Este MATLAB no escribe MP4: se graba mathbot_simulacion.avi
+Animando 1555 cuadros (51.8 s de mision, 1.0x)...
+   10 %
+   20 %
+   30 %
+   40 %
+[Warning: Graphics timeout occurred. To share details of this issue with MathWorks technical support, please include that this is an unresponsive
+graphics client with your service request.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('simular_mathbot', '/MATLAB Drive/avance2_v2/simular_mathbot.m', 148)" style="font-weight:bold">simular_mathbot</a> (<a href="matlab: opentoline('/MATLAB Drive/avance2_v2/simular_mathbot.m',148,0)">line 148</a>)] 
+
+--------------------------------------------------------------------------------
+          Segmentation violation detected at 2026-11-05 22:04:36 +0000
+--------------------------------------------------------------------------------
+
+Configuration:
+  Crash Decoding           : Disabled - No sandbox or build area path
+  Crash Mode               : native+send
+  Default Encoding         : UTF-8
+  Deployed                 : false
+  GNU C Library            : 2.39 stable
+  Garbage Collection       : Disabled
+  Graphics Driver          : Uninitialized software 
+  Graphics card 1          : 0x1d0f ( 0x1d0f ) 0x1111 Version 0.0.0.0 (0-0-0)
+  Interpreter 0            : Executing request: 7372632F76312F496E7465727072657465725365727669636550726F7669646572496D706C2E637070
+  MATLAB Architecture      : glnxa64
+  MATLAB Entitlement ID    : 8382546
+  MATLAB Root              : /MATLAB
+  MATLAB Version           : 26.2.0.3433840 (R2026b) Update 1
+  OpenGL                   : software
+  Operating System         : Ubuntu 24.04.5 LTS
+  Process ID               : 20
+  Processor ID             : x86 Family 6 Model 143 Stepping 8, GenuineIntel
+  Session Key              : 01bec70a-3241-31cb-9599-a652e0a0d6a5
+  Window System            : The X.Org Foundation (12101011), display :1
+
+Fault Count: 1
+
+
+Abnormal termination:
+Segmentation violation
+
+Current Thread: 'MCR 0 interpret' id 128570085078720
+
+Register State (from fault):
+  RAX = 00007ee2ba46bf40  RBX = 00007ee2ba46b7c0
+  RCX = 0000000100000003  RDX = 0000000000000000
+  RSP = 000074ef0e3f51d8  RBP = 000074ef0e3f51f0
+  RSI = 000074ef0e3f52b0  RDI = 00007ee2ba46b7c0
+
+   R8 = 00007ee2b80a95c0   R9 = 0000000000000007
+  R10 = 00007ee2fb808740  R11 = 0000000000000ab1
+  R12 = 000074ef0e3f52b0  R13 = 0000000000000000
+  R14 = 000074ef0e3f53c0  R15 = 000074ef0e3f5270
+
+  RIP = 0000000000000000  EFL = 0000000000010202
+
+   CS = 0033   FS = 0000   GS = 0000
+
+Stack Trace (from fault):
+[  0] 0x0000000000000000                                   <unknown-module>+00000000
+[  1] 0x000074ed793841a2 /MATLAB/bin/glnxa64/simulink_plugins/physmod/simscape/slbridge/../../../../../../bin/glnxa64/libmwdastudio_platform.so+01589666 _ZN8PLATFORM19StudioComponentBase9isVisibleEv+00000018
+[  2] 0x000074ed7aa567d8 /MATLAB/bin/glnxa64/simulink_plugins/physmod/simscape/slbridge/../../../../../../bin/glnxa64/libmwglue2.so+08742872 _ZN5GLUE226PropertyInspectorComponent12updateSourceERKNSt7__cxx1112basic_stringIDsSt11char_traitsIDsESaIDsEEEP11mxArray_tag+00000072
+[  3] 0x000074ed4bf008a0 /MATLAB/bin/glnxa64/simscape_applications/physmod/sm/sli/../../../../../../bin/glnxa64/libmwphysmod_sm_gui_app_explorer.so+00661664 _ZNK2sm3gui3app23WebModelEditorInterface11closeEditorESt10shared_ptrIKNS0_4core11ModelHandleEE+00000448
+[  4] 0x000074ed4c614d0b /MATLAB/bin/glnxa64/simscape_applications/physmod/sm/sli/../../../../../../bin/glnxa64/libmwphysmod_sm_sli_dialog.so+01481995 _Z23mech2_editor_slcallbackiPP11mxArray_tagiPKPKS_+00001307
+[  5] 0x000074efb8d2781a /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01210394
+[  6] 0x000074efb8d2b638 /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01226296
+[  7] 0x000074efb8cfab23 /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01026851
+[  8] 0x000074efb8cfad9e /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01027486 _ZN18Mfh_MATLAB_fn_impl8dispatchEiPSt10unique_ptrI11mxArray_tagN6matrix6detail17mxDestroy_deleterEEiPPS1_+00000030
+[  9] 0x000074ef055190b0 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03248304
+[ 10] 0x000074eef19fff1a /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31457050
+[ 11] 0x000074eef19f185a /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31397978
+[ 12] 0x000074eef19580d1 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+30769361
+[ 13] 0x000074eef15d49b3 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+27085235
+[ 14] 0x000074eef15adb92 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+26925970
+[ 15] 0x000074eef15b66db /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+26961627
+[ 16] 0x000074ef057260a1 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+05398689
+[ 17] 0x000074ef0558f9d8 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03733976
+[ 18] 0x000074ef055919f5 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03742197
+[ 19] 0x000074ef056aec14 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+04910100
+[ 20] 0x000074ef056af16e /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+04911470
+[ 21] 0x000074ede851da7b /MATLAB/bin/glnxa64/builtins/sl_proxy_interface/../../../../bin/glnxa64/libmwsl_services.so+03267195 _ZN14CMatlabCommand7executeEbN6matrix9ErrorModeE+00000139
+[ 22] 0x000074ede851dc5c /MATLAB/bin/glnxa64/builtins/sl_proxy_interface/../../../../bin/glnxa64/libmwsl_services.so+03267676 _Z16slsvEVAL_NoThrowRKNSt7__cxx1112basic_stringIDsSt11char_traitsIDsESaIDsEEEPvb+00000124
+[ 23] 0x000074edd174d76c /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsl_graphical_classes.so+09754476
+[ 24] 0x000074edd174f766 /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsl_graphical_classes.so+09762662
+[ 25] 0x000074edd17512b2 /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsl_graphical_classes.so+09769650
+[ 26] 0x000074edd174bcdf /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsl_graphical_classes.so+09747679 _ZN15CallbackSupport20executeBlockCallbackEP7SLBlockRKNSt7__cxx1112basic_stringIDsSt11char_traitsIDsESaIDsEEEib+00000175
+[ 27] 0x000074ede1df4f06 /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsimulink.so+23023366
+[ 28] 0x000074edca34efdc /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwSimulinkBlock.so+03469276
+[ 29] 0x000074edca34f281 /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwSimulinkBlock.so+03469953 _ZN7SLBlock18ModelCloseCallbackEPS_+00000033
+[ 30] 0x000074edd174858b /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsl_graphical_classes.so+09733515
+[ 31] 0x000074edd1734e8d /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsl_graphical_classes.so+09653901 _ZN7slGraph28CallBlockModelCloseCallbacksE12BlockForType+00000253
+[ 32] 0x000074edd14db897 /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsl_graphical_classes.so+07190679 _ZN8SLRootBD19destroyBlockDiagramEPS_RK14slCloseOptions+00002231
+[ 33] 0x000074edd14dc0d3 /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsl_graphical_classes.so+07192787 _ZN8SLRootBD19destroyBlockDiagramEPS_+00000035
+[ 34] 0x000074ede1cca380 /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsimulink.so+21799808
+[ 35] 0x000074ede1cca606 /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsimulink.so+21800454
+[ 36] 0x000074ede1ccbd4e /MATLAB/bin/glnxa64/sl_proxy/sl_proxy_desktop/../../../../bin/glnxa64/libmwsimulink.so+21806414
+[ 37] 0x000074efbbc0f7a1 /MATLAB/bin/glnxa64/fctrl_plugins/ddux_fctrl_impl/../../../../bin/glnxa64/libmwservices.so+04257697
+[ 38] 0x000074efa6c1e266                    /MATLAB/bin/glnxa64/libmwmcr.so+01131110
+[ 39] 0x000074efa6c1ff4f                    /MATLAB/bin/glnxa64/libmwmcr.so+01138511
+[ 40] 0x000074efa6c2016d                    /MATLAB/bin/glnxa64/libmwmcr.so+01139053 _Z13mnFullExitFcniPP11mxArray_tagiPPKS_+00000461
+[ 41] 0x000074efb8d2781a /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01210394
+[ 42] 0x000074efb8d2b638 /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01226296
+[ 43] 0x000074efb8cfa6ca /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01025738 _ZN18Mfh_MATLAB_fn_impl19dispatch_with_reuseEiPP11mxArray_tagiS2_+00000298
+[ 44] 0x000074ef0550d3fe /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03199998
+[ 45] 0x000074eef1a3e601 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31712769
+[ 46] 0x000074eef1a3e6ce /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31712974
+[ 47] 0x000074ef05589c8b /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03710091
+[ 48] 0x000074ef056ad091 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+04903057
+[ 49] 0x000074efb8988d0e /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_interpreter.so+01608974 inFullFevalFcn+00000590
+[ 50] 0x000074efb8d2781a /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01210394
+[ 51] 0x000074efb8d2b638 /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01226296
+[ 52] 0x000074efb8cfab23 /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01026851
+[ 53] 0x000074efb8cfad9e /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01027486 _ZN18Mfh_MATLAB_fn_impl8dispatchEiPSt10unique_ptrI11mxArray_tagN6matrix6detail17mxDestroy_deleterEEiPPS1_+00000030
+[ 54] 0x000074ef055190b0 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03248304
+[ 55] 0x000074eef19fff1a /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31457050
+[ 56] 0x000074eef19f185a /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31397978
+[ 57] 0x000074eef19580d1 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+30769361
+[ 58] 0x000074eef141b1a0 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25276832
+[ 59] 0x000074eef141c86a /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25282666
+[ 60] 0x000074eef141b52b /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25277739
+[ 61] 0x000074eef140c479 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25216121
+[ 62] 0x000074eef140d2f9 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25219833
+[ 63] 0x000074eef141b338 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25277240
+[ 64] 0x000074eef141b42f /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25277487
+[ 65] 0x000074eef15af138 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+26931512
+[ 66] 0x000074eef15b66db /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+26961627
+[ 67] 0x000074ef057260a1 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+05398689
+[ 68] 0x000074ef05500805 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03147781
+[ 69] 0x000074ef05506b00 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03173120
+[ 70] 0x000074efb8e11d5e /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+02170206 _ZN8Mfh_file20dispatch_file_commonEMS_FviPP11mxArray_tagiS2_EiS2_iS2_+00000142
+[ 71] 0x000074efb8e14436 /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+02180150 _ZN8Mfh_file8dispatchEiPP11mxArray_tagiS2_+00000294
+[ 72] 0x000074ef0d9b0573              /MATLAB/bin/glnxa64/libmwmcos_impl.so+08062323
+[ 73] 0x000074ef0d8d70f0              /MATLAB/bin/glnxa64/libmwmcos_impl.so+07172336
+[ 74] 0x000074ef0d8d737a              /MATLAB/bin/glnxa64/libmwmcos_impl.so+07172986
+[ 75] 0x000074ef0d8e2e4f              /MATLAB/bin/glnxa64/libmwmcos_impl.so+07220815
+[ 76] 0x000074ef0d8d5355              /MATLAB/bin/glnxa64/libmwmcos_impl.so+07164757
+[ 77] 0x000074ef0da0918a              /MATLAB/bin/glnxa64/libmwmcos_impl.so+08425866
+[ 78] 0x000074ef0db59037              /MATLAB/bin/glnxa64/libmwmcos_impl.so+09801783
+[ 79] 0x000074ef0db52899              /MATLAB/bin/glnxa64/libmwmcos_impl.so+09775257
+[ 80] 0x000074efb8cfa6ca /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01025738 _ZN18Mfh_MATLAB_fn_impl19dispatch_with_reuseEiPP11mxArray_tagiS2_+00000298
+[ 81] 0x000074ef0550d3fe /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03199998
+[ 82] 0x000074eef1a3e601 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31712769
+[ 83] 0x000074eef1a3e6ce /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31712974
+[ 84] 0x000074ef05589c8b /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03710091
+[ 85] 0x000074ef056ad28f /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+04903567
+[ 86] 0x000074ef056ade19 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+04906521
+[ 87] 0x000074efb897bbaa /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_interpreter.so+01555370 _Z44inCallFcnWithTrapInDesiredWSAndPublishEventsiPP11mxArray_tagiS1_PKcbP15inWorkSpace_tag+00000074
+[ 88] 0x000074efa6dcb416                    /MATLAB/bin/glnxa64/libmwiqm.so+00975894 _ZN3iqm15BaseFEvalPlugin7executeEP15inWorkSpace_tag+00000598
+[ 89] 0x000074efa6dcd3a5                    /MATLAB/bin/glnxa64/libmwiqm.so+00983973
+[ 90] 0x000074efa6db2753                    /MATLAB/bin/glnxa64/libmwiqm.so+00874323
+[ 91] 0x000074efa6d80185                    /MATLAB/bin/glnxa64/libmwiqm.so+00668037
+[ 92] 0x000074efa6d8119c                    /MATLAB/bin/glnxa64/libmwiqm.so+00672156
+[ 93] 0x000074efa6d81555                    /MATLAB/bin/glnxa64/libmwiqm.so+00673109
+[ 94] 0x000074efa6d819b4                    /MATLAB/bin/glnxa64/libmwiqm.so+00674228
+[ 95] 0x000074efbbc4d9ac /MATLAB/bin/glnxa64/fctrl_plugins/ddux_fctrl_impl/../../../../bin/glnxa64/libmwservices.so+04512172
+[ 96] 0x000074efbbc4d0e4 /MATLAB/bin/glnxa64/fctrl_plugins/ddux_fctrl_impl/../../../../bin/glnxa64/libmwservices.so+04509924
+[ 97] 0x000074efbbc4d76a /MATLAB/bin/glnxa64/fctrl_plugins/ddux_fctrl_impl/../../../../bin/glnxa64/libmwservices.so+04511594 _Z25svWS_ProcessPendingEventsib+00000090
+[ 98] 0x000074ef20c88729 /MATLAB/bin/glnxa64/spf/serialisationproviders/parallel/plr/serialisationprovider/../../../../../../../bin/glnxa64/libmwdrawnow.so+00317225
+[ 99] 0x000074ef20c88ca9 /MATLAB/bin/glnxa64/spf/serialisationproviders/parallel/plr/serialisationprovider/../../../../../../../bin/glnxa64/libmwdrawnow.so+00318633 _ZN8graphics7drawnowENS_11DrawnowModeE+00000281
+[100] 0x000074efb8d2781a /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01210394
+[101] 0x000074efb8d2b638 /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01226296
+[102] 0x000074efb8cfab23 /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01026851
+[103] 0x000074efb8cfad9e /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+01027486 _ZN18Mfh_MATLAB_fn_impl8dispatchEiPSt10unique_ptrI11mxArray_tagN6matrix6detail17mxDestroy_deleterEEiPPS1_+00000030
+[104] 0x000074ef055190b0 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03248304
+[105] 0x000074eef19fff1a /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31457050
+[106] 0x000074eef19f185a /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31397978
+[107] 0x000074eef19580d1 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+30769361
+[108] 0x000074eef15d49b3 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+27085235
+[109] 0x000074eef15d4d69 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+27086185
+[110] 0x000074eef15aeb9a /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+26930074
+[111] 0x000074eef15b66db /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+26961627
+[112] 0x000074ef057260a1 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+05398689
+[113] 0x000074ef05504cc2 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03165378
+[114] 0x000074ef05506b25 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03173157
+[115] 0x000074efb8e11d5e /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+02170206 _ZN8Mfh_file20dispatch_file_commonEMS_FviPP11mxArray_tagiS2_EiS2_iS2_+00000142
+[116] 0x000074efb8e13b77 /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+02177911
+[117] 0x000074efb8e13efe /MATLAB/bin/glnxa64/factory_settings_plugins/matlab/datatypes/datetime/../../../../../../bin/glnxa64/libmwm_dispatcher.so+02178814 _ZN8Mfh_file8dispatchEiPSt10unique_ptrI11mxArray_tagN6matrix6detail17mxDestroy_deleterEEiPPS1_+00000030
+[118] 0x000074ef055190b0 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwlxemainservices.so+03248304
+[119] 0x000074eef19fff1a /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31457050
+[120] 0x000074eef19f185a /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+31397978
+[121] 0x000074eef19580d1 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+30769361
+[122] 0x000074eef141b1a0 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25276832
+[123] 0x000074eef141c86a /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25282666
+[124] 0x000074eef141b52b /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25277739
+[125] 0x000074eef140c479 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25216121
+[126] 0x000074eef140d2f9 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25219833
+[127] 0x000074eef141b338 /MATLAB/bin/glnxa64/mvm_services/mvm_services/lxe_proxy/../../../../../bin/glnxa64/libmwm_lxe.so+25277240
+
+** This crash report has been saved to disk as /tmp/.matlab/logs/matlab_crash_dump.20-1 **
+
+
+
+MATLAB is dumping core
+Este MATLAB no escribe MP4: se graba mathbot_simulacion.avi
+Animando 1555 cuadros (51.8 s de mision, 1.0x)...
+   10 %
+   20 %
+   30 %
+   40 %
+   50 %
+   60 %
+   70 %
+   80 %
+   90 %
+Video guardado: /MATLAB Drive/avance2_v2/mathbot_simulacion.avi
+Capturas: mathbot_captura_1_inicio.png, mathbot_captura_2_trazo.png, mathbot_captura_3_final.png
+Elapsed time is 2188.036649 seconds.

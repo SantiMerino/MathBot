@@ -1,0 +1,88 @@
+
+MATLAB 26.2.0.3433840 (R2026b) Update 1
+  [OK]    mathbot_negro.urdf
+  [OK]    meshes/cuerpos.json
+  [OK]    meshes/base_link.stl
+  [OK]    meshes/columna.stl
+  [OK]    meshes/carro.stl
+  [OK]    meshes/brazo2.stl
+  [OK]    meshes/cabezal.stl
+  [OK]    meshes/plumon.stl
+  [OK]    Simulink 26.2
+  [OK]    Simscape 26.2
+  [OK]    Simscape Multibody 26.2
+  [OK]    libreria sm_lib carga
+  [OK]    libreria nesl_utility carga
+Listo para ejecutar_todo. Simscape disponible (pasos opcionales del LEEME).
+
+
+=== TRAYECTORIA MATHBOT ===
+Rosa: A = 102.9 mm, k = 1.3552, t de 0.8333*pi a 1.8333*pi; centro (185, 0) mm, giro 180 deg
+Largo del trazo: 814.4 mm en 733 tramos (<= 1.0 mm) | 32.6 s a 25 mm/s
+Mision completa: 51.8 s (HOME -> rosa -> HOME)
+Distancia de la punta al eje J1 durante el trazo: 150.1 a 287.9 mm (alcance 114.0 a 427.0 mm)
+Rangos articulares en el trazo: J1 14.7 a 99.3 deg | J2 -139.6 a -95.5 deg | J3 = 0 deg | Z = 150.5 mm
+Condicion del jacobiano en el trazo: kappa max 2.27 | 1 deg en una junta mueve la punta hasta 5.59 mm
+Resolucion: 1 paso = 0.0225 deg (J1), 0.0281 deg (J2), 0.01 mm (Z)
+Punta en el trazo: z entre 0.000 y 0.000 mm (0 = hoja)
+Guardado referencia_mathbot.mat (5183 muestras, T_sim = 51.81 s)
+
+
+=== OPTIMIZACION DE LA UBICACION DE LA ROSA ===
+Barrido: 1080 ubicaciones, 374 factibles. Mejor: centro (185, 0) mm, giro 180 deg -> kappa max 2.272
+fminsearch: centro (183.3, 0.0) mm, giro 180.0 deg -> kappa max 2.249 (factible: 1)
+Restriccion activa en el optimo: |theta2| max = 140.0 deg (limite 140)
+Se usa la ubicacion redondeada del firmware: centro (185, 0), giro 180 deg.
+
+Indicador                                   Antes        Despues     Cambio
+kappa max (condicion)                       3.137          2.272     -27.6%
+kappa medio                                 2.202          1.538     -30.2%
+mm de punta por 1 deg (peor caso)           6.492          5.591     -13.9%
+mm de punta por 1 deg (medio)               5.277          4.130     -21.7%
+error ejecutado max (mm)                   0.0836         0.0752      -9.9%
+error ejecutado RMS (mm)                   0.0225         0.0226       0.4%
+rango theta2 (deg)                 -137.5 a -76.5 -139.6 a -95.5
+distancia minima a J1 (mm)                  157.1          150.1
+Lectura: con la ubicacion optimizada, una holgura de 1 deg en las poleas mueve la punta a lo sumo 5.59 mm (antes 6.49 mm).
+
+
+Modelo: mathbot_sim
+[OK] J1: movimiento por entrada, esfuerzo calculado
+[OK] J1: Ref_J1 -> PS_J1 (rad) -> q
+[OK] JZ: movimiento por entrada, esfuerzo calculado
+[OK] JZ: Ref_JZ -> PS_JZ (m) -> q
+[OK] J2: movimiento por entrada, esfuerzo calculado
+[OK] J2: Ref_J2 -> PS_J2 (rad) -> q
+[OK] J3: movimiento por entrada, esfuerzo calculado
+[OK] J3: Ref_J3 -> PS_J3 (rad) -> q
+[OK] JP: movimiento por entrada, esfuerzo calculado
+[OK] JP: Ref_JP -> PS_JP (m) -> q
+[OK] Sensor_TCP: B -> puerto B de J1 (base), F -> puerto F de JP (punta del plumon)
+[OK] TCP_x, TCP_y, TCP_z (mm) -> Mux_TCP -> To Workspace (tcp_sim)
+[OK] Sensor_TCP: salidas de traslacion X, Y, Z activadas
+[OK] Solver ode23t, MaxStep 0.01 s, StopTime 51.81 s. Modelo guardado: /MATLAB Drive/avance2_v2/mathbot_sim.slx
+[OK] Sensor_TCP x, y, z -> TCP_x, TCP_y, TCP_z. Revisa en el diagrama que cada linea salga de la etiqueta correcta.
+
+PENDIENTE (0):
+
+
+=== VALIDACION MATHBOT: deseada vs ejecutada (mm) ===
+Puntos ejecutados evaluados: 14661 (733 tramos de <= 1.0 mm, 20 muestras por tramo)
+[1] Error de trayectoria XY:   max 0.0752 | RMS 0.0226 | medio 0.0187 mm
+[2] Error en los puntos del trazo (redondeo a pasos): max 0.0815 mm
+[3] Error de altura de la punta durante el trazo:     max 0.0000 mm
+[4] Inicio: ejecutado (185.00, -0.03) vs deseado (185.00, 0.00) -> 0.0309 mm
+    Fin:    ejecutado (185.00, -0.03) vs deseado (185.00, 0.00) -> 0.0309 mm
+[5] Precision del trazo simulado: 99.943 % (L_ref = 131.6 mm; criterio del PBL >= 90 %)
+    RESULTADO (tolerancia 0.50 mm): CUMPLE
+[6] Error max segun el largo de los tramos (firmware: 1.0 mm)
+    tramo (mm)   solo geometria   con pasos enteros
+         0.5         0.0036            0.0694
+         1.0         0.0145            0.0752
+         2.0         0.0578            0.0822
+         5.0         0.3414            0.3906
+        10.0         1.3319            1.3464
+    Con tramos de 1 mm domina el redondeo a pasos (0.075 mm); con tramos largos domina la cuerda: el robot corta la curva entre puntos.
+Simulando mathbot_sim (T_sim = 51.81 s)...
+[7] Simscape: punta del Transform Sensor vs curva deseada: max 0.0669 | RMS 0.0230 mm
+    Simscape vs referencia en el tiempo (incluye el retardo del filtro): max 0.7868 mm

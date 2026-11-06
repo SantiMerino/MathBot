@@ -36,6 +36,13 @@ Cada control lleva un sticker con lo que hace y el comando que manda (palanca **
    lámpara por fase). **FÁBRICA** está bajo una tapa transparente: hay que levantarla primero.
 7. **PARO** (o Esc) manda `!` en cualquier momento. El robot sostiene la posición; `C` lo limpia y pide home.
 
+**Con `firmware/prueba_nema` cargado** (sin finales ni paro cableados) el panel lo reconoce al conectar y entra en
+modo **PRUEBA NEMA**: en MOVER aparece un módulo con la prueba de ½ vuelta y regreso (`1`–`4`, `12`, `t`) y un
+control por joint: mantener ◀/▶ (o ←→ J1, ↑↓ J2, Q/E J3, RePág/AvPág Z) mueve ese motor sin parar a la
+velocidad elegida. El panel repite `+N v` cada 150 ms y manda `xN` al soltar; si deja de llegar, el Mega frena
+solo a los 400 ms. Las posiciones se cuentan desde que se conectó (no hay home). PARO/Esc frena el jog, pero no
+una prueba de ½ vuelta en curso.
+
 Palanca **GEMELO / SOLO MANDO**: con el gemelo, pantalla grande (Mesa, Robot 3D, Cabezal con despiece)
 y bahía de módulos por sección; en solo mando, todos los módulos a lo ancho con la mesa en una pantalla
 chica y la terminal fija abajo. **COMANDOS** (o F1) abre el menú de todos los comandos del firmware:

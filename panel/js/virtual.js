@@ -186,7 +186,8 @@ export class MegaVirtual {
   }
 
   posicion = i => this.cuenta[i];
-  moverZ(z) { return this.mover([this.cuenta[0], this.cuenta[1], this.cuenta[2], z]); }
+  // En seco (CFG seco 1) las rutinas dejan Z quieta, como el firmware.
+  moverZ(z) { return this.mover([this.cuenta[0], this.cuenta[1], this.cuenta[2], this.cfg.seco ? this.cuenta[3] : z]); }
   async irA(x, y) {
     const q = ik(x, y, this.herr, this.cfg);
     if (!q) throw new Error('fuera de alcance');
@@ -288,7 +289,7 @@ export class MegaVirtual {
     }
     this.homeManual = false;
     this.herr = 'p';
-    await this.mover([0, 0, 0, zTransito(this.cfg)]);
+    await this.mover([0, 0, 0, this.cfg.seco ? this.cuenta[3] : zTransito(this.cfg)]);
   }
 
   // ---- rutinas (mismo orden que el firmware)
@@ -376,7 +377,7 @@ export class MegaVirtual {
     await this.dibujarRosa();
     this.decir('E FASE regreso');
     await this.herramienta('p');
-    await this.mover([0, 0, 0, zTransito(this.cfg)]);
+    await this.mover([0, 0, 0, this.cfg.seco ? this.cuenta[3] : zTransito(this.cfg)]);
     this.decir(`E FIN ${((performance.now() - t0) / 1000 * this.vel).toFixed(1)}`);
   }
 

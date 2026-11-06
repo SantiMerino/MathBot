@@ -1,0 +1,240 @@
+{
+ "base_link": {
+  "color": "negro",
+  "rgb": [
+   0.106,
+   0.11,
+   0.122
+  ],
+  "padre": "",
+  "junta": "",
+  "tipo": "raiz",
+  "origen_mm": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "triangulos": 14638
+ },
+ "base_motor": {
+  "color": "motor",
+  "rgb": [
+   0.23,
+   0.24,
+   0.26
+  ],
+  "padre": "base_link",
+  "junta": "fijo_base_motor",
+  "tipo": "fixed",
+  "origen_mm": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "triangulos": 12
+ },
+ "columna": {
+  "color": "negro",
+  "rgb": [
+   0.106,
+   0.11,
+   0.122
+  ],
+  "padre": "base_link",
+  "junta": "J1",
+  "tipo": "revolute",
+  "origen_mm": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "triangulos": 26128
+ },
+ "columna_acero": {
+  "color": "acero",
+  "rgb": [
+   0.79,
+   0.81,
+   0.83
+  ],
+  "padre": "columna",
+  "junta": "fijo_columna_acero",
+  "tipo": "fixed",
+  "origen_mm": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "triangulos": 480
+ },
+ "columna_motor": {
+  "color": "motor",
+  "rgb": [
+   0.23,
+   0.24,
+   0.26
+  ],
+  "padre": "columna",
+  "junta": "fijo_columna_motor",
+  "tipo": "fixed",
+  "origen_mm": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "triangulos": 12
+ },
+ "carro": {
+  "color": "negro",
+  "rgb": [
+   0.106,
+   0.11,
+   0.122
+  ],
+  "padre": "columna",
+  "junta": "JZ",
+  "tipo": "prismatic",
+  "origen_mm": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "triangulos": 9380
+ },
+ "carro_motor": {
+  "color": "motor",
+  "rgb": [
+   0.23,
+   0.24,
+   0.26
+  ],
+  "padre": "carro",
+  "junta": "fijo_carro_motor",
+  "tipo": "fixed",
+  "origen_mm": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "triangulos": 12
+ },
+ "brazo2": {
+  "color": "negro",
+  "rgb": [
+   0.106,
+   0.11,
+   0.122
+  ],
+  "padre": "carro",
+  "junta": "J2",
+  "tipo": "revolute",
+  "origen_mm": [
+   228.0,
+   0.0,
+   3.0
+  ],
+  "triangulos": 9900
+ },
+ "brazo2_motor": {
+  "color": "motor",
+  "rgb": [
+   0.23,
+   0.24,
+   0.26
+  ],
+  "padre": "brazo2",
+  "junta": "fijo_brazo2_motor",
+  "tipo": "fixed",
+  "origen_mm": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "triangulos": 12
+ },
+ "cabezal": {
+  "color": "negro",
+  "rgb": [
+   0.106,
+   0.11,
+   0.122
+  ],
+  "padre": "brazo2",
+  "junta": "J3",
+  "tipo": "revolute",
+  "origen_mm": [
+   144.0,
+   0.0,
+   -57.0
+  ],
+  "triangulos": 18058
+ },
+ "cabezal_iman": {
+  "color": "iman",
+  "rgb": [
+   0.45,
+   0.47,
+   0.5
+  ],
+  "padre": "cabezal",
+  "junta": "fijo_cabezal_iman",
+  "tipo": "fixed",
+  "origen_mm": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "triangulos": 2928
+ },
+ "cabezal_sensor": {
+  "color": "sensor",
+  "rgb": [
+   0.8,
+   0.72,
+   0.4
+  ],
+  "padre": "cabezal",
+  "junta": "fijo_cabezal_sensor",
+  "tipo": "fixed",
+  "origen_mm": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "triangulos": 1760
+ },
+ "cabezal_servo": {
+  "color": "servo",
+  "rgb": [
+   0.15,
+   0.35,
+   0.8
+  ],
+  "padre": "cabezal",
+  "junta": "fijo_cabezal_servo",
+  "tipo": "fixed",
+  "origen_mm": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "triangulos": 390
+ },
+ "plumon": {
+  "color": "negro",
+  "rgb": [
+   0.106,
+   0.11,
+   0.122
+  ],
+  "padre": "cabezal",
+  "junta": "JP",
+  "tipo": "prismatic",
+  "origen_mm": [
+   55.0,
+   0.0,
+   -96.5
+  ],
+  "triangulos": 1598
+ }
+}
