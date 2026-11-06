@@ -28,6 +28,8 @@
     PTB n              borrar el punto n;  G n  ir al punto n (herramienta activa, altura de tránsito)
     X  K  D  D?  R     escanear puntos, recoger metálicas, trazar la rosa, comprobar la rosa, misión completa
     CFG [clave valor]  ver / cambiar la configuración;  GUARDAR  CARGAR  FABRICA  (EEPROM)
+                       CFG seco 1: ensayo en seco, solo J1-J3 (Z quieta, plumón y servo ignorados)
+                       CFG hongo 0: sin hongo cableado en D28 (temporal); CFG finales 0: sin finales (solo S)
     C                  limpiar el paro (obliga a repetir el home)
 
   Bibliotecas: AccelStepper (Mike McCauley), Servo y EEPROM (incluidas en el IDE).
@@ -118,6 +120,8 @@ struct Config {
   uint8_t invertir;    // bit i = eje i gira al revés
   uint8_t finales;     // 1 = hay finales de carrera (H permitido)
   uint8_t cabezal;     // 1 = cabezal A montado (límites de J3 y Z, IK por herramienta)
+  uint8_t seco;        // 1 = en seco: solo se mueven J1-J3; Z se queda quieta y el servo del plumón no se toca
+  uint8_t hongo;       // 1 = hongo de PARO cableado en D28; 0 = se ignora D28 (temporal: solo queda el PARO del panel)
   uint8_t nPuntos;
   Punto pt[MAX_PUNTOS];
   uint16_t suma;
@@ -133,7 +137,7 @@ void configFabrica() {
   cfg.binX = 95; cfg.binY = 265; cfg.binH = 25;
   cfg.velTrazo = 25;
   cfg.servoArriba = 110; cfg.servoAbajo = 20;
-  cfg.invertir = 0; cfg.finales = 1; cfg.cabezal = 1;
+  cfg.invertir = 0; cfg.finales = 1; cfg.cabezal = 1; cfg.seco = 0; cfg.hongo = 1;
   const Punto def[4] = { { 60, -215, 3 }, { 150, -238, 8 }, { 240, -215, 7 }, { 325, -172, 12 } };
   cfg.nPuntos = 4;
   for (int i = 0; i < 4; i++) cfg.pt[i] = def[i];
@@ -198,6 +202,9 @@ float envolver(float a) {
 long aPasos(int eje, float v) { return lround(v * PASOS_UNIDAD[eje]); }
 float posicion(int eje) { return motor[eje].currentPosition() / PASOS_UNIDAD[eje]; }
 
+// Hongo NC a GND: abierto (HIGH) = paro. Con CFG hongo 0 no se lee (hongo sin cablear).
+bool hongoAbierto() { return cfg.hongo && digitalRead(PIN_PARO) == HIGH; }
+
 bool finalActivo(uint8_t pin) {
   // Real: final NC entre pin y GND (como HTM), activo = abierto = HIGH (un cable cortado se lee como activo).
   return digitalRead(pin) == (SIMULACION ? LOW : HIGH);
@@ -228,6 +235,7 @@ void motores(bool on) {
 }
 
 void pluma(bool abajo) {
+  if (cfg.seco) { plumaAbajo = abajo; return; }  // sin cabezal ni servo: solo se lleva la cuenta
   servoPluma.write(abajo ? cfg.servoAbajo : cfg.servoArriba);
   plumaAbajo = abajo;
   delay(350);  // SG90 ≈0.1 s / 60°; el brazo gira ≈76°
@@ -277,7 +285,7 @@ void enviarEstado() {
   Serial.print(' '); Serial.print(digitalRead(PIN_SENSOR) == LOW ? 1 : 0);
   Serial.print(' '); Serial.print(voltaje12(), 1);
   Serial.print(' ');
-  for (int i = 0; i < 4; i++) Serial.print(finalActivo(PIN_FINAL[i]) ? 1 : 0);
+  for (int i = 0; i < 4; i++) Serial.print(cfg.finales && finalActivo(PIN_FINAL[i]) ? 1 : 0);  // sin finales: pines al aire
   Serial.println();
 }
 
@@ -310,7 +318,7 @@ void dispararParo(const __FlashStringHelper *motivo) {
 
 // Se llama dentro de todos los bucles de movimiento: hongo, "!" y estado periódico.
 bool sigue() {
-  if (digitalRead(PIN_PARO) == HIGH) dispararParo(F("hongo"));
+  if (hongoAbierto()) dispararParo(F("hongo"));
   if (Serial.available() && Serial.peek() == '!') {
     Serial.read();
     dispararParo(F("panel"));
@@ -398,7 +406,9 @@ bool moverArticular(float th1, float th2, float phi, float z, bool conLimites = 
   return true;
 }
 
-bool moverZ(float z) { return moverArticular(posicion(EJE_J1), posicion(EJE_J2), posicion(EJE_J3), z); }
+// En seco (CFG seco 1) las rutinas no mueven Z: la plataforma se queda donde está. El jog de Z (J 4) sí la mueve.
+float zRutina(float z) { return cfg.seco ? posicion(EJE_Z) : z; }
+bool moverZ(float z) { return moverArticular(posicion(EJE_J1), posicion(EJE_J2), posicion(EJE_J3), zRutina(z)); }
 
 // Tramo a velocidad constante (sin rampa): los ejes llegan a la vez en T segundos.
 bool tramo(const long obj[4], float T) {
@@ -542,7 +552,7 @@ bool homing(int soloEje) {
   homeManual = false;
   actualizarHome();
   herrActiva = PLUMON;
-  if (!moverArticular(0, 0, 0, zTransito())) return false;
+  if (!moverArticular(0, 0, 0, zRutina(zTransito()))) return false;
   pitido(1500, 120);
   return true;
 }
@@ -692,7 +702,7 @@ bool mision() {
   if (!escanear() || !recolectar() || !dibujarRosa()) return false;
   Serial.println(F("E FASE regreso"));
   if (!seleccionarHerramienta(PLUMON)) return false;
-  if (!moverArticular(0, 0, 0, zTransito())) return false;
+  if (!moverArticular(0, 0, 0, zRutina(zTransito()))) return false;
   Serial.print(F("E FIN "));
   Serial.println((millis() - t0) / 1000.0, 1);
   pitido(1500, 100); delay(150); pitido(2000, 150);
@@ -718,7 +728,7 @@ const ClaveF CLAVES_F[] = {
 };
 const ClaveB CLAVES_B[] = {
   { "servoup", &cfg.servoArriba }, { "servodn", &cfg.servoAbajo }, { "inv", &cfg.invertir },
-  { "finales", &cfg.finales }, { "cabezal", &cfg.cabezal },
+  { "finales", &cfg.finales }, { "cabezal", &cfg.cabezal }, { "seco", &cfg.seco }, { "hongo", &cfg.hongo },
 };
 
 void listarConfig() {
@@ -884,7 +894,7 @@ bool ejecutar(char *linea) {
   if (es("CARGAR")) { bool ok = cargarConfig(); aplicarInversion(); return ok ? true : fallo(F("EEPROM vacia: valores de fabrica")); }
   if (es("FABRICA")) { configFabrica(); aplicarInversion(); return true; }
   if (es("C")) {
-    if (digitalRead(PIN_PARO) == HIGH) return fallo(F("el hongo sigue presionado"));
+    if (hongoAbierto()) return fallo(F("el hongo sigue presionado"));
     enParo = false;
     leds(false, false, false);
     return true;
@@ -932,7 +942,8 @@ void setup() {
   // El Mega se reinicia cada vez que se abre el puerto USB: el panel espera esta línea.
   identificar();
   Serial.println(eeprom ? F("L configuracion de la EEPROM") : F("L EEPROM vacia: valores de fabrica"));
-  Serial.println(F("L sin home: H (finales) o S (manual)"));
+  Serial.println(cfg.finales ? F("L sin home: H (finales) o S (manual)") : F("L sin home: S (home manual); finales desactivados (CFG finales 0)"));
+  if (!cfg.hongo) Serial.println(F("L AVISO: hongo de PARO desactivado (CFG hongo 0): solo queda el PARO del panel (! / Esc)"));
   pitido(1200, 100);
 }
 
@@ -940,7 +951,7 @@ void loop() {
   static char buf[64];
   static uint8_t len = 0;
 
-  if (digitalRead(PIN_PARO) == HIGH) dispararParo(F("hongo"));
+  if (hongoAbierto()) dispararParo(F("hongo"));
   estadoPeriodico();
 
   while (Serial.available()) {
