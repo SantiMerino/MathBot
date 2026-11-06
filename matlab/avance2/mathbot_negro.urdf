@@ -1,0 +1,257 @@
+<?xml version="1.0"?>
+<!-- MathBot negro: SCARA HowToMechatronics + cabezal de disco v3. Generado por
+     matlab/avance2/fuente/exportar_modelo.py (no editar a mano). Unidades: m y rad.
+     L1 = 228.0 mm, L2 = 144.0 mm, plumon a 55.0 mm de J3. TCP = origen del cuerpo 'plumon' (punta).
+     JZ = altura de la base de la plataforma sobre la mesa; con JZ = 0.1505 m y JP = 0 la punta toca la mesa.
+     Masas e inercias nominales: la simulacion es cinematica (movimiento impuesto en las juntas). -->
+<robot name="mathbot_negro">
+  <material name="negro"><color rgba="0.106 0.11 0.122 1"/></material>
+  <material name="acero"><color rgba="0.79 0.81 0.83 1"/></material>
+  <material name="motor"><color rgba="0.23 0.24 0.26 1"/></material>
+  <material name="iman"><color rgba="0.45 0.47 0.5 1"/></material>
+  <material name="sensor"><color rgba="0.8 0.72 0.4 1"/></material>
+  <material name="servo"><color rgba="0.15 0.35 0.8 1"/></material>
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.100942 0.003528 0.022363" rpy="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="5.4062e-04" ixy="0" ixz="0" iyy="2.1676e-03" iyz="0" izz="2.6070e-03"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/base_link.stl"/></geometry>
+      <material name="negro"/>
+    </visual>
+  </link>
+  <link name="base_motor">
+    <inertial>
+      <origin xyz="-0.114000 0.034000 0.065000" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="1.4017e-05" ixy="0" ixz="0" iyy="1.4017e-05" iyz="0" izz="1.4700e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/base_motor.stl"/></geometry>
+      <material name="motor"/>
+    </visual>
+  </link>
+  <link name="columna">
+    <inertial>
+      <origin xyz="0.000404 0.000223 0.181738" rpy="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="2.2782e-03" ixy="0" ixz="0" iyy="2.2782e-03" iyz="0" izz="7.2000e-04"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/columna.stl"/></geometry>
+      <material name="negro"/>
+    </visual>
+  </link>
+  <link name="columna_acero">
+    <inertial>
+      <origin xyz="0.006600 0.000000 0.195600" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="2.8525e-04" ixy="0" ixz="0" iyy="2.8525e-04" iyz="0" izz="4.9665e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/columna_acero.stl"/></geometry>
+      <material name="acero"/>
+    </visual>
+  </link>
+  <link name="columna_motor">
+    <inertial>
+      <origin xyz="0.033000 0.000000 0.342000" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="1.4017e-05" ixy="0" ixz="0" iyy="1.4017e-05" iyz="0" izz="1.4700e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/columna_motor.stl"/></geometry>
+      <material name="motor"/>
+    </visual>
+  </link>
+  <link name="carro">
+    <inertial>
+      <origin xyz="0.072360 0.000765 0.025601" rpy="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="4.3840e-04" ixy="0" ixz="0" iyy="2.7516e-03" iyz="0" izz="3.0332e-03"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/carro.stl"/></geometry>
+      <material name="negro"/>
+    </visual>
+  </link>
+  <link name="carro_motor">
+    <inertial>
+      <origin xyz="-0.010000 0.000000 0.065000" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="1.4017e-05" ixy="0" ixz="0" iyy="1.4017e-05" iyz="0" izz="1.4700e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/carro_motor.stl"/></geometry>
+      <material name="motor"/>
+    </visual>
+  </link>
+  <link name="brazo2">
+    <inertial>
+      <origin xyz="0.038559 -0.000223 -0.030413" rpy="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="2.3656e-04" ixy="0" ixz="0" iyy="1.3065e-03" iyz="0" izz="1.3918e-03"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/brazo2.stl"/></geometry>
+      <material name="negro"/>
+    </visual>
+  </link>
+  <link name="brazo2_motor">
+    <inertial>
+      <origin xyz="0.000000 0.000000 -0.067000" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="9.7500e-06" ixy="0" ixz="0" iyy="9.7500e-06" iyz="0" izz="1.4700e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/brazo2_motor.stl"/></geometry>
+      <material name="motor"/>
+    </visual>
+  </link>
+  <link name="cabezal">
+    <inertial>
+      <origin xyz="0.008033 0.000065 -0.032969" rpy="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="5.8666e-04" ixy="0" ixz="0" iyy="6.1304e-04" iyz="0" izz="8.9939e-04"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/cabezal.stl"/></geometry>
+      <material name="negro"/>
+    </visual>
+  </link>
+  <link name="cabezal_iman">
+    <inertial>
+      <origin xyz="-0.007790 0.013544 -0.049220" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="5.9640e-05" ixy="0" ixz="0" iyy="4.3945e-05" iyz="0" izz="5.7084e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/cabezal_iman.stl"/></geometry>
+      <material name="iman"/>
+    </visual>
+  </link>
+  <link name="cabezal_sensor">
+    <inertial>
+      <origin xyz="-0.028410 -0.049234 -0.027069" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="2.6155e-05" ixy="0" ixz="0" iyy="2.5734e-05" iyz="0" izz="3.1205e-06"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/cabezal_sensor.stl"/></geometry>
+      <material name="sensor"/>
+    </visual>
+  </link>
+  <link name="cabezal_servo">
+    <inertial>
+      <origin xyz="0.067954 0.016800 -0.024131" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="6.1182e-06" ixy="0" ixz="0" iyy="6.4633e-06" iyz="0" izz="8.4570e-06"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/cabezal_servo.stl"/></geometry>
+      <material name="servo"/>
+    </visual>
+  </link>
+  <link name="plumon">
+    <inertial>
+      <origin xyz="0.002999 0.000037 0.044034" rpy="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="4.2226e-04" ixy="0" ixz="0" iyy="4.2078e-04" iyz="0" izz="3.6591e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="meshes/plumon.stl"/></geometry>
+      <material name="negro"/>
+    </visual>
+  </link>
+  <joint name="fijo_base_motor" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_motor"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/>
+  </joint>
+  <joint name="J1" type="revolute">
+    <parent link="base_link"/>
+    <child link="columna"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.96706" upper="2.96706" effort="1000" velocity="10"/>
+  </joint>
+  <joint name="fijo_columna_acero" type="fixed">
+    <parent link="columna"/>
+    <child link="columna_acero"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/>
+  </joint>
+  <joint name="fijo_columna_motor" type="fixed">
+    <parent link="columna"/>
+    <child link="columna_motor"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/>
+  </joint>
+  <joint name="JZ" type="prismatic">
+    <parent link="columna"/>
+    <child link="carro"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0.10000" upper="0.21000" effort="1000" velocity="10"/>
+  </joint>
+  <joint name="fijo_carro_motor" type="fixed">
+    <parent link="carro"/>
+    <child link="carro_motor"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/>
+  </joint>
+  <joint name="J2" type="revolute">
+    <parent link="carro"/>
+    <child link="brazo2"/>
+    <origin xyz="0.228000 0.000000 0.003000" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.96706" upper="2.96706" effort="1000" velocity="10"/>
+  </joint>
+  <joint name="fijo_brazo2_motor" type="fixed">
+    <parent link="brazo2"/>
+    <child link="brazo2_motor"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/>
+  </joint>
+  <joint name="J3" type="revolute">
+    <parent link="brazo2"/>
+    <child link="cabezal"/>
+    <origin xyz="0.144000 0.000000 -0.057000" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.05433" upper="3.05433" effort="1000" velocity="10"/>
+  </joint>
+  <joint name="fijo_cabezal_iman" type="fixed">
+    <parent link="cabezal"/>
+    <child link="cabezal_iman"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/>
+  </joint>
+  <joint name="fijo_cabezal_sensor" type="fixed">
+    <parent link="cabezal"/>
+    <child link="cabezal_sensor"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/>
+  </joint>
+  <joint name="fijo_cabezal_servo" type="fixed">
+    <parent link="cabezal"/>
+    <child link="cabezal_servo"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/>
+  </joint>
+  <joint name="JP" type="prismatic">
+    <parent link="cabezal"/>
+    <child link="plumon"/>
+    <origin xyz="0.055000 0.000000 -0.096500" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0.00000" upper="0.02000" effort="1000" velocity="10"/>
+  </joint>
+</robot>

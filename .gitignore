@@ -7,3 +7,12 @@ __pycache__/
 
 # Comprimidos que duplican carpetas ya extraidas
 *.zip
+
+# Salidas de la simulacion MATLAB (se regeneran con ejecutar_todo)
+matlab/avance2/*.mat
+matlab/avance2/*.mp4
+matlab/avance2/*.avi
+matlab/avance2/*.png
+matlab/avance2/slprj/
+matlab/avance2/*.slxc
+matlab/avance2/entrega/*.avi
