@@ -114,6 +114,31 @@
 
     <div class="modulos" id="modulos">
       <!-- MOVER -->
+      <article class="mod mod-nema" data-g="mover" style="--span:2" aria-label="Prueba de motores (firmware prueba_nema)">
+        <h2>PRUEBA NEMA</h2>
+        <div class="nema" id="nema">
+          <span>PRUEBA DE ½ VUELTA Y REGRESO</span>
+          <button class="tecla mini" data-nema="1"><span>1 · X J1</span></button>
+          <button class="tecla mini" data-nema="2"><span>2 · Y J2</span></button>
+          <button class="tecla mini" data-nema="3"><span>3 · Z J3</span></button>
+          <button class="tecla mini" data-nema="4"><span>4 · A Z</span></button>
+          <button class="tecla mini" data-nema="12"><span>12</span></button>
+          <button class="tecla mini" data-nema="t"><span>T · 123</span></button>
+          <button class="tecla mini" data-nema="1234"><span>1234</span></button>
+          <div class="nema-jog" id="nemaJog">
+            <span>CONTROL POR JOINT · mantén presionado · teclas ←→ J1 · ↑↓ J2 · Q E J3 · RePág AvPág Z</span>
+            <div class="nj-ejes" id="njEjes"></div>
+            <div class="nj-vel" role="radiogroup" aria-label="Velocidad del jog" id="njVel">
+              <button class="tecla mini" role="radio" data-v="lento"><span>LENTO</span></button>
+              <button class="tecla mini" role="radio" data-v="medio"><span>MEDIO</span></button>
+              <button class="tecla mini" role="radio" data-v="rapido"><span>RÁPIDO</span></button>
+              <button class="tecla mini" data-nema="c"><span>CERO</span></button>
+              <button class="tecla mini" data-nema="l"><span>SOLTAR</span></button>
+            </div>
+            <p class="nj-aviso" id="njAviso" hidden>Este prueba_nema no trae jog: sube <code>firmware/prueba_nema</code> otra vez (versión nueva).</p>
+          </div>
+        </div>
+      </article>
       <article class="mod" data-g="mover" style="--span:2">
         <h2>POSICIÓN</h2>
         <div class="lectura" id="lectura"></div>
@@ -229,6 +254,8 @@
         </div>
         <div class="estadoRosa" id="estadoRosa"></div>
         <div class="fila-ctl">
+          <div class="ctl"><button id="btnSeco" class="tecla accion" aria-pressed="false"><span>EN SECO: NO</span></button>
+            <span class="st st-plata">Solo J1-J3: Z quieta, sin plumón<code>CFG seco</code></span></div>
           <div class="ctl"><button id="rosaAplicar" class="tecla accion"><span>ENVIAR</span></button>
             <span class="st st-celeste">Centro, giro y velocidad<code>CFG · V</code></span></div>
           <div class="ctl"><button data-cmd="D?" class="tecla accion"><span>COMPROBAR</span></button>
@@ -320,28 +347,6 @@
   <section class="teletipo">
     <div class="tt-cab"><h2>TERMINAL</h2><button class="tecla mini" id="abrirComandos2"><span>VER COMANDOS</span></button></div>
     <div class="lineas" id="log"></div>
-    <div class="nema" id="nema" hidden aria-label="Prueba de motores (firmware prueba_nema)">
-      <span>PRUEBA NEMA · ½ vuelta y regreso</span>
-      <button class="tecla mini" data-nema="1"><span>1 · X J1</span></button>
-      <button class="tecla mini" data-nema="2"><span>2 · Y J2</span></button>
-      <button class="tecla mini" data-nema="3"><span>3 · Z J3</span></button>
-      <button class="tecla mini" data-nema="4"><span>4 · A Z</span></button>
-      <button class="tecla mini" data-nema="12"><span>12</span></button>
-      <button class="tecla mini" data-nema="t"><span>T · 123</span></button>
-      <button class="tecla mini" data-nema="1234"><span>1234</span></button>
-      <div class="nema-jog" id="nemaJog">
-        <span>CONTROL POR JOINT · mantén presionado · teclas ←→ J1 · ↑↓ J2 · Q E J3 · RePág AvPág Z</span>
-        <div class="nj-ejes" id="njEjes"></div>
-        <div class="nj-vel" role="radiogroup" aria-label="Velocidad del jog" id="njVel">
-          <button class="tecla mini" role="radio" data-v="lento"><span>LENTO</span></button>
-          <button class="tecla mini" role="radio" data-v="medio"><span>MEDIO</span></button>
-          <button class="tecla mini" role="radio" data-v="rapido"><span>RÁPIDO</span></button>
-          <button class="tecla mini" data-nema="c"><span>CERO</span></button>
-          <button class="tecla mini" data-nema="l"><span>SOLTAR</span></button>
-        </div>
-        <p class="nj-aviso" id="njAviso" hidden>Este prueba_nema no trae jog: sube <code>firmware/prueba_nema</code> otra vez (versión nueva).</p>
-      </div>
-    </div>
     <form id="manual"><span class="prompt">›</span><input id="manualTxt" placeholder="orden (p. ej. ?, M 250 0, CFG)" autocomplete="off" spellcheck="false" list="sugerencias"><button class="tecla mini"><span>ENVIAR</span></button></form>
     <datalist id="sugerencias"></datalist>
   </section>

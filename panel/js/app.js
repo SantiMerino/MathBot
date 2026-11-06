@@ -147,7 +147,7 @@ robot.addEventListener('conexion', e => {
   $('#conectar span').textContent = on ? 'DESCONECTAR' : 'CONECTAR';
   $('#conectar').classList.toggle('tecla-luz', !on);
   swFuente.disabled = on;
-  $('#nema').hidden = !(on && robot.modo === 'nema');
+  document.body.classList.toggle('modo-nema', on && robot.modo === 'nema');
   if (on && robot.modo === 'nema') return refrescar();   // prueba_nema no tiene configuración que leer
   app.mundo = on && esVirtual() ? mega.mundo : null;
   app.marcar();
@@ -366,6 +366,11 @@ armarJog();
 
 let jogActivo = null;
 async function jogLoop(eje, signo) {
+  if (robot.modo === 'nema') {   // prueba_nema: solo articular, movimiento continuo mientras se mantiene
+    if (modoJog === 'art') app.njInicio(eje, signo);
+    else log('Con prueba_nema el jog es solo articular (J1, J2, J3, Z).', 'err');
+    return;
+  }
   const id = Symbol();
   jogActivo = id;
   while (jogActivo === id && robot.conectado) {
@@ -373,7 +378,7 @@ async function jogLoop(eje, signo) {
     if (!ok) break;
   }
 }
-const pararJog = () => { jogActivo = null; };
+const pararJog = () => { jogActivo = null; if (robot.modo === 'nema') app.njFinTodos?.(); };
 $('#jog').addEventListener('pointerdown', e => { const b = e.target.closest('[data-jog]'); if (b && !b.disabled) jogLoop(b.dataset.jog, +b.dataset.s); });
 ['pointerup', 'pointerleave', 'pointercancel'].forEach(t => $('#jog').addEventListener(t, pararJog));
 window.addEventListener('pointerup', pararJog);
@@ -439,7 +444,7 @@ window.addEventListener('pointerup', njFinTodos);
 window.addEventListener('blur', njFinTodos);
 document.addEventListener('visibilitychange', () => { if (document.hidden) njFinTodos(); });
 const NJ_TECLAS = { ArrowLeft: ['1', -1], ArrowRight: ['1', 1], ArrowUp: ['2', 1], ArrowDown: ['2', -1], q: ['3', -1], e: ['3', 1], Q: ['3', -1], E: ['3', 1], PageUp: ['4', 1], PageDown: ['4', -1] };
-const njTecla = e => robot.modo === 'nema' && NJ_TECLAS[e.key] && !e.target.closest('input, textarea, [role="radiogroup"], dialog, .cajon');
+const njTecla = e => robot.modo === 'nema' && NJ_TECLAS[e.key] && !e.target.closest?.('input, textarea, [role="radiogroup"], dialog, .cajon');
 document.addEventListener('keydown', e => {
   if (!njTecla(e)) return;
   e.preventDefault(); e.stopImmediatePropagation();
@@ -605,7 +610,18 @@ for (const [s, k] of [['#rx', 'rosax'], ['#ry', 'rosay'], ['#ra', 'rosaa'], ['#v
     $('#raV').textContent = app.rosa.rosaa + '°'; $('#velV').textContent = app.rosa.vel + ' mm/s';
     actualizarRosa();
   });
-robot.addEventListener('cfg', () => { actualizarRosa(); llenarAjustes(); });
+robot.addEventListener('cfg', () => { actualizarRosa(); llenarAjustes(); pintarSeco(); });
+// En seco: la rosa (y la misión) mueven solo J1-J3; Z se queda quieta y el plumón no se toca.
+function pintarSeco() {
+  const on = !!+robot.cfg.seco, b = $('#btnSeco');
+  b.setAttribute('aria-pressed', String(on));
+  b.classList.toggle('tecla-luz', on);
+  b.querySelector('span').textContent = on ? 'EN SECO: SÍ' : 'EN SECO: NO';
+}
+pintarSeco();
+$('#btnSeco').addEventListener('click', async () => {
+  if (await orden(`CFG seco ${+robot.cfg.seco ? 0 : 1}`)) orden('CFG');
+});
 $('#rosaAplicar').addEventListener('click', async () => {
   for (const k of ['rosax', 'rosay', 'rosaa']) if (!(await orden(`CFG ${k} ${app.rosa[k]}`))) return;
   await orden(`V ${app.rosa.vel}`);
@@ -647,7 +663,7 @@ $('#reiniciarMesa').addEventListener('click', () => { mega.reiniciarMesa(); app.
 const ETIQUETAS = {
   home1: 'Final J1 (°)', home2: 'Final J2 (°)', home3: 'Final J3 (°)', home4: 'Final Z (mm)', zmesa: 'Altura papel (mm)',
   servoup: 'Servo arriba (°)', servodn: 'Servo abajo (°)', vel: 'Trazo (mm/s)', inv: 'Invertir ejes (bits)',
-  finales: 'Hay finales (0/1)', cabezal: 'Cabezal puesto (0/1)',
+  finales: 'Hay finales (0/1)', cabezal: 'Cabezal puesto (0/1)', seco: 'En seco: solo J1-J3 (0/1)', hongo: 'Hongo de paro en D28 (0/1)',
 };
 function llenarAjustes() {
   $('#ajustes').innerHTML = Object.entries(ETIQUETAS).map(([k, n]) =>

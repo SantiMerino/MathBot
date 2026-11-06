@@ -32,7 +32,7 @@ export const HERR = {
 export const CFG_FABRICA = {
   home1: -89, home2: -152.4, home3: -120, home4: 203, zmesa: 0,
   rosax: 185, rosay: 0, rosaa: 180, binx: 95, biny: 265, binh: 25, vel: 25,
-  servoup: 110, servodn: 20, inv: 0, finales: 1, cabezal: 1,
+  servoup: 110, servodn: 20, inv: 0, finales: 1, cabezal: 1, seco: 0, hongo: 1,
 };
 export const PUNTOS_FABRICA = [
   { x: 60, y: -215, h: 3 }, { x: 150, y: -238, h: 8 }, { x: 240, y: -215, h: 7 }, { x: 325, y: -172, h: 12 },

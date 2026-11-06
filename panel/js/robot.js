@@ -109,7 +109,7 @@ export class Robot extends EventTarget {
     if (this.modo === 'nema') {
       this.estado.letra = 'T';
       this.estado.q = [0, 0, 0, GEO.ZMAX];   // el Mega se reinició: sus contadores arrancan en cero
-      this.emitir('log', { tipo: 'ev', texto: 'Modo PRUEBA NEMA (firmware prueba_nema): usa las teclas de la terminal o escribe 1, 2, 3, 4, 12, 123, t. Cada prueba da media vuelta y regresa. Este firmware no tiene PARO: para cortar, quita los 12 V.' });
+      this.emitir('log', { tipo: 'ev', texto: 'Modo PRUEBA NEMA (firmware prueba_nema): módulo PRUEBA NEMA en MOVER (½ vuelta y regreso, y control por joint), o escribe 1, 2, 3, 4, 12, 123, t. PARO/Esc frena el jog; una prueba de ½ vuelta no se puede parar: para eso quita los 12 V.' });
       this.emitir('conexion', true);
       this.emitir('estado', this.estado);
       return;
