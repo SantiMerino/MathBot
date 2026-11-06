@@ -104,6 +104,7 @@
 
   <!-- ============================================================ bahía de módulos -->
   <section class="bahia" id="bahia">
+    <div class="divisor divisor-v" id="divBahia" role="separator" aria-orientation="vertical" aria-label="Ancho del panel de control (arrastra; doble clic restablece)" tabindex="0"></div>
     <nav class="modo-bahia" id="tabs" aria-label="Sección">
       <button data-t="mover" class="on">MOVER</button>
       <button data-t="puntos">PUNTOS</button>
@@ -344,8 +345,9 @@
   </section>
 
   <!-- ============================================================ teletipo -->
-  <section class="teletipo">
-    <div class="tt-cab"><h2>TERMINAL</h2><button class="tecla mini" id="abrirComandos2"><span>VER COMANDOS</span></button></div>
+  <section class="teletipo" id="teletipo">
+    <div class="divisor divisor-h" id="divTele" role="separator" aria-orientation="horizontal" aria-label="Alto de la terminal (arrastra; doble clic restablece)" tabindex="0"></div>
+    <div class="tt-cab"><h2>TERMINAL</h2><button class="tecla mini" id="abrirComandos2"><span>VER COMANDOS</span></button><button class="tecla mini" id="plegarTele" aria-expanded="true" aria-controls="log" title="Ocultar o mostrar la terminal (F2)"><span>OCULTAR</span></button></div>
     <div class="lineas" id="log"></div>
     <form id="manual"><span class="prompt">›</span><input id="manualTxt" placeholder="orden (p. ej. ?, M 250 0, CFG)" autocomplete="off" spellcheck="false" list="sugerencias"><button class="tecla mini"><span>ENVIAR</span></button></form>
     <datalist id="sugerencias"></datalist>
