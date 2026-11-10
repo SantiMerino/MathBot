@@ -43,6 +43,11 @@ velocidad elegida. El panel repite `+N v` cada 150 ms y manda `xN` al soltar; si
 solo a los 400 ms. Las posiciones se cuentan desde que se conectó (no hay home). PARO/Esc frena el jog, pero no
 una prueba de ½ vuelta en curso.
 
+**Reposo** (`CFG reposo n`, en AJUSTES): tras n s sin órdenes el Mega apaga los drivers para que no zumben ni se
+calienten (lámpara MOTORES en ámbar, anunciador «· reposo»). La siguiente orden de movimiento los vuelve a encender
+y J1-J3 conservan su cuenta si nadie movió los brazos a mano. Z puede bajar por su peso: fuera de EN SECO hay que
+repetir el home antes de usar Z.
+
 Palanca **GEMELO / SOLO MANDO**: con el gemelo, pantalla grande (Mesa, Robot 3D, Cabezal con despiece)
 y bahía de módulos por sección; en solo mando, todos los módulos a lo ancho con la mesa en una pantalla
 chica y la terminal fija abajo. **COMANDOS** (o F1) abre el menú de todos los comandos del firmware:

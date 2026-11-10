@@ -82,7 +82,10 @@ export class Robot extends EventTarget {
     this.tUltimaLinea = 0;
   }
 
-  get textoEstado() { return ESTADOS[this.estado.letra] ?? 'Desconectado'; }
+  get textoEstado() {
+    const t = ESTADOS[this.estado.letra] ?? 'Desconectado';
+    return this.estado.reposo && this.estado.letra !== 'L' ? t + ' · reposo' : t;
+  }
   // Con home: "R" o "H"; mientras se mueve ("M") vale lo último que se supo.
   get conHome() { return this.homeVisto; }
 
@@ -198,6 +201,7 @@ export class Robot extends EventTarget {
         e.q = t.slice(2, 6).map(Number);
         e.herr = t[6]; e.pluma = +t[7]; e.iman = +t[8]; e.metal = +t[9]; e.v12 = +t[10];
         e.finales = [...(t[11] ?? '0000')].map(Number);
+        e.reposo = t[12] === '1';   // drivers apagados por inactividad (CFG reposo)
         if (e.letra !== 'M') this.homeVisto = 'RH'.includes(e.letra);
         this.emitir('estado', e);
         return;
