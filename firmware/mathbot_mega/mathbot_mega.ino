@@ -30,6 +30,7 @@
     CFG [clave valor]  ver / cambiar la configuración;  GUARDAR  CARGAR  FABRICA  (EEPROM)
                        CFG seco 1: ensayo en seco, solo J1-J3 (Z quieta, plumón y servo ignorados)
                        CFG hongo 0: sin hongo cableado en D28 (temporal); CFG finales 0: sin finales (solo S)
+                       CFG reposo n: apaga los drivers tras n s quietos (0 = nunca)
     C                  limpiar el paro (obliga a repetir el home)
 
   Bibliotecas: AccelStepper (Mike McCauley), Servo y EEPROM (incluidas en el IDE).
@@ -122,6 +123,7 @@ struct Config {
   uint8_t cabezal;     // 1 = cabezal A montado (límites de J3 y Z, IK por herramienta)
   uint8_t seco;        // 1 = en seco: solo se mueven J1-J3; Z se queda quieta y el servo del plumón no se toca
   uint8_t hongo;       // 1 = hongo de PARO cableado en D28; 0 = se ignora D28 (temporal: solo queda el PARO del panel)
+  uint8_t reposo;      // s quietos antes de apagar los drivers (0 = nunca); la siguiente orden de movimiento los enciende
   uint8_t nPuntos;
   Punto pt[MAX_PUNTOS];
   uint16_t suma;
@@ -137,7 +139,7 @@ void configFabrica() {
   cfg.binX = 95; cfg.binY = 265; cfg.binH = 25;
   cfg.velTrazo = 25;
   cfg.servoArriba = 110; cfg.servoAbajo = 20;
-  cfg.invertir = 0; cfg.finales = 1; cfg.cabezal = 1; cfg.seco = 0; cfg.hongo = 1;
+  cfg.invertir = 0; cfg.finales = 1; cfg.cabezal = 1; cfg.seco = 0; cfg.hongo = 1; cfg.reposo = 0;
   const Punto def[4] = { { 60, -215, 3 }, { 150, -238, 8 }, { 240, -215, 7 }, { 325, -172, 12 } };
   cfg.nPuntos = 4;
   for (int i = 0; i < 4; i++) cfg.pt[i] = def[i];
@@ -179,6 +181,8 @@ bool ejeConocido[4] = { false, false, false, false };  // posición referida (ho
 bool homeHecho = false;
 bool homeManual = false;
 bool motoresOn = false;
+bool enReposo = false;       // drivers apagados por inactividad: la posición contada sigue valiendo
+unsigned long tActivo = 0;   // millis() de la última orden o movimiento
 bool moviendo = false;
 bool plumaAbajo = false;
 bool enParo = false;
@@ -232,6 +236,30 @@ void pitido(int f, int ms) { tone(PIN_BUZZER, f, ms); }
 void motores(bool on) {
   digitalWrite(PIN_ENABLE, on ? LOW : HIGH);
   motoresOn = on;
+  enReposo = false;
+}
+
+// Reposo (CFG reposo n): tras n s sin órdenes ni movimiento se apagan los drivers (EN es común a los 4) para que
+// no zumben ni se calienten. Al volver, el A4988 retoma el mismo micropaso, así que J1-J3 conservan su cuenta
+// mientras nadie mueva los brazos a mano. Z sí puede bajar por su peso: fuera del modo en seco se invalida su home.
+void despertar() {
+  if (!enReposo) return;
+  digitalWrite(PIN_ENABLE, LOW);
+  enReposo = false;
+  delay(5);  // el A4988 tarda ≈1 ms en volver
+  Serial.println(F("L motores fuera de reposo"));
+}
+void revisarReposo() {
+  if (!cfg.reposo || !motoresOn || enReposo || moviendo || enParo) return;
+  if (millis() - tActivo < cfg.reposo * 1000UL) return;
+  digitalWrite(PIN_ENABLE, HIGH);
+  enReposo = true;
+  Serial.println(F("L reposo: drivers apagados (la siguiente orden de movimiento los enciende)"));
+  if (!cfg.seco && ejeConocido[EJE_Z]) {
+    ejeConocido[EJE_Z] = false;
+    actualizarHome();
+    Serial.println(F("L AVISO: Z pudo bajar en reposo; repite el home (S) antes de usar Z"));
+  }
 }
 
 void pluma(bool abajo) {
@@ -274,7 +302,7 @@ char letraEstado() {
   return homeManual ? 'H' : 'R';
 }
 
-// "S est th1 th2 phi z herr pluma iman metal 12V finales": ≈50 bytes, cabe en el buffer de 64 del UART
+// "S est th1 th2 phi z herr pluma iman metal 12V finales reposo": ≈52 bytes, cabe en el buffer de 64 del UART
 void enviarEstado() {
   Serial.print(F("S "));
   Serial.print(letraEstado());
@@ -286,6 +314,7 @@ void enviarEstado() {
   Serial.print(' '); Serial.print(voltaje12(), 1);
   Serial.print(' ');
   for (int i = 0; i < 4; i++) Serial.print(cfg.finales && finalActivo(PIN_FINAL[i]) ? 1 : 0);  // sin finales: pines al aire
+  Serial.print(' '); Serial.print(enReposo ? 1 : 0);
   Serial.println();
 }
 
@@ -375,6 +404,7 @@ bool moverArticular(float th1, float th2, float phi, float z, bool conLimites = 
   float q[4] = { th1, th2, phi, z };
   if (conLimites && !dentroLimites(q)) return fallo(F("fuera de los limites articulares"));
   if (!motoresOn) return fallo(F("motores sueltos (O 1)"));
+  despertar();
   if (!sigue()) return false;
   limpiarVelocidades();
   long d[4];
@@ -412,6 +442,7 @@ bool moverZ(float z) { return moverArticular(posicion(EJE_J1), posicion(EJE_J2),
 
 // Tramo a velocidad constante (sin rampa): los ejes llegan a la vez en T segundos.
 bool tramo(const long obj[4], float T) {
+  despertar();
   for (int i = 0; i < 4; i++) {
     long d = obj[i] - motor[i].currentPosition();
     motor[i].moveTo(obj[i]);
@@ -728,7 +759,7 @@ const ClaveF CLAVES_F[] = {
 };
 const ClaveB CLAVES_B[] = {
   { "servoup", &cfg.servoArriba }, { "servodn", &cfg.servoAbajo }, { "inv", &cfg.invertir },
-  { "finales", &cfg.finales }, { "cabezal", &cfg.cabezal }, { "seco", &cfg.seco }, { "hongo", &cfg.hongo },
+  { "finales", &cfg.finales }, { "cabezal", &cfg.cabezal }, { "seco", &cfg.seco }, { "hongo", &cfg.hongo }, { "reposo", &cfg.reposo },
 };
 
 void listarConfig() {
@@ -904,6 +935,7 @@ bool ejecutar(char *linea) {
 
 void responder(bool ok, long id) {
   moviendo = false;
+  tActivo = millis();
   Serial.print(ok ? F("ok") : F("err"));
   if (id >= 0) { Serial.print(' '); Serial.print(id); }
   if (!ok) { Serial.print(' '); Serial.print(error ? error : F("argumentos")); }
@@ -953,6 +985,7 @@ void loop() {
 
   if (hongoAbierto()) dispararParo(F("hongo"));
   estadoPeriodico();
+  revisarReposo();
 
   while (Serial.available()) {
     char ch = Serial.read();

@@ -277,7 +277,7 @@ function refrescar(forzar = false) {
   ven.textContent = con ? robot.textoEstado : 'DESCONECTADO';
   ven.dataset.c = con ? COLOR_ESTADO[L] ?? 'off' : 'off';
   lampara('home', con && (L === 'R' || L === 'H' || (L === 'M' && robot.conHome)) ? 'verde' : con && L !== 'P' ? 'ambar' : null);
-  lampara('motores', con ? (L === 'L' ? 'ambar' : 'verde') : null);
+  lampara('motores', con ? (L === 'L' || e.reposo ? 'ambar' : 'verde') : null);   // ámbar: sueltos o en reposo
   lampara('mov', con && (L === 'M' || robot.ocupado) ? 'cian' : null);
   lampara('metal', con && e.metal ? 'lila' : null);
   lampara('paro', con && L === 'P' ? 'rojo' : null);
@@ -736,7 +736,7 @@ $('#reiniciarMesa').addEventListener('click', () => { mega.reiniciarMesa(); app.
 const ETIQUETAS = {
   home1: 'Final J1 (°)', home2: 'Final J2 (°)', home3: 'Final J3 (°)', home4: 'Final Z (mm)', zmesa: 'Altura papel (mm)',
   servoup: 'Servo arriba (°)', servodn: 'Servo abajo (°)', vel: 'Trazo (mm/s)', inv: 'Invertir ejes (bits)',
-  finales: 'Hay finales (0/1)', cabezal: 'Cabezal puesto (0/1)', seco: 'En seco: solo J1-J3 (0/1)', hongo: 'Hongo de paro en D28 (0/1)',
+  finales: 'Hay finales (0/1)', cabezal: 'Cabezal puesto (0/1)', seco: 'En seco: solo J1-J3 (0/1)', hongo: 'Hongo de paro en D28 (0/1)', reposo: 'Reposo motores (s, 0 = nunca)',
 };
 function llenarAjustes() {
   $('#ajustes').innerHTML = Object.entries(ETIQUETAS).map(([k, n]) =>
