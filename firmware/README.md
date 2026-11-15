@@ -41,6 +41,8 @@ hardware que ya está montado. No hay que pasar a la siguiente hasta que la ante
 `prueba_cabezal` tiene además `x`, un chequeo guiado de 9 pasos que termina imprimiendo los `CFG` a copiar.
 Guía visual de las etapas 2b y 3 (cableado del sensor, montaje, servo y chequeo): [`guia_cabezal/index.html`](guia_cabezal/index.html).
 
+El electroimán de laboratorio del MiniPBL2 (perno 3/8" y AWG 16, relé T73 en D24, fuente de 12 V limitada a 2 A) se prueba aparte, con [`prueba_electroiman/`](prueba_electroiman/): pulsos de máximo 10 s (`e`, `e 5`, `a`) y la prueba oficial (`p`). Construcción y cálculos en [`guia_electroiman/index.html`](guia_electroiman/index.html). El imán del robot sigue siendo el KK-P20/15 con el módulo D4184.
+
 Lo que sale de cada etapa se pasa a la siguiente por `CFG` (sin recompilar): `home3` (ángulo donde
 dispara el final de J3, etapa 3), `servoup` / `servodn` (etapas 2–3), `inv` (bits de sentido, etapa 2).
 

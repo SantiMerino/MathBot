@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Electroimán con perno</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: hojas de plano apiladas (E-01, E-02, E-03), cada una con su cajetín; dibujos con scroll propio en móvil */
+:root{
+  --bg:#e9eef2; --sheet:#fbfcfd; --ink:#17232d; --muted:#586977; --rule:#c6d0d9; --grid:#e6ecf1;
+  --chip:#eef3f7; --accent:#1c5d99; --opt:#7d8b97;
+  --w12:#c9302c; --w6:#d06d0c; --wsig:#1f6fd1; --wmot:#23877c; --wbrown:#8a5527; --wblue:#2563d4; --wpe:#3c8f3a;
+  --led-g:#2e9b47; --led-y:#c99700; --led-r:#d1352b;
+  --metal:#c9d1d8; --metal2:#aeb8c1; --cap:#26313a; --captext:#eef3f6; --plastic:#e39a33; --cable:#5d6b76;
+  --resbody:#dcc79c; --band-r:#c0392b; --band-gold:#b8902c;
+  --f-disp:"IBM Plex Sans Condensed","Arial Narrow",sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1318; --sheet:#121b22; --ink:#dbe5ec; --muted:#8d9fad; --rule:#2a3843; --grid:#17222a;
+  --chip:#18242d; --accent:#6aa8e6; --opt:#7f8f9c;
+  --w12:#ff6b5f; --w6:#f5a04a; --wsig:#5c9cf2; --wmot:#4cc0b2; --wbrown:#c78a57; --wblue:#6b9cf5; --wpe:#6cc266;
+  --led-g:#4fc86a; --led-y:#f0c23a; --led-r:#ff6b5f;
+  --metal:#5a6873; --metal2:#71808c; --cap:#3a4954; --captext:#eef3f6; --plastic:#d08a2c; --cable:#8796a2;
+  --resbody:#9c8a63; --band-r:#e0533f; --band-gold:#d6ad45; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1318; --sheet:#121b22; --ink:#dbe5ec; --muted:#8d9fad; --rule:#2a3843; --grid:#17222a;
+  --chip:#18242d; --accent:#6aa8e6; --opt:#7f8f9c;
+  --w12:#ff6b5f; --w6:#f5a04a; --wsig:#5c9cf2; --wmot:#4cc0b2; --wbrown:#c78a57; --wblue:#6b9cf5; --wpe:#6cc266;
+  --led-g:#4fc86a; --led-y:#f0c23a; --led-r:#ff6b5f;
+  --metal:#5a6873; --metal2:#71808c; --cap:#3a4954; --captext:#eef3f6; --plastic:#d08a2c; --cable:#8796a2;
+  --resbody:#9c8a63; --band-r:#e0533f; --band-gold:#d6ad45; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:28px}
+header{display:grid;gap:6px}
+.kicker{font:600 12px/1 var(--f-disp);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 clamp(28px,4.4vw,42px)/1.05 var(--f-disp);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{color:var(--muted);max-width:68ch;margin:0}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+nav a{font:600 13px/1 var(--f-disp);color:var(--ink);text-decoration:none;border:1px solid var(--rule);background:var(--sheet);padding:9px 12px;border-radius:4px;display:flex;gap:8px;align-items:center}
+nav a b{font-family:var(--f-mono);font-weight:500;color:var(--accent)}
+nav a:hover,nav a:focus-visible{border-color:var(--accent);outline:none}
+
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;overflow:hidden;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-position:-1px -1px}
+.sheet-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;align-items:end;padding:20px 22px 14px;border-bottom:1px solid var(--rule);background:var(--sheet)}
+.sheet-head h2{font:700 24px/1.1 var(--f-disp);margin:0;text-wrap:balance}
+.sheet-head p{margin:4px 0 0;color:var(--muted);max-width:70ch}
+.cajetin{display:grid;grid-template-columns:repeat(4,auto);border:1px solid var(--ink);font:12px/1.2 var(--f-mono);min-width:0}
+.cajetin div{padding:5px 9px;border-left:1px solid var(--ink)}
+.cajetin div:first-child{border-left:0}
+.cajetin span{display:block;font:500 9.5px/1 var(--f-disp);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.sheet-body{padding:18px 22px 24px;display:grid;gap:22px;background:color-mix(in srgb,var(--sheet) 82%,transparent)}
+
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--rule);border-radius:4px;background:var(--sheet)}
+.scroll svg{display:block;width:100%;height:auto}
+.min-1000{min-width:1000px}.min-760{min-width:760px}.min-480{min-width:480px}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font:13px/1.2 var(--f-disp)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:26px;height:4px;border-radius:2px}
+.legend i.dash{height:0;border-top:2px dashed var(--opt);border-radius:0}
+
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
+figure{margin:0;display:grid;gap:8px;min-width:0}
+figcaption{font-size:13.5px;color:var(--muted);max-width:68ch}
+figcaption b{color:var(--ink);font-weight:600}
+.fig-t{font:700 15px/1.2 var(--f-disp);display:flex;gap:10px;align-items:baseline}
+.fig-t code{font:500 12px var(--f-mono);color:var(--accent)}
+
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font:600 11.5px/1.2 var(--f-disp);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--chip)}
+td code,li code,p code{font:500 12.5px var(--f-mono);color:var(--ink);background:var(--chip);padding:1px 5px;border-radius:3px}
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--sheet)}
+.tbl table{min-width:560px}
+td.num{font-family:var(--f-mono);white-space:nowrap}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:18px;align-items:start}
+.box{border:1px solid var(--rule);border-radius:4px;background:var(--sheet);padding:14px 16px;min-width:0}
+.box h3{font:700 15px/1.2 var(--f-disp);margin:0 0 8px}
+.box ol,.box ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.box p{margin:0 0 6px}
+.warn{border-color:color-mix(in srgb,var(--w12) 55%,var(--rule));background:color-mix(in srgb,var(--w12) 7%,var(--sheet))}
+.warn h3{color:var(--w12)}
+.calc{font:13px/1.7 var(--f-mono)}
+footer{color:var(--muted);font-size:13px}
+
+/* SVG */
+.dwg text{font-family:var(--f-disp);fill:var(--ink)}
+.dwg .t{font-size:13px;font-weight:600}
+.dwg .tb{font-size:15px;font-weight:700;letter-spacing:.03em}
+.dwg .tl{font-size:12px;font-weight:500}
+.dwg .ts{font-size:11px;fill:var(--muted)}
+.dwg .tm{font-family:var(--f-mono);font-size:11px}
+.dwg .mid{text-anchor:middle}.dwg .end{text-anchor:end}
+.dwg .f12{fill:var(--w12)}.dwg .f6{fill:var(--w6)}.dwg .fs{fill:var(--wsig)}.dwg .fcap{fill:var(--captext)}
+.blk{fill:var(--chip);stroke:var(--ink);stroke-width:1.4}
+.blk2{fill:var(--sheet);stroke:var(--ink);stroke-width:1.2}
+.opt{fill:none;stroke:var(--opt);stroke-width:1.4;stroke-dasharray:5 4}
+.dash{stroke-dasharray:5 4}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.w{fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.w12{stroke:var(--w12)}.wg{stroke:var(--ink)}.ws{stroke:var(--wsig)}.w6{stroke:var(--w6)}
+.wm{stroke:var(--wmot);stroke-width:5}.wmt{stroke:var(--wmot)}
+.wbr{stroke:var(--wbrown)}.wbl{stroke:var(--wblue)}.wpe{stroke:var(--wpe)}
+.c12{color:var(--w12)}.cg{color:var(--ink)}.cs{color:var(--wsig)}.c6{color:var(--w6)}
+.cled-g{color:var(--led-g)}.cled-y{color:var(--led-y)}.cled-r{color:var(--led-r)}
+@media (prefers-reduced-motion:no-preference){nav a{transition:border-color .15s}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="gnd"><path d="M0 0V8M-9 8H9M-5.5 12H5.5M-2 16H2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="dot"><circle r="3.4" fill="currentColor"/></g>
+    <g id="res"><path d="M-25 0H-15l2.5-6 5 12 5-12 5 12 5-12 5 12 2.5-6H25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></g>
+    <g id="dio"><path d="M-20 0H-7M7 0H20M7-7V7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M-7-7L7 0-7 7Z" fill="currentColor"/></g>
+    <g id="led"><use href="#dio"/><path d="M-1-10L5-18M1.5-18H5V-14.5M5-10L11-18M7.5-18H11V-14.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></g>
+    <g id="fuse"><rect x="-18" y="-7" width="36" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M-26 0H26" stroke="currentColor" stroke-width="1.6"/></g>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+<header>
+  <div class="kicker">MathBot · Física Aplicada III · MiniPBL 2</div>
+  <h1>Electroimán con perno 3/8"</h1>
+  <p class="lede">Núcleo provisional: perno hexagonal 3/8"-16 × 1" grado 5, rosca ordinaria, hasta conseguir hierro dulce. Material del docente: 2.5 m de alambre AWG 16, relé SCH T73 de 5 V y diodo 1N4007. Fuente de prueba: 12 V con límite de 2 A, 10 s encendido como máximo y volumen máximo de 12 cm³. Las fórmulas son las de la guía del MiniPBL2.</p>
+  <nav aria-label="Hojas">
+    <a href="#e01"><b>E-01</b> Hoja de diseño</a>
+    <a href="#e02"><b>E-02</b> Construcción</a>
+    <a href="#e03"><b>E-03</b> Circuito y prueba</a>
+  </nav>
+</header>
+
+<section class="sheet" id="e01">
+  <div class="sheet-head">
+    <div>
+      <h2>Hoja de diseño</h2>
+      <p>Cálculos que pide la rúbrica (R, I, P, ΔT, B₀, μ_ef, B_núcleo, B_polo, F y m_máx) para dos armados con el mismo perno: <b>A, núcleo abierto</b> (el que pide la guía) y <b>B, copa</b> (la idea avanzada: el flujo vuelve por un tubo de acero).</p>
+    </div>
+    <div class="cajetin"><div><span>Hoja</span>E-01</div><div><span>Núcleo</span>3/8"-16 G5</div><div><span>Alambre</span>AWG 16</div><div><span>Rev</span>1</div></div>
+  </div>
+  <div class="sheet-body">
+
+    <div class="cols">
+      <div class="box warn">
+        <h3>Lo que cambia con AWG 16</h3>
+        <p>2.5 m de AWG 16 miden <b>0.033 Ω</b>. A 12 V eso es un corto: la fuente entra en corriente constante y se queda en <b>2 A</b> con unos 0.1–0.3 V en sus bornes. La corriente ya no depende de la bobina, así que los amperes-vuelta salen solo de cuántas vueltas quepan: <b>usen todo el alambre</b> y enróllenlo lo más cerca del núcleo que puedan.</p>
+        <p>Con el perno de Ø9.5 caben unas 48 vueltas (96 A·vuelta). El ejemplo de la guía tiene 1320 A·vuelta con AWG 26, por eso las masas que salen aquí son mucho menores.</p>
+      </div>
+      <div class="box">
+        <h3>El perno como núcleo</h3>
+        <ul>
+          <li><b>3/8"-16 × 1"</b>: Ø9.525 mm, paso 1.588 mm (16 hilos por pulgada, rosca ordinaria UNC), diámetro de paso 8.49 mm, 25.4 mm bajo la cabeza.</li>
+          <li><b>Cabeza</b> 9/16": 14.3 mm entre caras, 16.5 mm entre esquinas, 5.95 mm de alto. Largo total del núcleo: <b>31.4 mm</b>.</li>
+          <li><b>Grado 5</b> (tres rayas en la cabeza): acero de medio carbono (0.28–0.55 % C) templado y revenido. Es ferromagnético, pero el temple baja su μᵣ (≈100–300) y puede dejarlo algo imantado. Sirve de provisional; el hierro dulce rinde más.</li>
+          <li>Pruébenlo con un imán antes. Si es galvanizado, lijen la cara polar hasta ver el acero.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Paso</th><th>A · núcleo abierto</th><th>B · copa (tubo EMT ½")</th><th>Cómo sale</th></tr></thead>
+        <tbody>
+          <tr><td>Aislamiento</td><td class="num">Ø int 9.9 mm</td><td class="num">Ø int 9.6–9.9 mm</td><td>una vuelta de cinta sobre la rosca (0.2 mm); en B, Kapton (0.05 mm) si el tubo queda justo</td></tr>
+          <tr><td>Largo del bobinado ℓ</td><td class="num">21.9 mm</td><td class="num">21.9 mm</td><td>16 vueltas × 1.37 mm (diámetro con esmalte)</td></tr>
+          <tr><td>Capas · vueltas N</td><td class="num">3 × 16 = 48</td><td class="num">2 × 16 = 32</td><td>en B el tubo (Ø int 15.8) solo deja 2 capas</td></tr>
+          <tr><td>Ø exterior bobina</td><td class="num">18.1 mm</td><td class="num">15.4 mm</td><td>D_int + 2 · capas · 1.37</td></tr>
+          <tr><td>Alambre en la bobina</td><td class="num">2.12 m</td><td class="num">1.27 m</td><td>Σ N_capa · π · D_medio (11.3 · 14.0 · 16.8 mm); el resto, a las puntas</td></tr>
+          <tr><td>Envolvente</td><td class="num">Ø18.1 × 31.4 → 8.1 cm³ ✓</td><td class="num">Ø17.9 × 33.0 → 8.3 cm³ ✓</td><td>V = π d² h / 4; en B con la arandela esmerilada a Ø17.9 (sin esmerilar, Ø20.6: 11.0 cm³ ✓)</td></tr>
+          <tr><td>Resistencia R</td><td class="num">0.033 Ω (2.5 m)</td><td class="num">≈0.02 Ω (1.6 m)</td><td>R = ρ L / A, A = 1.309 mm² (Ø1.291 de cobre)</td></tr>
+          <tr><td>Corriente I</td><td class="num">2 A</td><td class="num">2 A</td><td>12/0.033 = 360 A sin límite: la fuente fija 2 A</td></tr>
+          <tr><td>Potencia · calor 10 s</td><td class="num">0.13 W · ΔT 0.1 °C</td><td class="num">0.08 W · ΔT 0.1 °C</td><td>P = I²R; ΔT = P t / (m c), m_cobre = 29 g</td></tr>
+          <tr><td>Amperes-vuelta</td><td class="num">96 A·v</td><td class="num">64 A·v</td><td>N I</td></tr>
+          <tr><td>B₀ (sin núcleo)</td><td class="num">5.5 mT</td><td class="num">—</td><td>μ₀ N I / ℓ</td></tr>
+          <tr><td>μ_ef</td><td class="num">≈10</td><td class="num">—</td><td>largo/diámetro = 31.4/9.525 = 3.3, entre 9 (3) y 13 (4) de la tabla 2.3</td></tr>
+          <tr><td>B_núcleo · saturación</td><td class="num">0.056 T ≪ 1.5 T</td><td class="num">0.17–0.46 T ≪ 1.5 T</td><td>B = min(μ_ef B₀, B_sat). En B: μ₀ N I / (ℓ_Fe/μᵣ + 2g), ℓ_Fe ≈ 75 mm, g = 0.05 mm</td></tr>
+          <tr><td>B_polo</td><td class="num">0.028 T</td><td class="num">= B (dos polos)</td><td>A: B_núcleo / 2. En B el flujo sale por el perno y vuelve por el tubo</td></tr>
+          <tr><td>Área de la cara</td><td class="num">56.6 mm²</td><td class="num">56.6 + 56.6 mm²</td><td>disco al diámetro de paso (8.49); anillo del tubo π/4 (17.9² − 15.8²)</td></tr>
+          <tr><td>Fuerza F</td><td class="num">0.018 N</td><td class="num">1.3 N (μᵣ 200) · 9.5 N (μᵣ 1000)</td><td>F = B² A / 2μ₀, sumando los dos polos en B</td></tr>
+          <tr><td>Masa máxima</td><td class="num"><b>≈1.8 g</b></td><td class="num"><b>≈130 g</b> templado · <b>≈1 kg</b> recocido</td><td>m = F / g</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cols">
+      <div class="box">
+        <h3>Separación (armado A, sección 2.6)</h3>
+        <table>
+          <thead><tr><th>g</th><th>0</th><th>0.1</th><th>0.25</th><th>0.5</th><th>1</th><th>2 mm</th></tr></thead>
+          <tbody><tr><td>m_máx</td><td class="num">1.8</td><td class="num">1.6</td><td class="num">1.3</td><td class="num">1.0</td><td class="num">0.7</td><td class="num">0.3 g</td></tr></tbody>
+        </table>
+        <p style="margin-top:8px">ℓ/μ_ef = 3.1 mm: el núcleo abierto ya tiene mucho “aire” propio, por eso la separación pesa poco en A. En B pasa lo contrario: con 0.5 mm la masa cae de 130 g a 16 g. La pieza tiene que tocar.</p>
+      </div>
+      <div class="box">
+        <h3>Por qué B rinde tanto más</h3>
+        <p>En A el flujo vuelve por el aire alrededor de la bobina, y ese camino es casi toda la reluctancia. En B vuelve por la arandela y el tubo, y el único aire es el contacto con la pieza (≈0.05 mm por cara si las caras están lijadas planas). Con las mismas 2 A y menos vueltas, el campo sube de 0.03 a 0.17–0.46 T.</p>
+        <p>En B el límite pasa a ser el acero del perno (ℓ_Fe/μᵣ = 0.38 mm con μᵣ 200). Recocerlo o cambiarlo por hierro dulce sube μᵣ a ≈1000 y multiplica la fuerza por ~7.</p>
+      </div>
+      <div class="box">
+        <h3>Para la hoja de resultados</h3>
+        <ul>
+          <li>El modelo de núcleo abierto subestima bastante con barras cortas y gruesas como esta: es normal medir más de 1.8 g. Anoten la diferencia y explíquenla (μ_ef de tabla, contacto, forma de la cabeza).</li>
+          <li>La resistencia de 0.033 Ω no se mide bien con el multímetro en Ω (las puntas ya miden 0.1–0.3 Ω). Mídanla con la fuente: pasen 2 A y lean la tensión <b>en las puntas de la bobina</b>; R = V / 2 A (≈66 mV).</li>
+          <li>Cuenten las vueltas reales al enrollar y midan el alambre que sobra: L_bobina = 2.5 m − sobrante.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="e02">
+  <div class="sheet-head">
+    <div>
+      <h2>Construcción</h2>
+      <p>Cortes a escala 4:1 de los dos armados. La cabeza del perno queda arriba (en la copa del cabezal en el robot) y la punta es la cara polar.</p>
+    </div>
+    <div class="cajetin"><div><span>Hoja</span>E-02</div><div><span>Escala</span>4:1</div><div><span>Cotas</span>mm</div><div><span>Rev</span>1</div></div>
+  </div>
+  <div class="sheet-body">
+    <div class="grid2">
+      <figure>
+        <div class="fig-t">A · núcleo abierto <code>48 vueltas · 8.1 cm³</code></div>
+        <div class="scroll">
+        <svg class="dwg min-480" viewBox="0 0 520 200" role="img" aria-label="Corte del armado A: perno de 3/8 de pulgada con la cabeza a la izquierda, tres capas de alambre AWG 16 sobre la caña y la punta libre como cara polar">
+          <!-- eje horizontal: x = 60 + 4·mm (cabeza a la izquierda), y = 100 ± 4·r -->
+          <path d="M50 100H212" stroke="var(--muted)" stroke-width="1" stroke-dasharray="10 3 2 3"/>
+          <rect x="60" y="71.4" width="23.8" height="57.2" fill="var(--metal2)" stroke="var(--ink)" stroke-width="1.4"/>
+          <rect x="83.8" y="81" width="101.6" height="38" fill="var(--metal)" stroke="var(--ink)" stroke-width="1.4"/>
+          <path d="M83.8 82.6l0 0M90 81v38M96.4 81v38M102.7 81v38M109 81v38M115.4 81v38M121.7 81v38M128 81v38M134.4 81v38M140.7 81v38M147 81v38M153.4 81v38M159.7 81v38M166 81v38M172.4 81v38M178.7 81v38" stroke="var(--metal2)" stroke-width="0.8"/>
+          <g fill="var(--plastic)" opacity=".9">
+            <rect x="85.8" y="80.2" width="87.7" height="0.8"/><rect x="85.8" y="119" width="87.7" height="0.8"/>
+          </g>
+          <g fill="var(--wbrown)" stroke="var(--ink)" stroke-width=".6">
+            <rect x="85.8" y="63.7" width="87.7" height="16.4" rx="1"/>
+            <rect x="85.8" y="119.9" width="87.7" height="16.4" rx="1"/>
+          </g>
+          <path d="M85.8 74.2H173.5M85.8 68.9H173.5M85.8 125.7H173.5M85.8 131.1H173.5" stroke="var(--ink)" stroke-width=".5" opacity=".6"/>
+          <rect x="173.5" y="79" width="4.6" height="42" fill="var(--plastic)" opacity=".9"/>
+          <path d="M185.4 81V119" stroke="var(--w12)" stroke-width="3"/>
+          <text class="tl f12" x="240" y="104">cara polar</text>
+          <text class="ts" x="240" y="118">lijada plana</text>
+          <!-- cotas -->
+          <g stroke="var(--muted)" stroke-width="1" fill="none"><path d="M60 160V150M185.4 160V150M60 156H185.4"/><path d="M85.8 46V56M173.5 46V56M85.8 50H173.5"/><path d="M226 63.7H216M226 136.3H216M222 63.7V136.3"/></g>
+          <text class="tm mid" x="122.7" y="172">31.4 total</text>
+          <text class="tm mid" x="129.6" y="42">ℓ 21.9 · 3 × 16</text>
+          <text class="tm" x="230" y="150">Ø18.1</text>
+          <text class="ts" x="62" y="62">cabeza</text>
+          <text class="ts" x="300" y="72">AWG 16 · 3 capas</text>
+          <path d="M298 70L170 70" stroke="var(--muted)" stroke-width=".8"/>
+          <text class="ts" x="300" y="88">cinta sobre la rosca</text>
+          <path d="M298 86L176 80.6" stroke="var(--muted)" stroke-width=".8"/>
+          <text class="ts" x="300" y="190">tope de cinta 1 mm · punta libre 1.9 mm</text>
+          <path d="M298 186L178 121" stroke="var(--muted)" stroke-width=".8"/>
+        </svg>
+        </div>
+        <figcaption>Las puntas del alambre salen <b>por el lado de la cabeza</b>, lejos de la cara polar. Con 2.12 m en la bobina quedan ≈19 cm por punta para llegar al relé.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="fig-t">B · copa <code>32 vueltas · 8.3 cm³</code></div>
+        <div class="scroll">
+        <svg class="dwg min-480" viewBox="0 0 520 200" role="img" aria-label="Corte del armado B: el mismo perno con una arandela bajo la cabeza, dos capas de alambre y un tubo EMT de media pulgada alrededor, con la cara del tubo y la punta del perno en el mismo plano">
+          <path d="M50 100H212" stroke="var(--muted)" stroke-width="1" stroke-dasharray="10 3 2 3"/>
+          <rect x="60" y="71.4" width="23.8" height="57.2" fill="var(--metal2)" stroke="var(--ink)" stroke-width="1.4"/>
+          <rect x="83.8" y="64.2" width="6.4" height="71.6" fill="var(--metal2)" stroke="var(--ink)" stroke-width="1.2"/>
+          <rect x="90.2" y="81" width="95.2" height="38" fill="var(--metal)" stroke="var(--ink)" stroke-width="1.4"/>
+          <g fill="var(--wbrown)" stroke="var(--ink)" stroke-width=".6">
+            <rect x="91.5" y="69.4" width="87.7" height="11" rx="1"/>
+            <rect x="91.5" y="119.6" width="87.7" height="11" rx="1"/>
+          </g>
+          <path d="M91.5 75H179.2M91.5 125.2H179.2" stroke="var(--ink)" stroke-width=".5" opacity=".6"/>
+          <g fill="var(--cap)" stroke="var(--ink)" stroke-width="1"><rect x="90.2" y="64.2" width="95.2" height="4.3"/><rect x="90.2" y="131.5" width="95.2" height="4.3"/></g>
+          <path d="M185.4 81V119M185.4 64.2V68.5M185.4 131.5V135.8" stroke="var(--w12)" stroke-width="3"/>
+          <text class="tl f12" x="240" y="104">dos caras polares</text>
+          <text class="ts" x="240" y="118">en el mismo plano</text>
+          <!-- flujo -->
+          <path d="M120 100H200M200 100C214 100 214 66 200 66H185M150 66H100L100 100" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 3" opacity=".9"/>
+          <g stroke="var(--muted)" stroke-width="1" fill="none"><path d="M60 160V150M185.4 160V150M60 156H185.4"/><path d="M226 64.2H216M226 135.8H216M222 64.2V135.8"/></g>
+          <text class="tm mid" x="122.7" y="172">33.0 total</text>
+          <text class="tm" x="230" y="150">Ø17.9</text>
+          <text class="ts" x="300" y="48">arandela SAE 3/8" (1.6), a Ø17.9</text>
+          <path d="M298 46L88 64" stroke="var(--muted)" stroke-width=".8"/>
+          <text class="ts" x="300" y="64">tubo EMT ½" · 23.8 de largo</text>
+          <path d="M298 62L160 66" stroke="var(--muted)" stroke-width=".8"/>
+          <text class="ts" x="300" y="80">AWG 16 · 2 capas</text>
+          <path d="M298 78L176 74" stroke="var(--muted)" stroke-width=".8"/>
+          <text class="ts" x="240" y="190">flujo: perno → pieza → tubo → arandela → cabeza</text>
+        </svg>
+        </div>
+        <figcaption>El tubo y la punta del perno se lijan <b>juntos</b> sobre una lija apoyada en vidrio para que las dos caras queden en un plano. Holgura entre la bobina y el tubo: ≈0.2 mm por lado; forren el tubo por dentro con cinta.</figcaption>
+      </figure>
+    </div>
+
+    <div class="cols">
+      <div class="box">
+        <h3>Armado A, paso a paso</h3>
+        <ol>
+          <li>Prueba con imán. Lija la punta del perno en una superficie plana hasta quitar el chaflán y el galvanizado: tiene que verse acero brillante en todo el disco.</li>
+          <li>Una vuelta de cinta de aislar (o Kapton) sobre toda la rosca: los filos pelan el esmalte.</li>
+          <li>Tope en la punta: 2–3 vueltas de cinta formando un collar de 1 mm, a 1.9 mm de la cara.</li>
+          <li>Deja ≈19 cm libres y empieza junto a la cabeza. 16 vueltas apretadas hacia la punta, regresa con la 2.ª capa y vuelve con la 3.ª, <b>siempre en el mismo sentido de giro</b>. Si hiciera falta, una gota de cianoacrilato por capa.</li>
+          <li>La punta final regresa por fuera hacia la cabeza, sujeta con cinta. Cuenta las vueltas y mide el sobrante.</li>
+          <li>Lija el esmalte solo en los últimos 10 mm de cada punta (hasta que brille el cobre), estáñalas y ponles terminal o conector.</li>
+          <li>Continuidad con el multímetro entre las puntas, y <b>circuito abierto</b> entre cada punta y el perno.</li>
+        </ol>
+      </div>
+      <div class="box">
+        <h3>Armado B (si consiguen el tubo)</h3>
+        <ol>
+          <li>Tubo EMT ½" (conduit galvanizado, Ø17.9 × 1.07): corta 23.8 mm con segueta y lima la rebaba. Arandela SAE 3/8" esmerilada a Ø17.9.</li>
+          <li>Bobina de 2 capas como en A, pero con Kapton fino sobre la rosca. Antes de pegar, prueba que entre en el tubo forrado.</li>
+          <li>Perno con la arandela bajo la cabeza; el tubo encima de la arandela, cubriendo la bobina. Puntas por una ranura de 2 mm en el borde del tubo, del lado de la arandela.</li>
+          <li>Pega arandela-cabeza y arandela-tubo con epóxica (JB Weld); la bobina queda atrapada.</li>
+          <li>Ya curado, lija punta y tubo juntos hasta que queden planos y brillantes. Quita el zinc de las caras.</li>
+          <li>Envolvente Ø17.9 × 33.0 = 8.3 cm³. Sin esmerilar la arandela (Ø20.6) son 11.0 cm³: también cumple, pero no entra en la copa de Ø20.4 del cabezal.</li>
+        </ol>
+      </div>
+      <div class="box warn">
+        <h3>Recocer el perno (opcional)</h3>
+        <p>Calentar el perno al rojo cereza (≈850 °C) con soplete, sostenerlo así 2–3 min y dejarlo enfriar <b>lento</b>, enterrado en arena o ceniza, varias horas. Le quita el temple: sube μᵣ y deja menos magnetismo residual, para que la pieza se suelte al apagar.</p>
+        <p><b>Primero quiten el galvanizado</b> (una noche en vinagre o ácido muriático diluido): el zinc caliente suelta humo tóxico. Háganlo al aire libre, con pinzas y lentes. El perno queda blando y ya no sirve como tornillo estructural.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="e03">
+  <div class="sheet-head">
+    <div>
+      <h2>Circuito y prueba</h2>
+      <p>El Mega solo mueve el relé; el contacto del relé conecta la fuente de laboratorio al electroimán. Los dos lados no se tocan eléctricamente. Se usa <code>D24</code>, el mismo pin del electroimán en <code>mathbot_mega.ino</code>.</p>
+    </div>
+    <div class="cajetin"><div><span>Hoja</span>E-03</div><div><span>Pin</span>D24</div><div><span>Sketch</span>prueba_electroiman</div><div><span>Rev</span>1</div></div>
+  </div>
+  <div class="sheet-body">
+    <figure>
+      <div class="fig-t">Esquema <code>relé T73 · 2N2222 · 1N4007</code></div>
+      <div class="scroll">
+      <svg class="dwg min-760" viewBox="0 0 900 400" role="img" aria-label="Esquema: D24 del Arduino Mega con resistencia de 1 kiloohmio a la base de un transistor 2N2222 que activa la bobina del relé T73 de 5 voltios, con diodo 1N4007 en paralelo. El contacto COM y NA del relé conecta la fuente de laboratorio de 12 voltios y 2 amperios al electroimán.">
+        <text class="ts" x="30" y="20">LADO DE CONTROL · 5 V</text>
+        <text class="ts" x="490" y="20">LADO DE POTENCIA · fuente 12 V · límite 2 A</text>
+        <path d="M470 10V390" stroke="var(--opt)" stroke-width="1.4" stroke-dasharray="6 5"/>
+
+        <rect class="blk" x="30" y="34" width="130" height="270" rx="5"/>
+        <text class="tb mid" x="95" y="160">Arduino</text><text class="tb mid" x="95" y="180">Mega</text>
+        <text class="tm end" x="152" y="54">5V</text><text class="tm end" x="152" y="229">D24</text><text class="tm end" x="152" y="284">GND</text>
+
+        <!-- +5 V -->
+        <path class="w w6" d="M160 50H360V80"/>
+        <g class="c6"><use href="#dot" x="300" y="50"/></g>
+        <text class="t f6" x="190" y="42">+5 V</text>
+        <!-- diodo -->
+        <path class="w w6" d="M300 50V100"/>
+        <g class="cg"><use href="#dio" transform="translate(300 120) rotate(-90)"/></g>
+        <path class="w wg" d="M300 140V185H360"/><g class="cg"><use href="#dot" x="360" y="185"/></g>
+        <text class="tl end" x="288" y="116">D1</text><text class="ts end" x="288" y="131">1N4007</text>
+        <!-- relé -->
+        <rect class="opt" x="342" y="64" width="300" height="114" rx="6"/>
+        <text class="tl" x="378" y="84">K1 · T73 5 V</text><text class="ts" x="378" y="99">bobina ≈70 Ω</text>
+        <path class="sym" d="M360 80a8 8 0 0 1 0 16a8 8 0 0 1 0 16a8 8 0 0 1 0 16a8 8 0 0 1 0 16a8 8 0 0 1 0 16"/>
+        <path class="w wg" d="M360 160V200"/>
+        <path d="M376 120H548" stroke="var(--opt)" stroke-width="1.2" stroke-dasharray="3 4"/>
+        <!-- transistor -->
+        <circle cx="352" cy="225" r="22" fill="none" stroke="var(--ink)" stroke-width="1.2"/>
+        <path class="sym" d="M342 210V240" style="stroke-width:2.6"/>
+        <path class="sym" d="M342 217L360 200M342 233L360 250"/>
+        <polygon points="360,250 349.5,246 355.5,239.5" fill="var(--ink)"/>
+        <text class="tl" x="380" y="222">Q1 · 2N2222</text><text class="ts" x="380" y="237">(o BC337, PN2222)</text>
+        <path class="w wg" d="M360 250V320"/>
+        <!-- base -->
+        <path class="w ws" d="M160 225H205M255 225H342"/>
+        <g class="cs"><use href="#res" x="230" y="225"/><use href="#dot" x="295" y="225"/></g>
+        <text class="tl mid" x="230" y="212">R1 · 1 kΩ</text>
+        <path class="w ws" d="M295 225V240"/><g class="cg"><use href="#res" transform="translate(295 265) rotate(90)"/></g><path class="w wg" d="M295 290V320"/>
+        <text class="tl end" x="285" y="262">R2</text><text class="ts end" x="285" y="277">10 kΩ</text>
+        <!-- GND -->
+        <path class="w wg" d="M160 280H175V320H360"/><g class="cg"><use href="#dot" x="295" y="320"/><use href="#gnd" x="175" y="320"/></g>
+
+        <!-- contacto -->
+        <circle cx="548" cy="140" r="3.4" fill="var(--ink)"/>
+        <path class="sym" d="M548 140L596 154"/>
+        <circle cx="602" cy="112" r="4" fill="var(--sheet)" stroke="var(--ink)" stroke-width="1.6"/>
+        <circle cx="602" cy="156" r="4" fill="var(--sheet)" stroke="var(--ink)" stroke-width="1.6"/>
+        <text class="tm" x="512" y="136">COM</text><text class="tm" x="612" y="108">NA</text><text class="tm" x="612" y="160">NC</text><text class="ts" x="634" y="160">sin usar</text>
+        <path class="w w12" d="M548 140V250H720V280"/>
+        <path class="w w12" d="M606 112H800V130"/>
+        <path class="sym" d="M800 130a9 9 0 0 1 0 18a9 9 0 0 1 0 18a9 9 0 0 1 0 18a9 9 0 0 1 0 18"/>
+        <path class="w wg" d="M800 202V280"/>
+        <text class="tl" x="818" y="160">L1 · electroimán</text><text class="ts" x="818" y="176">48 v · AWG 16</text><text class="ts" x="818" y="191">0.033 Ω</text>
+        <!-- fuente -->
+        <rect class="blk" x="690" y="280" width="140" height="80" rx="5"/>
+        <text class="tm f12" x="714" y="298">+</text><text class="tm" x="794" y="298">−</text>
+        <text class="t mid" x="760" y="322">Fuente de laboratorio</text><text class="ts mid" x="760" y="340">12 V · límite 2 A (CC)</text>
+        <text class="ts" x="560" y="244">AWG 16 o más grueso</text>
+      </svg>
+      </div>
+      <figcaption>D24 en HIGH satura Q1, la bobina del relé se energiza, COM se une con NA y pasan 2 A por el electroimán. Al soltar, <b>D1</b> se lleva el pico de la bobina del relé: <b>franja (cátodo) hacia +5 V</b>. R2 mantiene el relé apagado mientras el Mega arranca.</figcaption>
+    </figure>
+
+    <div class="cols">
+      <div class="box warn">
+        <h3>No conecten la bobina del relé directo al pin</h3>
+        <p>El diagrama de la guía pone la bobina entre D7 y GND. Un T73 de 5 V pide ≈70 mA (5 V / 70 Ω) y un pin del Mega da 20 mA recomendados, 40 mA como máximo absoluto: el pin se daña o el relé no cierra. Q1 y R1 resuelven eso: con 1 kΩ la base recibe ≈4 mA, que sobran para saturar 70 mA.</p>
+        <p>Si usan un <b>módulo</b> de relé en vez del relé suelto, ya trae transistor y diodo; muchos se activan con LOW, así que revisen la lógica.</p>
+      </div>
+      <div class="box">
+        <h3>Lista de partes</h3>
+        <table>
+          <tbody>
+            <tr><td>K1</td><td>Relé SCH T73 1C 5S, bobina 5 V</td><td>docente</td></tr>
+            <tr><td>D1</td><td>1N4007</td><td>docente</td></tr>
+            <tr><td>L1</td><td>Perno 3/8"-16 × 1" G5 + 2.5 m AWG 16</td><td>docente / equipo</td></tr>
+            <tr><td>Q1</td><td>2N2222, PN2222 o BC337</td><td>equipo</td></tr>
+            <tr><td>R1 · R2</td><td>1 kΩ · 10 kΩ, ¼ W</td><td>equipo</td></tr>
+            <tr><td>—</td><td>Cinta Kapton o de aislar, lija 220–400</td><td>equipo</td></tr>
+            <tr><td>B</td><td>Tubo EMT ½" (24 mm), arandela SAE 3/8", epóxica</td><td>opcional</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="box">
+        <h3>Prueba con <code>prueba_electroiman</code></h3>
+        <ol>
+          <li>Primero sin fuente: <code>e 2</code> en el Monitor Serie (115200). Debe oírse el clic del relé al encender y al apagar.</li>
+          <li>Fuente en 12 V con el límite en 2 A, apagada. Conecten COM y NA, luego enciendan la fuente: con el relé abierto no pasa nada.</li>
+          <li><code>e 3</code>: la fuente debe marcar CC, 2.0 A y pocas décimas de volt. Midan la tensión en las puntas de la bobina para sacar R.</li>
+          <li><code>p</code> es la prueba oficial: 3 s de cuenta atrás, 10 s encendido y un pitido al cumplir 5 s sostenidos. Al apagar, la pieza tiene que caer.</li>
+          <li>Si la pieza se queda pegada: magnetismo residual del G5. Una tira de papel o cinta en la cara lo corta, pero también baja la fuerza; recocer el perno es la solución de fondo.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <h3>En el robot (cabezal A v3)</h3>
+      <ul>
+        <li><b>La fuente del robot no tiene límite de corriente.</b> Si esta bobina de 0.033 Ω va directo a sus 12 V (con el D4184 o con el relé), el corto llega a cientos de amperes. Pongan en serie una resistencia de <b>5.6 Ω y 25 W con carcasa de aluminio</b> (≈2.1 A, se calienta solo mientras el imán está encendido) o un buck con límite de corriente ajustado a 2 A.</li>
+        <li>El armado A (≈2 g según el modelo) no levanta el disco de 69 g de la misión. Para el robot hace falta el armado B, recocido o de hierro dulce. Ø17.9 entra en la copa de Ø20.4 del separador 06.</li>
+        <li>El firmware baja el imán a 0.5 mm sobre la pieza (<code>cfg.pt[i].h + 0.5</code> en <code>mathbot_mega.ino</code>). Con B a 0.5 mm la fuerza cae a ≈16–26 g: hay que bajar hasta tocar.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>MathBot · guía del electroimán · fórmulas y tablas de la guía del MiniPBL2 (Física Aplicada III). Valores del perno según ASME B18.2.1; los de μᵣ del grado 5 son estimados: comparen con lo que midan.</footer>
+</div>
+
+
+</html>
