@@ -41,7 +41,8 @@ modo **PRUEBA NEMA**: en MOVER aparece un módulo con la prueba de ½ vuelta y r
 control por joint: mantener ◀/▶ (o ←→ J1, ↑↓ J2, Q/E J3, RePág/AvPág Z) mueve ese motor sin parar a la
 velocidad elegida. El panel repite `+N v` cada 150 ms y manda `xN` al soltar; si deja de llegar, el Mega frena
 solo a los 400 ms. Las posiciones se cuentan desde que se conectó (no hay home). PARO/Esc frena el jog, pero no
-una prueba de ½ vuelta en curso.
+una prueba de ½ vuelta en curso. En la terminal también pasan las órdenes del cabezal (`e [s]`, `a`, `m`):
+relé del electroimán y sensor inductivo, ver [firmware/README.md](../firmware/README.md#cabezal-en-prueba_nema-relé-sensor--imán).
 
 **Reposo** (`CFG reposo n`, en AJUSTES): tras n s sin órdenes el Mega apaga los drivers para que no zumben ni se
 calienten (lámpara MOTORES en ámbar, anunciador «· reposo»). La siguiente orden de movimiento los vuelve a encender
