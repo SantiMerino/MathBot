@@ -63,7 +63,7 @@ const ESTADOS = { R: 'Listo', H: 'Listo (home manual)', N: 'Sin home', M: 'Movie
 // firmware/prueba_nema: no habla el protocolo v3. Se reconoce por su primera línea y solo acepta
 // líneas de dígitos 1-4 (o "t"): cada dígito mueve ese motor media vuelta y lo regresa.
 const BANNER_NEMA = /^1 X \| 2 Y \| 3 Z/;
-export const ORDEN_NEMA = /^(t|[1-4]{1,4}|[+-][1-4]( \d+)?|x[1-4]|[sclp])$/;
+export const ORDEN_NEMA = /^(t|[1-4]{1,4}|[+-][1-4]( \d+)?|x[1-4]|[sclpam]|e( \d+)?)$/;
 
 export class Robot extends EventTarget {
   constructor() {
@@ -167,7 +167,7 @@ export class Robot extends EventTarget {
   async enviarNema(orden) {
     orden = orden.trim();
     if (!ORDEN_NEMA.test(orden)) {
-      this.emitir('log', { tipo: 'err', texto: `${orden}: en PRUEBA NEMA solo 1, 2, 3, 4, sus combinaciones (12, 123, 1234) o t` });
+      this.emitir('log', { tipo: 'err', texto: `${orden}: en PRUEBA NEMA solo 1, 2, 3, 4, sus combinaciones (12, 123, 1234), t, o el cabezal: e [s], a, m` });
       throw new Error('orden no válida en prueba_nema');
     }
     this.emitir('log', { tipo: 'tx', texto: orden });

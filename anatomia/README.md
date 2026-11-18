@@ -5,7 +5,7 @@ Cada una es una página HTML suelta (sin dependencias) que se abre con doble cli
 
 | Figura | Qué muestra | Interacción |
 |---|---|---|
-| `nema17/nema17.html` | Los dos NEMA 17 (17HS4401 de 40 mm y el corto de 23 mm) con el mismo tren de pasos del A4988 a 1/4: 800 pasos/vuelta, rampa de `prueba_nema.ino` | Puntero en horizontal = ángulo; ← → un paso completo, Mayús 36° |
+| `nema17/nema17.html` | Los dos NEMA 17 (17HS4401 de 40 mm y el corto de 23 mm) con el mismo tren de pasos del A4988 a 1/4: 800 pasos/vuelta, rampa de `prueba_nema_90deg.ino` | Puntero en horizontal = ángulo; ← → un paso completo, Mayús 36° |
 | `mega/mega.html` | Arduino MEGA 2560 + CNC Shield V3: qué pin usa cada función (tabla de `firmware/README.md`) | Puntero o ← → recorre las 14 funciones |
 | `lm10uu/lm10uu.html` | La columna Z: 4 × LM10UU en varillas Ø10, husillo Tr8×8, 100 pasos/mm, VMAX/ACEL de Z en `mathbot_mega.ino` | Puntero en vertical = altura; ↑ ↓ 1 mm, Mayús 10 mm |
 | `cabezal/cabezal.html` | Cabezal A v2: placa trébol con plumón, electroimán y sensor a 55 mm de J3; despiece y levante del plumón (collar, resorte, SG90 con brazo de 12 mm) con las medidas de `simulador_scara/plantilla.html` | Puntero en horizontal = separación; clic o espacio sube el plumón; ← → 10 % |

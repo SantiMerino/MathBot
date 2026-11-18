@@ -32,7 +32,7 @@ hardware que ya está montado. No hay que pasar a la siguiente hasta que la ante
 
 | Etapa | Sketch | Qué necesita montado | Qué comprueba |
 |---|---|---|---|
-| 1 · Motores | `prueba_nema/` | Mega + shield + drivers + NEMA sueltos sobre la mesa, 12 V | Cada motor ida y vuelta, luego X+Y+Z juntos. Sin bibliotecas, finales ni PARO. Ajusta Vref antes |
+| 1 · Motores | `prueba_nema/prueba_nema_90deg/` | Mega + shield + drivers + NEMA sueltos sobre la mesa, 12 V. Opcional: relé, sensor y electroimán | Cada joint ~90° ida y vuelta, luego X+Y+Z juntos, jog y la rosa. Relé sensor/imán con `e` `a` `m`. Sin bibliotecas, finales ni PARO. Ajusta Vref antes |
 | 2 · Preliminar | `prueba_componentes/` y `prueba_servo/` | Lo anterior + finales, sensor, electroimán, botones, LED, buzzer, divisor de 12 V, servo | Menú uno por uno: sentido de giro (`INVERTIR_DIR`), finales, sensor, imán, 12 V. `prueba_servo` da los ángulos ARRIBA/ABAJO |
 | 2b · Sensor | `prueba_sensor/` | Sensor LJ18A3 con su PC817; para el paso de ruido, electroimán y servo | Asistente de 6 pasos (`a`): reposo, detección, distancia con calzas, las 4 piezas de la misión a 3 mm, ruido con imán y servo, rebotes. Repetirlo con el sensor ya montado |
 | 3 · Disco | `prueba_cabezal/` | Brazo 2 + J3 + cabezal v3 con sus tres herramientas en un soporte | Homing de J3 y dónde dispara su final, cambio de herramienta, 18 mm de levante del plumón (`c 20`), agarre del imán, distancia de detección del sensor, que nada roce al girar |
@@ -42,6 +42,70 @@ hardware que ya está montado. No hay que pasar a la siguiente hasta que la ante
 Guía visual de las etapas 2b y 3 (cableado del sensor, montaje, servo y chequeo): [`guia_cabezal/index.html`](guia_cabezal/index.html).
 
 El electroimán de laboratorio del MiniPBL2 (perno 3/8" y AWG 16, relé T73 en D24, fuente de 12 V limitada a 2 A) se prueba aparte, con [`prueba_electroiman/`](prueba_electroiman/): pulsos de máximo 10 s (`e`, `e 5`, `a`) y la prueba oficial (`p`). Construcción y cálculos en [`guia_electroiman/index.html`](guia_electroiman/index.html). El imán del robot sigue siendo el KK-P20/15 con el módulo D4184.
+
+## Cabezal en `prueba_nema` (relé sensor / imán)
+
+`prueba_nema_90deg` maneja también el sensor inductivo y el electroimán con el mismo relé del montaje del
+Nano del MiniPBL2: **nunca están los dos con energía**. En reposo el relé alimenta al sensor (NC); al
+encender el imán pasa al NO y el sensor se queda sin energía. Solo usa D22 y D24, que la CNC Shield no
+tapa, así que funciona con el shield puesto y sin sus 12 V (Mega por USB y la fuente del imán).
+
+| Orden | Qué hace |
+|---|---|
+| `e` · `e s` | enciende el electroimán 10 s · s segundos (1 a 10) y se apaga solo |
+| `a` | apaga el electroimán ya (`!` también) |
+| `m` | estado: imán ON/OFF con su tiempo, sensor METAL / sin metal / sin energía / arrancando |
+
+- El sensor avisa solo al cambiar (`L sensor: METAL`, `L sensor: sin metal`), con 50 ms de filtro.
+- Tras arrancar o apagar el imán, el sensor recién reconectado se ignora 2 s.
+- Máximo 10 s de imán y 3 s de descanso obligatorio entre pulsos (calentamiento y fuente de 2 A).
+- Durante una ida y vuelta o la rosa solo se atiende `!`: manda `e` antes o usa el jog, que no bloquea.
+  El corte por tiempo del imán se cumple igual mientras los motores giran.
+- Ajustes al inicio del sketch: `RELE_ACTIVO_LOW` (true para el JQC3F; false con 2N2222 + T73 o D4184) y
+  `SENSOR_POR_NC` (true con este cableado; false si el café del sensor va directo a la fuente).
+
+**Mega y CNC Shield**
+
+| Función | Ranura | Pines |
+|---|---|---|
+| J1 · J2 · J3 (STEP / DIR) | X · Y · Z | 2/5 · 3/6 · 4/7 |
+| Z de la plataforma (STEP / DIR) | A (jumpers del clon) | 12/13 |
+| Enable de los 4 drivers | — | D8 (LOW = energizados) |
+| Potencia de motores | borne de 12 V del shield | Fuente 1 |
+
+**Módulo relé JQC3F** (optoacoplado, se activa con LOW, jumper JD-VCC ↔ VCC puesto)
+
+| Módulo | Mega |
+|---|---|
+| IN | D24 |
+| VCC | 5V del conector doble (arriba, junto a D22/D23) |
+| GND | GND del conector doble (abajo, junto a D52/D53) |
+
+**Potencia del cabezal** (Fuente 2: 12 V, límite 2 A)
+
+| Desde | Hasta |
+|---|---|
+| Fuente 2 (+) | COM del relé |
+| NC | café del sensor (+) |
+| NO | electroimán → Fuente 2 (−) |
+| 1N4007 | en paralelo al electroimán, franja hacia el NO |
+| Azul del sensor | Fuente 2 (−) y GND del Mega (tierra común obligatoria) |
+| Negro del sensor | diodo 1N4148/1N4007 (franja hacia el sensor) → D22 |
+
+La Fuente 1 (−) ya queda unida al GND del Mega a través del shield.
+
+| Estado | Relé (IN) | Sensor | Electroimán |
+|---|---|---|---|
+| Reposo / arranque | HIGH | con energía, se lee | apagado |
+| `e` | LOW | sin energía | encendido (máx. 10 s) |
+| Tiempo, `a` o `!` | HIGH | se reconecta, 2 s ignorado | apagado, 3 s de descanso |
+
+**Si el sensor no responde**: con acero a 4–8 mm su LED trasero debe prender. Sin LED, falta energía
+(¿café en NC y no en NO?, 12 V entre café y azul con el relé en reposo). Con LED pero sin aviso, mide D22:
+debe ser ~5 V sin metal y < 1 V con metal. Si se queda en 5 V: diodo al revés, cable en D23 o falta la
+tierra común. Si con metal queda en 1.3–2 V, la caída del diodo deja el LOW en el límite: usa un Schottky
+1N5819 o el PC817. El sensor debe ser **NPN NO**; con uno PNP el diodo bloquea la señal. No quites el
+diodo: si el sensor trae resistencia interna a 12 V, entrarían a D22.
 
 Lo que sale de cada etapa se pasa a la siguiente por `CFG` (sin recompilar): `home3` (ángulo donde
 dispara el final de J3, etapa 3), `servoup` / `servodn` (etapas 2–3), `inv` (bits de sentido, etapa 2).
